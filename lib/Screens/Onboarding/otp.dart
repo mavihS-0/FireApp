@@ -52,10 +52,10 @@ class _OTPScreenState extends State<OTPScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Didn't receive OTP?"),
+                    const Text("Didn't receive OTP?"),
                     TextButton(
                       onPressed: (){},
-                      child: Text('Resend OTP'),
+                      child: const Text('Resend OTP'),
                     )
                   ],
                 ),

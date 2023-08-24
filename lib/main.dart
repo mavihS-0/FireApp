@@ -23,6 +23,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: GoogleFonts.roboto().fontFamily,
         colorScheme: ColorScheme.fromSeed(seedColor: Constants.priColor),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Constants.priColor,
+          foregroundColor: Constants.secColor,
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1,
+          )
+        ),
         useMaterial3: true,
       ),
       home: AnimatedSplashScreen(
