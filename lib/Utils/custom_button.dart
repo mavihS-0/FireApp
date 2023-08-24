@@ -1,4 +1,4 @@
-import 'package:fire_app/constants.dart';
+import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextButton extends StatelessWidget {
@@ -8,21 +8,19 @@ class CustomTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPress,
-      child: Container(
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: TextButton(onPressed: onPress, child: Container(
         height: 50,
         width: double.infinity,
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Constants.priColor,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Center(child: Text(title,style: TextStyle(
-          color: Constants.secColor
+            color: Constants.secColor
         ),)),
-      ),
+      )),
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:fire_app/Screens/Onboarding/setProfile.dart';
 import 'package:fire_app/Screens/splash_screen.dart';
+import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
@@ -16,10 +18,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        fontFamily: GoogleFonts.lato().fontFamily,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        colorScheme: ColorScheme.fromSeed(seedColor: Constants.priColor),
         useMaterial3: true,
       ),
       home: AnimatedSplashScreen(
