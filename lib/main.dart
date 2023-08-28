@@ -44,6 +44,10 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.normal
           ),
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Constants.priColor,
+          foregroundColor: Constants.secColor,
+        ),
         useMaterial3: true,
       ),
       home: AnimatedSplashScreen(

@@ -1,4 +1,5 @@
 import 'package:fire_app/Utils/constants.dart';
+import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return DefaultTabController(initialIndex: 0,length: 2, child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('FireAppX'),
+        title: const Text('FireAppX'),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.search)),
+          IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
           customPopUpMenu()
         ],
         bottom: PreferredSize(
@@ -47,33 +48,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: TabBarView(
         children: <Widget>[
-          Center(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/home_page/no_chat.png',width: 350,height: 250,),
-                  SizedBox(height: 10,),
-                  Text('Create a group to start conversation',style: TextStyle(
-                    fontWeight: FontWeight.w600
-                  ),)
-                ],
-              ),
-            ),
+          NoDataHomePage(
+            caption: 'Create a group to start conversation',
+            floatingBtnIcon: const Icon(Icons.group_add),
+            //TODO: floating button press
+            onFloatingBtnPress: (){},
           ),
-          Center(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/home_page/no_chat.png',width: 350,height: 250,),
-                  SizedBox(height: 10,),
-                  Text('Start a conversation',style: TextStyle(
-                      fontWeight: FontWeight.w600
-                  ),)
-                ],
-              ),
+          NoDataHomePage(
+            caption: 'Start a conversation',
+            floatingBtnIcon: const ImageIcon(
+              AssetImage('assets/home_page/add_chat.png'),
             ),
+            //TODO: floating button press
+            onFloatingBtnPress: (){},
           ),
         ],
       ),
