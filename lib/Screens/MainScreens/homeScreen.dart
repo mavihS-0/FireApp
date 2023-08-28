@@ -16,17 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  TabBar get _tabBar => TabBar(
-    indicatorColor: Constants.priColor2,
-    labelColor: Constants.priColor,
-    indicatorSize: TabBarIndicatorSize.tab,
-    labelStyle: TextStyle(
-      fontWeight: FontWeight.bold
-    ),
-    unselectedLabelColor: Constants.priColor,
-    unselectedLabelStyle: TextStyle(
-      fontWeight: FontWeight.normal
-    ),
+  TabBar get _tabBar => const TabBar(
     tabs: <Widget>[
       Tab(
         text: 'Groups',
@@ -55,13 +45,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: const TabBarView(
+      body: TabBarView(
         children: <Widget>[
           Center(
-            child: Text("It's cloudy here"),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/home_page/no_chat.png',width: 350,height: 250,),
+                  SizedBox(height: 10,),
+                  Text('Create a group to start conversation',style: TextStyle(
+                    fontWeight: FontWeight.w600
+                  ),)
+                ],
+              ),
+            ),
           ),
           Center(
-            child: Text("It's rainy here"),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/home_page/no_chat.png',width: 350,height: 250,),
+                  SizedBox(height: 10,),
+                  Text('Start a conversation',style: TextStyle(
+                      fontWeight: FontWeight.w600
+                  ),)
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -26,11 +26,23 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           backgroundColor: Constants.priColor,
           foregroundColor: Constants.secColor,
-          titleTextStyle: TextStyle(
+          titleTextStyle: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
             letterSpacing: 1,
           )
+        ),
+        tabBarTheme: TabBarTheme(
+          indicatorColor: Constants.priColor2,
+          labelColor: Constants.priColor,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelStyle: const TextStyle(
+              fontWeight: FontWeight.bold
+          ),
+          unselectedLabelColor: Constants.priColor,
+          unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.normal
+          ),
         ),
         useMaterial3: true,
       ),
