@@ -1,5 +1,7 @@
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
+import 'package:fire_app/Screens/Onboarding/signup.dart';
 import 'package:fire_app/Utils/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,9 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+
+  String code="";
+  String verify = SignUp.verify;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 ),
                   textAlign: TextAlign.center,),
                 const SizedBox(height: 10,),
-                const Text('OTP has been sent to +919311246655',textAlign: TextAlign.center,),
+                Text('OTP has been sent to ${Get.arguments['phone']}',textAlign: TextAlign.center,),
                 const SizedBox(height: 30,),
                 OTPTextField(
                     length: 6,
@@ -41,25 +46,45 @@ class _OTPScreenState extends State<OTPScreen> {
                     textFieldAlignment: MainAxisAlignment.spaceAround,
                     fieldWidth: 45,
                     outlineBorderRadius: 15,
-                    style: TextStyle(fontSize: 17),
+                    style: const TextStyle(fontSize: 17),
                     onChanged: (pin) {
-                      print("Changed: " + pin);
+                      code=pin;
                     },
                     onCompleted: (pin) {
                       print("Completed: " + pin);
                     }),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Didn't receive OTP?"),
                     TextButton(
-                      onPressed: (){},
+                      onPressed: () async {
+                        await FirebaseAuth.instance.verifyPhoneNumber(
+                          phoneNumber: Get.arguments['phone'],
+                          verificationCompleted: (PhoneAuthCredential credential) {},
+                          verificationFailed: (FirebaseAuthException e) {},
+                          codeSent: (String verificationId, int? resendToken) {
+                            verify=verificationId;
+                            Get.snackbar('Code Resent', 'New OTP has been sent');
+                          },
+                          codeAutoRetrievalTimeout: (String verificationId) {},
+                        );
+                      },
                       child: const Text('Resend OTP'),
                     )
                   ],
                 ),
-                CustomTextButton(title: 'VERIFY', onPress: (){Get.to(()=>SetProfileName());})
+                CustomTextButton(title: 'VERIFY', onPress: () async {
+                  try{
+                    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verify, smsCode: code);
+                    await SignUp.auth.signInWithCredential(credential);
+                    Get.to(()=>const SetProfileName());
+                  }
+                  catch(e){
+                    Get.snackbar('Wrong OTP', 'The OTP you have entered is incorrect');
+                  }
+                })
               ],
             ),
           ),
