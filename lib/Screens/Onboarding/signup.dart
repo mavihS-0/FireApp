@@ -70,18 +70,31 @@ class _SignUpState extends State<SignUp> {
                   ],
                 ),
                 CustomTextButton(title: 'VERIFY', onPress: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context)=> const Center(child: CircularProgressIndicator()),
+                  );
                   await FirebaseAuth.instance.verifyPhoneNumber(
                     phoneNumber: _countryCode+_phone,
                     verificationCompleted: (PhoneAuthCredential credential) {},
-                    verificationFailed: (FirebaseAuthException e) {},
+                    verificationFailed: (FirebaseAuthException e) {
+                      if (e.code == 'invalid-phone-number') {
+                        Get.snackbar('Invalid Phone Number', 'The number you have entered is invalid');
+                      }
+                      else{
+                        Get.snackbar('Error', '${e.message}');
+                      }
+                    },
                     codeSent: (String verificationId, int? resendToken) {
                       SignUp.verify=verificationId;
-                      Get.to(()=>const OTPScreen(),arguments: {
+                      Get.off(()=>const OTPScreen(),arguments: {
                         'phone':_countryCode+_phone
                       });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},
                   );
+                  Get.back();
                 })
               ],
             ),
