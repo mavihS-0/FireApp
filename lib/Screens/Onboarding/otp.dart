@@ -60,6 +60,11 @@ class _OTPScreenState extends State<OTPScreen> {
                     const Text("Didn't receive OTP?"),
                     TextButton(
                       onPressed: () async {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context)=> const Center(child: CircularProgressIndicator()),
+                        );
                         await FirebaseAuth.instance.verifyPhoneNumber(
                           phoneNumber: Get.arguments['phone'],
                           verificationCompleted: (PhoneAuthCredential credential) {},
@@ -70,18 +75,25 @@ class _OTPScreenState extends State<OTPScreen> {
                           },
                           codeAutoRetrievalTimeout: (String verificationId) {},
                         );
+                        Get.back();
                       },
                       child: const Text('Resend OTP'),
                     )
                   ],
                 ),
                 CustomTextButton(title: 'VERIFY', onPress: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context)=> const Center(child: CircularProgressIndicator()),
+                  );
                   try{
                     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verify, smsCode: code);
                     await SignUp.auth.signInWithCredential(credential);
-                    Get.to(()=>const SetProfileName());
+                    Get.off(()=>const SetProfileName());
                   }
                   catch(e){
+                    Get.back();
                     Get.snackbar('Wrong OTP', 'The OTP you have entered is incorrect');
                   }
                 })
