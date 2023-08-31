@@ -16,7 +16,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
 
   String _countryCode = '+91';
-  String _phone = "";
+  TextEditingController _phoneController = TextEditingController();
 
 
   @override
@@ -62,9 +62,8 @@ class _SignUpState extends State<SignUp> {
                     Expanded(
                       child: TextFormField(
                         keyboardType: TextInputType.phone,
-                        onChanged: (value){
-                          _phone=value;
-                        },
+                        controller: _phoneController,
+
                       ),
                     )
                   ],
@@ -76,7 +75,7 @@ class _SignUpState extends State<SignUp> {
                     builder: (context)=> const Center(child: CircularProgressIndicator()),
                   );
                   await FirebaseAuth.instance.verifyPhoneNumber(
-                    phoneNumber: _countryCode+_phone,
+                    phoneNumber: _countryCode+_phoneController.text,
                     verificationCompleted: (PhoneAuthCredential credential) {},
                     verificationFailed: (FirebaseAuthException e) {
                       if (e.code == 'invalid-phone-number') {
@@ -89,7 +88,7 @@ class _SignUpState extends State<SignUp> {
                     codeSent: (String verificationId, int? resendToken) {
                       SignUp.verify=verificationId;
                       Get.off(()=>const OTPScreen(),arguments: {
-                        'phone':_countryCode+_phone
+                        'phone':_countryCode+_phoneController.text
                       });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},

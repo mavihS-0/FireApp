@@ -1,7 +1,9 @@
+import 'package:fire_app/Screens/Onboarding/setProfile.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -52,7 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
             caption: 'Create a group to start conversation',
             floatingBtnIcon: const Icon(Icons.group_add),
             //TODO: floating button press
-            onFloatingBtnPress: (){},
+            onFloatingBtnPress: (){
+              Get.to(()=>SetProfileName());
+            },
           ),
           NoDataHomePage(
             caption: 'Start a conversation',

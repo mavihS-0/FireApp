@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:fire_app/Screens/MainScreens/homeScreen.dart';
+import 'package:fire_app/Screens/Onboarding/signup.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +14,20 @@ class SignupLoading extends StatefulWidget {
 
 class _SignupLoadingState extends State<SignupLoading> {
 
+  final databaseRef = FirebaseDatabase.instance.ref(SignUp.auth.currentUser?.phoneNumber);
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Get.off(()=>HomeScreen());
+    databaseRef.child('UserData').set({
+      'name' : Get.arguments['name'],
+      'phone' : SignUp.auth.currentUser?.phoneNumber,
+    }).then((value) {
+      Get.offAll(()=>HomeScreen());
+    }).onError((error, stackTrace) {
+      Get.snackbar('Error', error.toString());
+      Get.back();
     });
   }
 

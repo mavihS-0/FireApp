@@ -12,18 +12,23 @@ class SetProfileName extends StatefulWidget {
 }
 
 class _SetProfileNameState extends State<SetProfileName> {
+
+  String _imageURL = '';
+  Image _image = Image.asset('assets/signup/profile.png');
+  final TextEditingController _nameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
             height: MediaQuery.of(context).size.height*0.97,
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 70,),
+                const SizedBox(height: 70,),
                 Center(
                     child: Container(
                       height: 60,
@@ -31,7 +36,7 @@ class _SetProfileNameState extends State<SetProfileName> {
                       child: Stack(
                         children: [
                           CircleAvatar(
-                            backgroundImage: AssetImage('assets/signup/profile.png'),
+                            backgroundImage: _image.image,
                             radius: 30,
                           ),
                           Align(
@@ -40,7 +45,7 @@ class _SetProfileNameState extends State<SetProfileName> {
                               child: CircleAvatar(
                                   radius: 11,
                                   backgroundColor: Constants.priColor,
-                                  child: Icon(Icons.add,color: Colors.white,size: 20,)),
+                                  child: const Icon(Icons.add,color: Colors.white,size: 20,)),
                               onTap: (){},
                             ),
                           )
@@ -48,23 +53,28 @@ class _SetProfileNameState extends State<SetProfileName> {
                       ),
                     )
                 ),
-                SizedBox(height: 50,),
-                Text('Profile Name', style: TextStyle(
+                const SizedBox(height: 50,),
+                const Text('Profile Name', style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                 ), textAlign: TextAlign.left,),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       hintText: 'Enter your name',
                       hintStyle: TextStyle(
                         fontSize: 14,
                       )
                   ),
+                  controller: _nameController,
                 ),
-                SizedBox(height: 50,),
+                const SizedBox(height: 50,),
                 Expanded(child: Container()),
-                CustomTextButton(title: 'CONTINUE', onPress: (){Get.to(()=>SignupLoading());})
+                CustomTextButton(title: 'CONTINUE', onPress: (){
+                  Get.to(()=>SignupLoading(),arguments: {
+                    'name': _nameController.text
+                  });
+                })
               ],
             )
         ),
