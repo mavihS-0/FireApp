@@ -1,5 +1,4 @@
-import 'package:fire_app/Screens/Onboarding/setProfile.dart';
-import 'package:fire_app/Screens/splash_screen.dart';
+import 'package:fire_app/Utils/authState.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +54,7 @@ class MyApp extends StatelessWidget {
       ),
       home: AnimatedSplashScreen(
         duration: 2000,
-        nextScreen: const SplashScreen(),
+        nextScreen: const AuthState(),
         splash: Image.asset('assets/flash_screen.png'),
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
