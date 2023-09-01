@@ -91,7 +91,8 @@ class _SetProfileNameState extends State<SetProfileName> {
                 Expanded(child: Container()),
                 CustomTextButton(title: 'CONTINUE', onPress: (){
                   Get.to(()=>SignupLoading(),arguments: {
-                    'name': _nameController.text
+                    'name': _nameController.text,
+                    'imageFile' : _imageFile,
                   });
                 })
               ],

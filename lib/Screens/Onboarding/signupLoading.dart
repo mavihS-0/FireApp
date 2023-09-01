@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:fire_app/Screens/MainScreens/homeScreen.dart';
 import 'package:fire_app/Screens/Onboarding/signup.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -14,20 +15,33 @@ class SignupLoading extends StatefulWidget {
 class _SignupLoadingState extends State<SignupLoading> {
 
   final databaseRef = FirebaseDatabase.instance.ref(SignUp.auth.currentUser?.phoneNumber);
+  final storageRef = FirebaseStorage.instance.ref('profileImage').child('${SignUp.auth.currentUser?.phoneNumber}');
+
+  void uploadData() async{
+    try {
+      final task = await storageRef.putFile(Get.arguments['imageFile']);
+      final imageURL = await task.ref.getDownloadURL();
+      databaseRef.child('UserData').set({
+        'name' : Get.arguments['name'],
+        'phone' : SignUp.auth.currentUser?.phoneNumber,
+        'imageURL' : imageURL,
+      }).then((value) {
+        Get.offAll(()=>HomeScreen());
+      }).onError((error, stackTrace) {
+        Get.snackbar('Error', error.toString());
+        Get.back();
+      });
+    }catch(e){
+      Get.snackbar('Error', e.toString());
+      Get.back();
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    databaseRef.child('UserData').set({
-      'name' : Get.arguments['name'],
-      'phone' : SignUp.auth.currentUser?.phoneNumber,
-    }).then((value) {
-      Get.offAll(()=>HomeScreen());
-    }).onError((error, stackTrace) {
-      Get.snackbar('Error', error.toString());
-      Get.back();
-    });
+    uploadData();
   }
 
   @override

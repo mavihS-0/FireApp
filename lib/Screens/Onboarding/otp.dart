@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/homeScreen.dart';
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
 import 'package:fire_app/Screens/Onboarding/signup.dart';
 import 'package:fire_app/Utils/custom_button.dart';
@@ -65,16 +66,21 @@ class _OTPScreenState extends State<OTPScreen> {
                           barrierDismissible: false,
                           builder: (context)=> const Center(child: CircularProgressIndicator()),
                         );
-                        await FirebaseAuth.instance.verifyPhoneNumber(
-                          phoneNumber: Get.arguments['phone'],
-                          verificationCompleted: (PhoneAuthCredential credential) {},
-                          verificationFailed: (FirebaseAuthException e) {},
-                          codeSent: (String verificationId, int? resendToken) {
-                            verify=verificationId;
-                            Get.snackbar('Code Resent', 'New OTP has been sent');
-                          },
-                          codeAutoRetrievalTimeout: (String verificationId) {},
-                        );
+                        try{
+                          await FirebaseAuth.instance.verifyPhoneNumber(
+                            phoneNumber: Get.arguments['phone'],
+                            verificationCompleted: (PhoneAuthCredential credential) {},
+                            verificationFailed: (FirebaseAuthException e) {},
+                            codeSent: (String verificationId, int? resendToken) {
+                              verify=verificationId;
+                              Get.snackbar('Code Resent', 'New OTP has been sent');
+                            },
+                            codeAutoRetrievalTimeout: (String verificationId) {},
+                          );
+                        }
+                        catch(e){
+                          Get.snackbar('Error', e.toString());
+                        }
                         Get.back();
                       },
                       child: const Text('Resend OTP'),
@@ -89,8 +95,9 @@ class _OTPScreenState extends State<OTPScreen> {
                   );
                   try{
                     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verify, smsCode: code);
-                    await SignUp.auth.signInWithCredential(credential);
-                    Get.off(()=>const SetProfileName());
+                    final userCredential = await SignUp.auth.signInWithCredential(credential);
+                    userCredential.additionalUserInfo?.isNewUser == true ? Get.off(()=>const SetProfileName()):
+                    Get.offAll(()=>HomeScreen());
                   }
                   catch(e){
                     Get.back();

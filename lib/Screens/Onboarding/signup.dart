@@ -87,7 +87,7 @@ class _SignUpState extends State<SignUp> {
                     },
                     codeSent: (String verificationId, int? resendToken) {
                       SignUp.verify=verificationId;
-                      Get.off(()=>const OTPScreen(),arguments: {
+                      Get.to(()=>const OTPScreen(),arguments: {
                         'phone':_countryCode+_phoneController.text
                       });
                     },
