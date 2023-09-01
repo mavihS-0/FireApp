@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:fire_app/Screens/Onboarding/signupLoading.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SetProfileName extends StatefulWidget {
   const SetProfileName({Key? key}) : super(key: key);
@@ -16,6 +18,21 @@ class _SetProfileNameState extends State<SetProfileName> {
   String _imageURL = '';
   Image _image = Image.asset('assets/signup/profile.png');
   final TextEditingController _nameController = TextEditingController();
+  late File _imageFile;
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+          _image =Image.file(_imageFile);
+        });
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +63,9 @@ class _SetProfileNameState extends State<SetProfileName> {
                                   radius: 11,
                                   backgroundColor: Constants.priColor,
                                   child: const Icon(Icons.add,color: Colors.white,size: 20,)),
-                              onTap: (){},
+                              onTap: (){
+                                _pickImage(ImageSource.gallery);
+                              },
                             ),
                           )
                         ],

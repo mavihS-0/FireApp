@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 class SignupLoading extends StatefulWidget {
   const SignupLoading({Key? key}) : super(key: key);
-
   @override
   State<SignupLoading> createState() => _SignupLoadingState();
 }
