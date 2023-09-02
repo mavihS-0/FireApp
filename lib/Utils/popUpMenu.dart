@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Widget customPopUpMenu() {
+Widget customPopUpMenu(String addNew, Function addNewMethod) {
   return PopupMenuButton(
 //TODO: Popup menu
       onSelected: (value)async{
@@ -13,7 +13,7 @@ Widget customPopUpMenu() {
         }
       },
       itemBuilder: (context){
-        return {'New Group','Profile', 'Settings','Log Out'}.map((String choice) {
+        return {addNew,'Profile', 'Settings','Log Out'}.map((String choice) {
           return PopupMenuItem<String>(
             value: choice,
             child: Text(choice),

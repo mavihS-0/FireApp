@@ -1,8 +1,10 @@
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
+import 'package:fire_app/Utils/addContact.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,13 +15,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  int currTabIndex = 0;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
 
-  TabBar get _tabBar => const TabBar(
+  TabBar get _tabBar => TabBar(
     tabs: <Widget>[
       Tab(
         text: 'Groups',
@@ -28,6 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
         text: 'Personals',
       ),
     ],
+    onTap: (i){
+      currTabIndex = i;
+      setState(() {
+
+      });
+    },
+
   );
 
   @override
@@ -38,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('FireAppX'),
         actions: [
           IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
-          customPopUpMenu()
+          currTabIndex==0 ? customPopUpMenu('New group',(){}) : customPopUpMenu('New chat', (){}),
         ],
         bottom: PreferredSize(
           preferredSize: _tabBar.preferredSize,
@@ -64,7 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
               AssetImage('assets/home_page/add_chat.png'),
             ),
             //TODO: floating button press
-            onFloatingBtnPress: (){},
+            onFloatingBtnPress: ()async{
+              if(await FlutterContacts.requestPermission()){
+                Get.to(()=>AddContact());
+              }
+            },
           ),
         ],
       ),

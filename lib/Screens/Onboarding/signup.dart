@@ -75,7 +75,7 @@ class _SignUpState extends State<SignUp> {
                     builder: (context)=> const Center(child: CircularProgressIndicator()),
                   );
                   await FirebaseAuth.instance.verifyPhoneNumber(
-                    phoneNumber: _countryCode+_phoneController.text,
+                    phoneNumber: '$_countryCode ${_phoneController.text}',
                     verificationCompleted: (PhoneAuthCredential credential) {},
                     verificationFailed: (FirebaseAuthException e) {
                       if (e.code == 'invalid-phone-number') {
@@ -88,7 +88,7 @@ class _SignUpState extends State<SignUp> {
                     codeSent: (String verificationId, int? resendToken) {
                       SignUp.verify=verificationId;
                       Get.to(()=>const OTPScreen(),arguments: {
-                        'phone':_countryCode+_phoneController.text
+                        'phone':'$_countryCode ${_phoneController.text}'
                       });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},
