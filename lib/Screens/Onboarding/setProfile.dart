@@ -3,8 +3,10 @@ import 'package:fire_app/Screens/Onboarding/signupLoading.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SetProfileName extends StatefulWidget {
   const SetProfileName({Key? key}) : super(key: key);
@@ -15,10 +17,19 @@ class SetProfileName extends StatefulWidget {
 
 class _SetProfileNameState extends State<SetProfileName> {
 
-  String _imageURL = '';
   Image _image = Image.asset('assets/signup/profile.png');
   final TextEditingController _nameController = TextEditingController();
   late File _imageFile;
+
+  Future<void> getImageFileFromAssets() async {
+    final byteData = await rootBundle.load('assets/signup/profile.png');
+
+    final file = File('${(await getTemporaryDirectory()).path}/signup/profile.png');
+    await file.create(recursive: true);
+    await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    _imageFile = file;
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     try {
@@ -35,6 +46,13 @@ class _SetProfileNameState extends State<SetProfileName> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getImageFileFromAssets();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -47,28 +65,28 @@ class _SetProfileNameState extends State<SetProfileName> {
               children: [
                 const SizedBox(height: 70,),
                 Center(
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      child: Stack(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: _image.image,
-                            radius: 30,
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: InkWell(
+                    child: InkWell(
+                      onTap: (){
+                        _pickImage(ImageSource.gallery);
+                      },
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        child: Stack(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: _image.image,
+                              radius: 30,
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
                               child: CircleAvatar(
                                   radius: 11,
                                   backgroundColor: Constants.priColor,
                                   child: const Icon(Icons.add,color: Colors.white,size: 20,)),
-                              onTap: (){
-                                _pickImage(ImageSource.gallery);
-                              },
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     )
                 ),

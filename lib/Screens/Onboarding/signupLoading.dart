@@ -14,14 +14,15 @@ class SignupLoading extends StatefulWidget {
 
 class _SignupLoadingState extends State<SignupLoading> {
 
-  final databaseRef = FirebaseDatabase.instance.ref(SignUp.auth.currentUser?.phoneNumber);
-  final storageRef = FirebaseStorage.instance.ref('profileImage').child('${SignUp.auth.currentUser?.phoneNumber}');
+  final databaseRef = FirebaseDatabase.instance.ref('users');
+  final storageRef = FirebaseStorage.instance.ref('profileImage').child('${SignUp.auth.currentUser?.uid}');
 
   void uploadData() async{
+    String imageURL = '';
     try {
       final task = await storageRef.putFile(Get.arguments['imageFile']);
-      final imageURL = await task.ref.getDownloadURL();
-      databaseRef.child('UserData').set({
+      imageURL = await task.ref.getDownloadURL();
+      databaseRef.child('${SignUp.auth.currentUser?.uid}').set({
         'name' : Get.arguments['name'],
         'phone' : SignUp.auth.currentUser?.phoneNumber,
         'imageURL' : imageURL,
