@@ -4,7 +4,6 @@ import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -76,10 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
               AssetImage('assets/home_page/add_chat.png'),
             ),
             //TODO: floating button press
-            onFloatingBtnPress: ()async{
-              if(await FlutterContacts.requestPermission()){
-                Get.to(()=>AddContact());
-              }
+            onFloatingBtnPress: (){
+              Get.to(()=>AddContact());
             },
           ),
         ],

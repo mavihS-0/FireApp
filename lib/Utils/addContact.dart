@@ -1,7 +1,8 @@
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddContact extends StatefulWidget {
   const AddContact({Key? key}) : super(key: key);
@@ -22,17 +23,21 @@ class _AddContactState extends State<AddContact> {
   }
 
   Future<void> getContacts()async{
-    if(await FlutterContacts.requestPermission()){
-      List <Contact> phoneContacts = await FlutterContacts.getContacts();
-      print(phoneContacts);
+    if(await Permission.contacts.request().isGranted){
+      Iterable <Contact> phoneContacts = await ContactsService.getContacts();
+      List phoneNos = [];
+      phoneContacts.forEach((element) {
+        phoneNos.add(element.phones?[0].value.toString().replaceAll(' ', ''));
+      });
+      print(phoneNos);
       final snapshot = await databaseRef.get();
       Map data;
       data = snapshot.value as Map;
       print(data);
       if(data != null){
         for (Contact c in phoneContacts){
-          if (data.containsKey(c.phones[0].toString().replaceAll(' ', ''))){
-            contacts.add(c.phones[0].toString());
+          if (data.containsKey(c.phones?[0].toString().replaceAll(' ', ''))){
+            contacts.add(c.phones![0].toString());
           }
         }
       }
