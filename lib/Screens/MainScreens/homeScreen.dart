@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/personalChats.dart';
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
 import 'package:fire_app/Screens/MainScreens/addContact.dart';
 import 'package:fire_app/Utils/constants.dart';
@@ -69,16 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Get.to(()=>SetProfileName());
             },
           ),
-          NoDataHomePage(
-            caption: 'Start a conversation',
-            floatingBtnIcon: const ImageIcon(
-              AssetImage('assets/home_page/add_chat.png'),
-            ),
-            //TODO: floating button press
-            onFloatingBtnPress: (){
-              Get.to(()=>AddContact());
-            },
-          ),
+          PersonalChats()
         ],
       ),
     ));

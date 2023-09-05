@@ -28,11 +28,11 @@ class _SignupLoadingState extends State<SignupLoading> {
         Get.snackbar('Error', error.toString());
         Get.back();
       });
-      await databaseRef3.set('${SignUp.auth.currentUser?.uid}');
+      await databaseRef3.child('${SignUp.auth.currentUser?.uid}').set('');
       databaseRef.child('${SignUp.auth.currentUser?.uid}').set({
         'name' : Get.arguments['name'],
         'phone' : SignUp.auth.currentUser?.phoneNumber,
-        'imageURL' : imageURL,
+        'profileImg' : imageURL,
       }).then((value) {
         Get.offAll(()=>HomeScreen());
       }).onError((error, stackTrace) {
