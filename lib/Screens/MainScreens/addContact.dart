@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:fire_app/Screens/MainScreens/personalChatScreen.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddContact extends StatefulWidget {
   const AddContact({Key? key}) : super(key: key);
@@ -41,10 +45,10 @@ class _AddContactState extends State<AddContact> {
           String? phoneNo=element.phones?[0].value.toString().replaceAll(' ', '');
           String? name=element.displayName.toString().capitalize;
           if(data.containsKey(phoneNo)){
-            contactsOnApp.add({'name':name,'phone':phoneNo,'profileImg': 'assets/signup/profile.png'});
+            contactsOnApp.add({'name':name,'phone':phoneNo,'profileImg': 'assets/signup/profile.png','uid':data[phoneNo]});
           }
           else{
-            contactsNotOnApp.add({'name':name,'phone':phoneNo,'profileImg': 'assets/signup/profile.png'});
+            contactsNotOnApp.add({'name':name,'phone':phoneNo,'profileImg': 'assets/signup/profile.png','uid':null});
           }
         });
       }
@@ -107,7 +111,94 @@ class _AddContactState extends State<AddContact> {
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),),
-              contactsListView(contactsOnApp,(){}),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: contactsOnApp.length,
+                itemBuilder: (context,index){
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context)=> const Center(child: CircularProgressIndicator()),
+                          );
+                          String? myUid = FirebaseAuth.instance.currentUser?.uid;
+                          String? recUid = contactsOnApp[index]['uid'];
+                          String? pid;
+                          try{
+                            final snapshot = await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).get();
+                            Map data = snapshot.value as Map;
+                            if (data.containsKey(recUid)){
+                              pid = data[recUid]['pid'];
+                            }
+                            else{
+                              throw Exception();
+                            }
+                          }catch(e){
+                            if (myUid.hashCode < recUid.hashCode){
+                              pid = '$myUid-$recUid';
+                            }
+                            else{
+                              pid = '$recUid-$myUid';
+                            }
+                            final snapshot = await FirebaseDatabase.instance.ref('users').child(recUid!).get();
+                            Map data = snapshot.value as Map;
+                            await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).set({
+                              recUid : {
+                                'pid' : pid,
+                                'name' : data['name'],
+                                'profile' : data['imageURL'],
+                                'lastMessage' : '',
+                                'time' : '',
+                              }
+                            }).onError((error, stackTrace){
+                              Get.snackbar('Error', error.toString());
+                            });
+                            await FirebaseDatabase.instance.ref('personalChats').set({
+                              pid : ''
+                            }).onError((error, stackTrace){
+                              Get.snackbar('Error', error.toString());
+                            });
+                          }
+                          Get.back();
+                          Get.off(()=>PersonalChatScreen(),arguments: {
+                            'pid' : pid,
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(contactsOnApp[index]['profileImg']!),
+                                radius: 25,
+                              ),
+                              SizedBox(width: 15,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(contactsOnApp[index]['name']!,style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),),
+                                  Text(contactsOnApp[index]['phone']!,style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600]
+                                  ),)
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider()
+                    ],
+                  );
+                },
+              ),
               contactsNotOnApp.length==0 ? SizedBox() :
               Text('Contacts on FireAppX',style: TextStyle(
                 color: Constants.priColor,
@@ -115,54 +206,51 @@ class _AddContactState extends State<AddContact> {
                 fontWeight: FontWeight.w500,
               ),),
               contactsNotOnApp.length==0 ? SizedBox() :
-              contactsListView(contactsNotOnApp,(){}),
+                  //TODO: contactsNotOnApp onTap function
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: contactsNotOnApp.length,
+                itemBuilder: (context,index){
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: (){},
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: AssetImage(contactsNotOnApp[index]['profileImg']!),
+                                radius: 25,
+                              ),
+                              SizedBox(width: 15,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(contactsNotOnApp[index]['name']!,style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),),
+                                  Text(contactsNotOnApp[index]['phone']!,style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600]
+                                  ),)
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider()
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
       ),
     );
   }
-}
-
-Widget contactsListView(List list,Function onPress) {
-  return ListView.builder(
-    shrinkWrap: true,
-    physics: NeverScrollableScrollPhysics(),
-    itemCount: list.length,
-    itemBuilder: (context,index){
-      return Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-            child: InkWell(
-              onTap: (){},
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage(list[index]['profileImg']!),
-                    radius: 25,
-                  ),
-                  SizedBox(width: 15,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(list[index]['name']!,style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),),
-                      Text(list[index]['phone']!,style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600]
-                      ),)
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-          Divider()
-        ],
-      );
-    },
-  );
 }
