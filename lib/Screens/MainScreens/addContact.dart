@@ -149,9 +149,9 @@ class _AddContactState extends State<AddContact> {
                             await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).child(recUid).set({
                               'pid' : pid,
                               'name' : data['name'],
-                              'profileImg': data['imageURL'],
-                              'lastMessage' : '',
-                              'time' : '',
+                              'profileImg': data['profileImg'],
+                              'lastMessage' : data['phone'],
+                              'time' : DateTime.now().toString(),
                             }).onError((error, stackTrace){
                               Get.snackbar('Error', error.toString());
                             });
@@ -196,7 +196,7 @@ class _AddContactState extends State<AddContact> {
                 },
               ),
               contactsNotOnApp.length==0 ? SizedBox() :
-              Text('Contacts on FireAppX',style: TextStyle(
+              Text('Contacts not on FireAppX',style: TextStyle(
                 color: Constants.priColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

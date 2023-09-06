@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NoDataHomePage extends StatelessWidget {
-  final Function() onFloatingBtnPress;
   final String caption;
-  final Widget floatingBtnIcon;
-  const NoDataHomePage({Key? key, required this.caption, required this.floatingBtnIcon, required this.onFloatingBtnPress}) : super(key: key);
+  const NoDataHomePage({Key? key, required this.caption}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +18,6 @@ class NoDataHomePage extends StatelessWidget {
             ),)
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: onFloatingBtnPress,
-        child: floatingBtnIcon,
       ),
     );
   }

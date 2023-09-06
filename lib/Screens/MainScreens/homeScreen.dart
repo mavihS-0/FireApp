@@ -64,11 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           NoDataHomePage(
             caption: 'Create a group to start conversation',
-            floatingBtnIcon: const Icon(Icons.group_add),
-            //TODO: floating button press
-            onFloatingBtnPress: (){
-              Get.to(()=>SetProfileName());
-            },
           ),
           PersonalChats()
         ],
