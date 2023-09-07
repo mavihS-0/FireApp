@@ -144,13 +144,9 @@ class _AddContactState extends State<AddContact> {
                             else{
                               pid = '$recUid-$myUid';
                             }
-                            final snapshot = await FirebaseDatabase.instance.ref('users').child(recUid!).get();
-                            Map data = snapshot.value as Map;
-                            await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).child(recUid).set({
+                            await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).child(recUid!).set({
                               'pid' : pid,
-                              'name' : data['name'],
-                              'profileImg': data['profileImg'],
-                              'lastMessage' : data['phone'],
+                              'lastMessage' : contactsOnApp[index]['phone'],
                               'time' : DateTime.now().toString(),
                             }).onError((error, stackTrace){
                               Get.snackbar('Error', error.toString());
@@ -162,6 +158,7 @@ class _AddContactState extends State<AddContact> {
                           Get.back();
                           Get.off(()=>PersonalChatScreen(),arguments: {
                             'pid' : pid,
+                            'friendUid' : recUid
                           });
                         },
                         child: Container(
