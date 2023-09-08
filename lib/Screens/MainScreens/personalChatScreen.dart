@@ -25,7 +25,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   String recName = '...';
   String recProfileImg ='https://firebasestorage.googleapis.com/v0/b/fireapp-a5221.appspot.com/o/new_profile.png?alt=media&token=00795532-a3e8-4088-b335-ce23ee6750d3';
   String myName = '...';
-  final ItemScrollController _scrollController = ItemScrollController();
+  final ScrollController _scrollController = ScrollController();
   bool emojiKeyboard = false;
   Map messageData = {};
 
@@ -39,7 +39,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   }
 
   _scrollToBottom() {
-    _scrollController.jumpTo(index: messageData.length-1);
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent+1000);
   }
 
   Map orderData(messages){
@@ -100,8 +100,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           'lastMessage' : value,
                           'time' : DateTime.now().toString(),
                         });
-                        _scrollToBottom();
+
                         message.clear();
+                        _scrollToBottom();
                       },
                     ),
                   ),
@@ -218,108 +219,112 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           List messageIds = messageData.keys.toList();
                           return SizedBox(
                             height: MediaQuery.of(context).size.height*0.82,
-                            child: ListView.builder(
-                              //physics: const ClampingScrollPhysics(),
-                              itemCount: messageData.length,
-                              shrinkWrap: true,
-                              //initialScrollIndex: messageData.length,
-                             // itemScrollController: _scrollController,
-                              itemBuilder: (context,index){
-                                return Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: messageData[messageIds[index]]['sender']!=myUid?
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: NetworkImage(recProfileImg),
-                                          radius: 15,
-                                        ),
-                                        SizedBox(width: 10,),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width*0.7,
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(0.3),
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.zero,
-                                                topRight: Radius.circular(10),
-                                                bottomRight:  Radius.circular(10),
-                                                bottomLeft:  Radius.circular(10)),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: ListView.builder(
+                                //physics: const ClampingScrollPhysics(),
+                                itemCount: messageData.length,
+                                shrinkWrap: true,
+                                //initialScrollIndex: messageData.length,
+                               // itemScrollController: _scrollController,
+                                controller: _scrollController,
+                                itemBuilder: (context,index){
+                                  return Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: messageData[messageIds[index]]['sender']!=myUid?
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundImage: NetworkImage(recProfileImg),
+                                            radius: 15,
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                          SizedBox(width: 10,),
+                                          Container(
+                                            width: MediaQuery.of(context).size.width*0.7,
+                                            padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue.withOpacity(0.3),
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.zero,
+                                                  topRight: Radius.circular(10),
+                                                  bottomRight:  Radius.circular(10),
+                                                  bottomLeft:  Radius.circular(10)),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(recName,style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blue[900],
+                                                ),),
+                                                Text(messageData[messageIds[index]]['content']),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                        color: Colors.blue[900],
+                                                        fontWeight: FontWeight.w400
+                                                    ),),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ):
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
-                                              Text(recName,style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blue[900],
-                                              ),),
-                                              Text(messageData[messageIds[index]]['content']),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.7,
+                                                padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue.withOpacity(0.3),
+                                                  borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(10),
+                                                      topRight: Radius.zero,
+                                                      bottomRight:  Radius.circular(10),
+                                                      bottomLeft:  Radius.circular(10)),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(myName,style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
                                                       color: Colors.blue[900],
-                                                      fontWeight: FontWeight.w400
-                                                  ),),
-                                                ],
+                                                    ),),
+                                                    Text(messageData[messageIds[index]]['content']),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                            color: Colors.blue[900],
+                                                            fontWeight: FontWeight.w400
+                                                        ),),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(height: 10,),
+                                              CircleAvatar(
+                                                backgroundImage: NetworkImage(recProfileImg),
+                                                radius: 10,
                                               )
                                             ],
                                           ),
-                                        )
-                                      ],
-                                    ):
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              width: MediaQuery.of(context).size.width*0.7,
-                                              padding: EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.withOpacity(0.3),
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(10),
-                                                    topRight: Radius.zero,
-                                                    bottomRight:  Radius.circular(10),
-                                                    bottomLeft:  Radius.circular(10)),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(myName,style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.blue[900],
-                                                  ),),
-                                                  Text(messageData[messageIds[index]]['content']),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                    children: [
-                                                      Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
-                                                          color: Colors.blue[900],
-                                                          fontWeight: FontWeight.w400
-                                                      ),),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(height: 10,),
-                                            CircleAvatar(
-                                              backgroundImage: NetworkImage(recProfileImg),
-                                              radius: 10,
-                                            )
-                                          ],
-                                        ),
 
-                                      ],
-                                    )
-                                );
-                              },
+                                        ],
+                                      )
+                                  );
+                                },
+                              ),
                             ),
                           );
                         }
