@@ -22,6 +22,7 @@ class _AddContactState extends State<AddContact> {
   List <Map<String,String?>> contactsOnApp = [];
   List <Map<String,String?>> contactsNotOnApp = [];
   DatabaseReference databaseRef = FirebaseDatabase.instance.ref('usersNumberMap');
+  DatabaseReference chatRef = FirebaseDatabase.instance.ref('personalChats');
   bool isLoading = true;
   @override
   void initState() {
@@ -128,6 +129,7 @@ class _AddContactState extends State<AddContact> {
                           String? myUid = FirebaseAuth.instance.currentUser?.uid;
                           String? recUid = contactsOnApp[index]['uid'];
                           String? pid;
+
                           try{
                             final snapshot = await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).get();
                             Map data = snapshot.value as Map;
@@ -138,12 +140,8 @@ class _AddContactState extends State<AddContact> {
                               throw Exception();
                             }
                           }catch(e){
-                            if (myUid.hashCode < recUid.hashCode){
-                              pid = '$myUid-$recUid';
-                            }
-                            else{
-                              pid = '$recUid-$myUid';
-                            }
+                            final newChatKey = chatRef.push();
+                            pid = newChatKey.key;
                             await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).child(recUid!).set({
                               'pid' : pid,
                               'lastMessage' : contactsOnApp[index]['phone'],
@@ -151,7 +149,20 @@ class _AddContactState extends State<AddContact> {
                             }).onError((error, stackTrace){
                               Get.snackbar('Error', error.toString());
                             });
-                            await FirebaseDatabase.instance.ref('personalChats').child(pid).set('').onError((error, stackTrace){
+                            await FirebaseDatabase.instance.ref('personalChatList').child(recUid!).child(myUid!).set({
+                              'pid' : pid,
+                              'lastMessage' : contactsOnApp[index]['phone'],
+                              'time' : DateTime.now().toString(),
+                            }).onError((error, stackTrace){
+                              Get.snackbar('Error', error.toString());
+                            });
+                            await newChatKey.set({
+                              'participants' : {
+                                myUid : true,
+                                recUid : true,
+                              },
+                              'messages' : '',
+                            }).onError((error, stackTrace){
                               Get.snackbar('Error', error.toString());
                             });
                           }
