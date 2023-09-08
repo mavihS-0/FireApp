@@ -218,11 +218,12 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           List messageIds = messageData.keys.toList();
                           return SizedBox(
                             height: MediaQuery.of(context).size.height*0.82,
-                            child: ScrollablePositionedList.builder(
-                              physics: const ClampingScrollPhysics(),
+                            child: ListView.builder(
+                              //physics: const ClampingScrollPhysics(),
                               itemCount: messageData.length,
                               shrinkWrap: true,
-                              itemScrollController: _scrollController,
+                              //initialScrollIndex: messageData.length,
+                             // itemScrollController: _scrollController,
                               itemBuilder: (context,index){
                                 return Container(
                                     padding: EdgeInsets.all(10),
