@@ -1,3 +1,4 @@
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../Utils/constants.dart';
 
 class PersonalChatScreen extends StatefulWidget {
@@ -28,6 +28,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   final ScrollController _scrollController = ScrollController();
   bool emojiKeyboard = false;
   Map messageData = {};
+  final FocusNode _textFocusNode = FocusNode();
+  bool _isEmojiKeyboardVisible = false;
+  bool _isMicEnabled = true;
 
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
@@ -52,6 +55,44 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     return sortedMessages;
   }
 
+  void _toggleKeyboard() {
+    setState(() {
+      _isEmojiKeyboardVisible = !_isEmojiKeyboardVisible;
+      if (_isEmojiKeyboardVisible) {
+        FocusScope.of(context).requestFocus(FocusNode());
+      } else {
+        FocusScope.of(context).requestFocus(_textFocusNode);
+      }
+    });
+  }
+
+  void _onEmojiSelected(Category? category, Emoji? emoji) {
+    if (emoji != null) {
+      message.text += emoji.emoji;
+    }
+  }
+
+  void onSend(String type)async{
+    final newMessageKey = messageRef.child('messages').push();
+    final messageKey = newMessageKey.key;
+    newMessageKey.set({
+      'sender' : FirebaseAuth.instance.currentUser?.uid,
+      'content' : message.text,
+      'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
+      'type' : type
+    });
+    FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
+      'lastMessage' : message.text,
+      'time' : DateTime.now().toString(),
+    });
+    FirebaseDatabase.instance.ref('personalChatList').child(Get.arguments['friendUid']).child(FirebaseAuth.instance.currentUser!.uid).update({
+      'lastMessage' : message.text,
+      'time' : DateTime.now().toString(),
+    });
+    message.clear();
+    _scrollToBottom();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -62,68 +103,98 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   Widget chatInput() {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Container(
-        padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
-        height: 70,
-        width: MediaQuery.of(context).size.width,
-        color: Colors.blue,
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width*0.8,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(50)
-              ),
-              child: Row(
-                children: [
-                  IconButton(onPressed: (){}, icon: Icon(Icons.emoji_emotions_rounded,color: Colors.grey[500],)),
-                  SizedBox(width: 5,),
-                  Expanded(
-                    child: TextField(
-                      controller: message,
-                      decoration: InputDecoration(
-                        hintText: 'Type message here...',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[500],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
+            height: 70,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.blue,
+            child: Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width*0.8,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50)
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: (){
+                            _toggleKeyboard();
+                          },
+                          icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Colors.grey[500],),
+                      ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        child: TextField(
+                          controller: message,
+                          focusNode: _textFocusNode,
+                          decoration: InputDecoration(
+                            hintText: 'Type message here...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                          onChanged: (value){
+                            if(value!=''){
+                              setState(() {
+                                _isMicEnabled = false;
+                              });
+                            }
+                            else{
+                              setState(() {
+                                _isMicEnabled = true;
+                              });
+                            }
+                          },
+                          onTap: (){
+                            setState(() {
+                              _isEmojiKeyboardVisible = false;
+                            });
+
+                          },
+                          onSubmitted: (value){
+                            onSend('text');
+                          },
                         ),
                       ),
-                      onSubmitted: (String value)async{
-                        final newMessageKey = messageRef.child('messages').push();
-                        final messageKey = newMessageKey.key;
-                        newMessageKey.set({
-                          'sender' : FirebaseAuth.instance.currentUser?.uid,
-                          'content' : value,
-                          'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
-                        });
-                        FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
-                          'lastMessage' : value,
-                          'time' : DateTime.now().toString(),
-                        });
-
-                        message.clear();
-                        _scrollToBottom();
-                      },
-                    ),
+                      SizedBox(width: 5,),
+                      IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
+                      SizedBox(width: 5,),
+                      IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
+                    ],
                   ),
-                  SizedBox(width: 5,),
-                  IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
-                  SizedBox(width: 5,),
-                  IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
-                ],
+                ),
+                SizedBox(width: 10,),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    icon: Icon(_isMicEnabled?Icons.mic:Icons.send,color: Colors.blue,),
+                    onPressed: (){
+                      if(!_isMicEnabled){
+                        onSend('text');
+                      }
+                    },
+                  ),
+                  radius: 30,
+                )
+              ],
+            ),
+          ),
+          _isEmojiKeyboardVisible ? Container(
+            height: 270,
+            child: EmojiPicker(
+              onEmojiSelected: _onEmojiSelected,
+              config: Config(
+                columns: 7,
+                emojiSizeMax: 32.0,
               ),
             ),
-            SizedBox(width: 10,),
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              child: IconButton(
-                icon: Icon(Icons.mic,color: Colors.blue,),
-                onPressed: (){},
-              ),
-              radius: 30,
-            )
-          ],
-        ),
+          ) :SizedBox(),
+        ],
       ),
     );
   }
@@ -223,7 +294,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                             );
                           });
                           return SizedBox(
-                            height: MediaQuery.of(context).size.height*0.82,
+                            height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: ListView.builder(
