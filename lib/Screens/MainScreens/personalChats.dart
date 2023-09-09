@@ -88,26 +88,25 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                                             ),
                                           ),
                                           const SizedBox(width: 15,),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(userData['name'],style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),),
-                                              Container(
-                                                width: screenSize.width*0.6,
-                                                child: Text(myMessages[uidList[index]]['lastMessage'],style: TextStyle(
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(userData['name'],style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),),
+                                                Text(myMessages[uidList[index]]['lastMessage'],style: TextStyle(
                                                     fontSize: 12,
                                                     color: Colors.grey[600]
                                                 ),
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
-                                              )
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                          Expanded(child: Container()),
+                                          SizedBox(width: 10,),
                                           Text(DateFormat.jm().format(DateTime.parse(myMessages[uidList[index]]['time'])),
                                             style: const TextStyle(
                                               fontSize: 12,

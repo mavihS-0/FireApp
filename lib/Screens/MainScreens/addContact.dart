@@ -45,12 +45,14 @@ class _AddContactState extends State<AddContact> {
         phoneContacts.forEach((element) {
           String? phoneNo=element.phones?[0].value.toString().replaceAll(' ', '');
           String? name=element.displayName.toString().capitalize;
+          print(phoneNo);
           if(data.containsKey(phoneNo)){
             contactsOnApp.add({'name':name,'phone':phoneNo,'profileImg': 'assets/signup/profile.png','uid':data[phoneNo]});
           }
           else{
             contactsNotOnApp.add({'name':name,'phone':phoneNo,'profileImg': 'assets/signup/profile.png','uid':null});
           }
+
         });
       }
     }catch(e){
@@ -71,7 +73,7 @@ class _AddContactState extends State<AddContact> {
             Text('Select contact', style: TextStyle(
               fontSize: 20
             ),),
-            Text('50 contacts', style: TextStyle(
+            Text(contactsOnApp.isEmpty?'...':contactsOnApp.length.toString(), style: TextStyle(
               fontSize: 12
             ),),
           ],

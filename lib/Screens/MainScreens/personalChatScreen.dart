@@ -73,23 +73,27 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   }
 
   void onSend(String type)async{
+    setState(() {
+      _isMicEnabled=true;
+    });
     final newMessageKey = messageRef.child('messages').push();
     final messageKey = newMessageKey.key;
+    final messageText = message.text;
+    message.clear();
     newMessageKey.set({
       'sender' : FirebaseAuth.instance.currentUser?.uid,
-      'content' : message.text,
+      'content' : messageText,
       'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
       'type' : type
     });
     FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
-      'lastMessage' : message.text,
+      'lastMessage' : messageText,
       'time' : DateTime.now().toString(),
     });
     FirebaseDatabase.instance.ref('personalChatList').child(Get.arguments['friendUid']).child(FirebaseAuth.instance.currentUser!.uid).update({
-      'lastMessage' : message.text,
+      'lastMessage' : messageText,
       'time' : DateTime.now().toString(),
     });
-    message.clear();
     _scrollToBottom();
   }
 
@@ -113,59 +117,59 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
             color: Colors.blue,
             child: Row(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width*0.8,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50)
-                  ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: (){
-                            _toggleKeyboard();
-                          },
-                          icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Colors.grey[500],),
-                      ),
-                      SizedBox(width: 5,),
-                      Expanded(
-                        child: TextField(
-                          controller: message,
-                          focusNode: _textFocusNode,
-                          decoration: InputDecoration(
-                            hintText: 'Type message here...',
-                            hintStyle: TextStyle(
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                          onChanged: (value){
-                            if(value!=''){
-                              setState(() {
-                                _isMicEnabled = false;
-                              });
-                            }
-                            else{
-                              setState(() {
-                                _isMicEnabled = true;
-                              });
-                            }
-                          },
-                          onTap: (){
-                            setState(() {
-                              _isEmojiKeyboardVisible = false;
-                            });
-
-                          },
-                          onSubmitted: (value){
-                            onSend('text');
-                          },
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50)
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: (){
+                              _toggleKeyboard();
+                            },
+                            icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Colors.grey[500],),
                         ),
-                      ),
-                      SizedBox(width: 5,),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
-                      SizedBox(width: 5,),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
-                    ],
+                        SizedBox(width: 5,),
+                        Expanded(
+                          child: TextField(
+                            controller: message,
+                            focusNode: _textFocusNode,
+                            decoration: InputDecoration(
+                              hintText: 'Type message here...',
+                              hintStyle: TextStyle(
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            onChanged: (value){
+                              if(value!=''){
+                                setState(() {
+                                  _isMicEnabled = false;
+                                });
+                              }
+                              else{
+                                setState(() {
+                                  _isMicEnabled = true;
+                                });
+                              }
+                            },
+                            //maxLines: null,
+                            onTap: (){
+                              setState(() {
+                                _isEmojiKeyboardVisible = false;
+                              });
+
+                            },
+                            keyboardType: TextInputType.multiline,
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
+                        SizedBox(width: 5,),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(width: 10,),
@@ -298,7 +302,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: ListView.builder(
-                                physics: const ClampingScrollPhysics(),
+                                physics: BouncingScrollPhysics(),
                                 itemCount: messageData.length,
                                 shrinkWrap: true,
                                 //initialScrollIndex: messageData.length,
