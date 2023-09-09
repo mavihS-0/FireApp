@@ -39,7 +39,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   }
 
   _scrollToBottom() {
-    _scrollController.jumpTo(_scrollController.position.maxScrollExtent+1000);
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent+MediaQuery.of(context).size.height);
   }
 
   Map orderData(messages){
@@ -217,12 +217,17 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                               as Map<dynamic, dynamic>);
                           messageData = orderData(messageData);
                           List messageIds = messageData.keys.toList();
+                          WidgetsBinding.instance!.addPostFrameCallback((_) {
+                            _scrollController.jumpTo(
+                              _scrollController.position.maxScrollExtent,
+                            );
+                          });
                           return SizedBox(
                             height: MediaQuery.of(context).size.height*0.82,
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: ListView.builder(
-                                //physics: const ClampingScrollPhysics(),
+                                physics: const ClampingScrollPhysics(),
                                 itemCount: messageData.length,
                                 shrinkWrap: true,
                                 //initialScrollIndex: messageData.length,
