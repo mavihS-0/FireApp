@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return DefaultTabController(initialIndex: 0,length: 2, child: Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('FireAppX'),
+        title: const Text('X'),
         actions: [
           IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
           currTabIndex==0 ? customPopUpMenu('New group',(){}) : customPopUpMenu('New chat', (){}),

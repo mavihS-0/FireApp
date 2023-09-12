@@ -1,4 +1,5 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:fire_app/Utils/attachButton.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   final FocusNode _textFocusNode = FocusNode();
   bool _isEmojiKeyboardVisible = false;
   bool _isNotTyping = true;
+  bool _isAttachButtonPressed = false;
 
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
@@ -108,6 +110,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        AttachButton(containerHeight: _isAttachButtonPressed ? 90:0,),
         Container(
           padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
           height: 70,
@@ -164,9 +167,16 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                       ),
                       SizedBox(width: 5,),
                       !_isNotTyping?SizedBox():
-                      IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
+                      IconButton(
+                        onPressed: (){
+                          setState(() {
+                            _isAttachButtonPressed = !_isAttachButtonPressed;
+                          });
+                        },
+                        //focusNode: ,
+                        icon: Icon(Icons.attach_file,color: Colors.grey[500],),
+                      ),
                       SizedBox(width: 5,),
-                      !_isNotTyping?SizedBox():
                       IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
                     ],
                   ),
