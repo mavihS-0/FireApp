@@ -278,64 +278,104 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height-(56+MediaQuery.of(context).padding.top),
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Align(
-                  alignment: Alignment.topCenter,
-                  child: StreamBuilder(
-                    stream: messageRef.child('messages').orderByChild('timestamp').onValue,
-                    builder: (context, snapshot2){
-                      try{
-                        if(snapshot2.hasData){
-                          messageData = Map<dynamic, dynamic>.from(
-                              (snapshot2.data!).snapshot.value
-                              as Map<dynamic, dynamic>);
-                          messageData = orderData(messageData);
-                          List messageIds = messageData.keys.toList();
-                          WidgetsBinding.instance!.addPostFrameCallback((_) {
-                            _scrollController.jumpTo(
-                              _scrollController.position.maxScrollExtent,
-                            );
-                          });
-                          return SizedBox(
-                            height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: ListView.builder(
-                                physics: BouncingScrollPhysics(),
-                                itemCount: messageData.length,
-                                shrinkWrap: true,
-                                //initialScrollIndex: messageData.length,
-                               // itemScrollController: _scrollController,
-                                controller: _scrollController,
-                                itemBuilder: (context,index){
-                                  return Container(
-                                      padding: EdgeInsets.all(10),
-                                      child: messageData[messageIds[index]]['sender']!=myUid?
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
+              Expanded(
+                //height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
+                child: StreamBuilder(
+                  stream: messageRef.child('messages').orderByChild('timestamp').onValue,
+                  builder: (context, snapshot2){
+                    try{
+                      if(snapshot2.hasData){
+                        messageData = Map<dynamic, dynamic>.from(
+                            (snapshot2.data!).snapshot.value
+                            as Map<dynamic, dynamic>);
+                        messageData = orderData(messageData);
+                        List messageIds = messageData.keys.toList();
+
+                        WidgetsBinding.instance!.addPostFrameCallback((_) {
+                          _scrollController.jumpTo(
+                            _scrollController.position.maxScrollExtent,
+                          );
+                        });
+                        return Align(
+                          alignment: Alignment.bottomCenter,
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount: messageData.length,
+                            shrinkWrap: true,
+                            //initialScrollIndex: messageData.length,
+                            // itemScrollController: _scrollController,
+                            controller: _scrollController,
+                            itemBuilder: (context,index){
+                              return Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: messageData[messageIds[index]]['sender']!=myUid?
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: NetworkImage(recProfileImg),
+                                        radius: 15,
+                                      ),
+                                      SizedBox(width: 10,),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width*0.7,
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.withOpacity(0.3),
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.zero,
+                                              topRight: Radius.circular(10),
+                                              bottomRight:  Radius.circular(10),
+                                              bottomLeft:  Radius.circular(10)),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(recName,style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue[900],
+                                            ),),
+                                            Text(messageData[messageIds[index]]['content']),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                    color: Colors.blue[900],
+                                                    fontWeight: FontWeight.w400
+                                                ),),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ):
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
-                                          CircleAvatar(
-                                            backgroundImage: NetworkImage(recProfileImg),
-                                            radius: 15,
-                                          ),
-                                          SizedBox(width: 10,),
                                           Container(
                                             width: MediaQuery.of(context).size.width*0.7,
                                             padding: EdgeInsets.all(10),
                                             decoration: BoxDecoration(
                                               color: Colors.blue.withOpacity(0.3),
                                               borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.zero,
-                                                  topRight: Radius.circular(10),
+                                                  topLeft: Radius.circular(10),
+                                                  topRight: Radius.zero,
                                                   bottomRight:  Radius.circular(10),
                                                   bottomLeft:  Radius.circular(10)),
                                             ),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(recName,style: TextStyle(
+                                                Text(myName,style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.blue[900],
                                                 ),),
@@ -351,74 +391,33 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                 )
                                               ],
                                             ),
+                                          ),
+                                          SizedBox(height: 10,),
+                                          CircleAvatar(
+                                            backgroundImage: NetworkImage(recProfileImg),
+                                            radius: 10,
                                           )
                                         ],
-                                      ):
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.7,
-                                                padding: EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue.withOpacity(0.3),
-                                                  borderRadius: BorderRadius.only(
-                                                      topLeft: Radius.circular(10),
-                                                      topRight: Radius.zero,
-                                                      bottomRight:  Radius.circular(10),
-                                                      bottomLeft:  Radius.circular(10)),
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(myName,style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.blue[900],
-                                                    ),),
-                                                    Text(messageData[messageIds[index]]['content']),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
-                                                            color: Colors.blue[900],
-                                                            fontWeight: FontWeight.w400
-                                                        ),),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(height: 10,),
-                                              CircleAvatar(
-                                                backgroundImage: NetworkImage(recProfileImg),
-                                                radius: 10,
-                                              )
-                                            ],
-                                          ),
+                                      ),
 
-                                        ],
-                                      )
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                        else{
-                          return Container(
-                            child: Text('...'),
-                          );
-                        }
-                      }catch(e){
-                        print(e.toString());
-                        return const NoDataHomePage(caption: 'Start a conversation');
+                                    ],
+                                  )
+                              );
+                            },
+                          ),
+                        );
                       }
-                    },
-                  )
+                      else{
+                        return Container(
+                          child: Text('...'),
+                        );
+                      }
+                    }catch(e){
+                      print(e.toString());
+                      return const NoDataHomePage(caption: 'Start a conversation');
+                    }
+                  },
+                ),
               ),
               chatInput(),
 
