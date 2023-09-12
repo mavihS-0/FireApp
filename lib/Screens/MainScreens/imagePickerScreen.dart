@@ -31,6 +31,13 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pickImages();
+  }
+
   Widget _buildImagePreview() {
     return PageView.builder(
       itemCount: _selectedImages.length,

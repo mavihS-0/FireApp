@@ -39,10 +39,7 @@ class AttachButton extends StatelessWidget {
           CustomAttachButton((){}, Icons.file_copy,Colors.purple),
           CustomAttachButton((){}, Icons.audiotrack,Colors.orange),
           CustomAttachButton(()async{
-            final images = await ImagePicker().pickMultiImage();
-            Get.to(()=>ImagePickerScreen(),arguments: {
-              'images' : images
-            });
+            Get.to(()=>ImagePickerScreen());
           }, Icons.photo_library_sharp,Colors.pinkAccent),
         ],
       ),
