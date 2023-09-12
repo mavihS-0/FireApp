@@ -30,7 +30,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   Map messageData = {};
   final FocusNode _textFocusNode = FocusNode();
   bool _isEmojiKeyboardVisible = false;
-  bool _isMicEnabled = true;
+  bool _isNotTyping = true;
 
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
@@ -74,7 +74,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
 
   void onSend(String type)async{
     setState(() {
-      _isMicEnabled=true;
+      _isNotTyping=true;
     });
     final newMessageKey = messageRef.child('messages').push();
     final messageKey = newMessageKey.key;
@@ -105,101 +105,100 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   }
 
   Widget chatInput() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
-            height: 70,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.blue,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(50)
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: (){
-                              _toggleKeyboard();
-                            },
-                            icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Colors.grey[500],),
-                        ),
-                        SizedBox(width: 5,),
-                        Expanded(
-                          child: TextField(
-                            controller: message,
-                            focusNode: _textFocusNode,
-                            decoration: InputDecoration(
-                              hintText: 'Type message here...',
-                              hintStyle: TextStyle(
-                                color: Colors.grey[500],
-                              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
+          height: 70,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.blue,
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50)
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          _toggleKeyboard();
+                        },
+                        icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Colors.grey[500],),
+                      ),
+                      SizedBox(width: 5,),
+                      Expanded(
+                        child: TextField(
+                          controller: message,
+                          focusNode: _textFocusNode,
+                          decoration: InputDecoration(
+                            hintText: 'Type message here...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[500],
                             ),
-                            onChanged: (value){
-                              if(value!=''){
-                                setState(() {
-                                  _isMicEnabled = false;
-                                });
-                              }
-                              else{
-                                setState(() {
-                                  _isMicEnabled = true;
-                                });
-                              }
-                            },
-                            //maxLines: null,
-                            onTap: (){
-                              setState(() {
-                                _isEmojiKeyboardVisible = false;
-                              });
-
-                            },
-                            keyboardType: TextInputType.multiline,
                           ),
+                          onChanged: (value){
+                            if(value!=''){
+                              setState(() {
+                                _isNotTyping = false;
+                              });
+                            }
+                            else{
+                              setState(() {
+                                _isNotTyping = true;
+                              });
+                            }
+                          },
+                          //maxLines: null,
+                          onTap: (){
+                            setState(() {
+                              _isEmojiKeyboardVisible = false;
+                            });
+
+                          },
+                          keyboardType: TextInputType.multiline,
                         ),
-                        SizedBox(width: 5,),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
-                        SizedBox(width: 5,),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 5,),
+                      !_isNotTyping?SizedBox():
+                      IconButton(onPressed: (){}, icon: Icon(Icons.attach_file,color: Colors.grey[500],)),
+                      SizedBox(width: 5,),
+                      !_isNotTyping?SizedBox():
+                      IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
+                    ],
                   ),
                 ),
-                SizedBox(width: 10,),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: IconButton(
-                    icon: Icon(_isMicEnabled?Icons.mic:Icons.send,color: Colors.blue,),
-                    onPressed: (){
-                      if(!_isMicEnabled){
-                        onSend('text');
-                      }
-                    },
-                  ),
-                  radius: 30,
-                )
-              ],
+              ),
+              SizedBox(width: 10,),
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  icon: Icon(_isNotTyping?Icons.mic:Icons.send,color: Colors.blue,),
+                  onPressed: (){
+                    if(!_isNotTyping){
+                      onSend('text');
+                    }
+                  },
+                ),
+                radius: 30,
+              )
+            ],
+          ),
+        ),
+        _isEmojiKeyboardVisible ? Container(
+          height: 270,
+          child: EmojiPicker(
+            onEmojiSelected: _onEmojiSelected,
+            config: Config(
+              columns: 7,
+              emojiSizeMax: 32.0,
             ),
           ),
-          _isEmojiKeyboardVisible ? Container(
-            height: 270,
-            child: EmojiPicker(
-              onEmojiSelected: _onEmojiSelected,
-              config: Config(
-                columns: 7,
-                emojiSizeMax: 32.0,
-              ),
-            ),
-          ) :SizedBox(),
-        ],
-      ),
+        ) :SizedBox(),
+      ],
     );
   }
 
