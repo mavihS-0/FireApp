@@ -20,6 +20,16 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
 
   DatabaseReference databaseRef = FirebaseDatabase.instance.ref('personalChatList/${FirebaseAuth.instance.currentUser?.uid}');
   DatabaseReference userDataRef = FirebaseDatabase.instance.ref('users');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    database.setPersistenceEnabled(true);
+    database.setPersistenceCacheSizeBytes(10000000);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

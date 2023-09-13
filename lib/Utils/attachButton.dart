@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/filePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/imagePickerScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,9 @@ class AttachButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          CustomAttachButton((){}, Icons.file_copy,Colors.purple),
+          CustomAttachButton((){
+            Get.to(()=>FilePickerScreen());
+          }, Icons.file_copy,Colors.purple),
           CustomAttachButton((){}, Icons.audiotrack,Colors.orange),
           CustomAttachButton(()async{
             Get.to(()=>ImagePickerScreen());

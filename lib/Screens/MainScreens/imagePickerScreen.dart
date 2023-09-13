@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -21,25 +22,37 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   List<ImageData> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
   FocusNode _captionFocusNode = FocusNode();
+  List <TextEditingController> _captionControllers = <TextEditingController>[];
 
   Future<void> _pickImages() async {
     final images = await _picker.pickMultiImage();
     if (images != null) {
       setState(() {
-        _selectedImages.addAll(images.map((image) => ImageData(imagePath: image.path)));
+        _selectedImages.addAll(images.map((image)
+        {
+          _captionControllers.add(TextEditingController());
+          return ImageData(imagePath: image.path);
+        }));
       });
     }
   }
+
+  // Future<void> _sendImages() async{
+  //   final storageRef = FirebaseStorage.instance.ref('personalChatData').child();
+  //
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _pickImages();
+    _captionControllers.add(TextEditingController());
   }
 
   Widget _buildImagePreview() {
     return PageView.builder(
+      reverse: false,
       itemCount: _selectedImages.length,
       itemBuilder: (context, index) {
         final imageData = _selectedImages[index];
@@ -95,6 +108,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 ),
                 child: TextField(
                   focusNode: _captionFocusNode,
+                  controller: _captionControllers[index],
                   onChanged: (text) {
                     setState(() {
                       imageData.caption = text;
@@ -200,4 +214,12 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _captionControllers.forEach((element) {
+      element.dispose();
+    });
+  }
 }

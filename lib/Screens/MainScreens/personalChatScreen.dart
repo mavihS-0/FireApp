@@ -1,4 +1,5 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Utils/attachButton.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../Utils/constants.dart';
 
@@ -177,7 +179,11 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                         icon: Icon(Icons.attach_file,color: Colors.grey[500],),
                       ),
                       SizedBox(width: 5,),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
+                      IconButton(
+                          onPressed: (){
+                            Get.to(()=>CameraImagePickerScreen());
+                          },
+                          icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
                     ],
                   ),
                 ),
