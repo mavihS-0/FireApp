@@ -1,9 +1,12 @@
+import 'package:fire_app/Screens/MainScreens/personalChatScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:get/get.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../Utils/constants.dart';
 
 class ImageData {
@@ -23,6 +26,8 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   final ImagePicker _picker = ImagePicker();
   FocusNode _captionFocusNode = FocusNode();
   List <TextEditingController> _captionControllers = <TextEditingController>[];
+  DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
+  final storageRef = FirebaseStorage.instance.ref('personalChatData').child(Get.arguments['pid']);
 
   Future<void> _pickImages() async {
     final images = await _picker.pickMultiImage();
@@ -37,10 +42,38 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  // Future<void> _sendImages() async{
-  //   final storageRef = FirebaseStorage.instance.ref('personalChatData').child();
-  //
-  // }
+  void _sendImages() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context)=> Center(child: SpinKitRing(color: Constants.priColor)),
+    );
+    _selectedImages.forEach((element) async {
+      final newMessageKey = messageRef.child('messages').push();
+      final messageKey = newMessageKey.key;
+      final task = await storageRef.child("Images").child(messageKey!).putFile(File(element.imagePath));
+      String imageURL = await task.ref.getDownloadURL();
+      newMessageKey.set({
+        'sender' : FirebaseAuth.instance.currentUser?.uid,
+        'content' : {
+          'imageURL' : imageURL,
+          'caption' : element.caption,
+        },
+        'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
+        'type' : 'image',
+      });
+      FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
+        'lastMessage' : '[image] ${element.caption}',
+        'time' : DateTime.now().toString(),
+      });
+      FirebaseDatabase.instance.ref('personalChatList').child(Get.arguments['friendUid']).child(FirebaseAuth.instance.currentUser!.uid).update({
+        'lastMessage' : '[image] ${element.caption}',
+        'time' : DateTime.now().toString(),
+      });
+    });
+    Get.back();
+    Get.back();
+  }
 
   @override
   void initState() {
@@ -193,10 +226,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                           // Send _selectedImages and their captions
                           // Implement your send logic here
                           // For this example, we'll just print the selectedImages and captions
-                          _selectedImages.forEach((imageData) {
-                            print('Image Path: ${imageData.imagePath}');
-                            print('Caption: ${imageData.caption}');
-                          });
+                          _sendImages();
                         },
                         child: Text('Send Images',style: TextStyle(color: Constants.secColor),),
                         style: ButtonStyle(

@@ -30,7 +30,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   String myName = '...';
   final ScrollController _scrollController = ScrollController();
   bool emojiKeyboard = false;
-  Map messageData = {};
+  Map <dynamic,dynamic> messageData = {};
   final FocusNode _textFocusNode = FocusNode();
   bool _isEmojiKeyboardVisible = false;
   bool _isNotTyping = true;
@@ -354,7 +354,20 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                               fontWeight: FontWeight.bold,
                                               color: Colors.blue[900],
                                             ),),
-                                            Text(messageData[messageIds[index]]['content']),
+                                            messageData[messageIds[index]]['type']=='text'?
+                                            Text(messageData[messageIds[index]]['content']):
+                                            messageData[messageIds[index]]['type']=='image'?
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(40),
+                                                  child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
+                                                ),
+                                                Text(messageData[messageIds[index]]['content']['caption'])
+                                              ],
+                                            ) : SizedBox(),
+
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
@@ -394,7 +407,21 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.blue[900],
                                                 ),),
-                                                Text(messageData[messageIds[index]]['content']),
+                                                messageData[messageIds[index]]['type']=='text'?
+                                                Text(messageData[messageIds[index]]['content']):
+                                                messageData[messageIds[index]]['type']=='image'?
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(height: 5,),
+                                                    ClipRRect(
+                                                      child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
+                                                      borderRadius: BorderRadius.circular(15),
+                                                    ),
+                                                    SizedBox(height: 5,),
+                                                    Text(messageData[messageIds[index]]['content']['caption'])
+                                                  ],
+                                                ) : SizedBox(),
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.end,
                                                   children: [
