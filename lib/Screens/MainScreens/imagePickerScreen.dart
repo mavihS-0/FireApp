@@ -8,13 +8,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../Utils/constants.dart';
-
-class ImageData {
-  final String imagePath;
-  String caption;
-
-  ImageData({required this.imagePath, this.caption = ''});
-}
+import '../../Utils/imageData.dart';
 
 class ImagePickerScreen extends StatefulWidget {
   @override
@@ -42,7 +36,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
-  void _sendImages() {
+  Future<void> _sendImages() async{
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -51,24 +45,16 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     _selectedImages.forEach((element) async {
       final newMessageKey = messageRef.child('messages').push();
       final messageKey = newMessageKey.key;
-      final task = await storageRef.child("Images").child(messageKey!).putFile(File(element.imagePath));
-      String imageURL = await task.ref.getDownloadURL();
+      // final task = await storageRef.child("Images").child(messageKey!).putFile(File(element.imagePath));
+      // String imageURL = await task.ref.getDownloadURL();
       newMessageKey.set({
         'sender' : FirebaseAuth.instance.currentUser?.uid,
         'content' : {
-          'imageURL' : imageURL,
+          'imageURL' : element.imagePath,
           'caption' : element.caption,
         },
         'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
-        'type' : 'image',
-      });
-      FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
-        'lastMessage' : '[image] ${element.caption}',
-        'time' : DateTime.now().toString(),
-      });
-      FirebaseDatabase.instance.ref('personalChatList').child(Get.arguments['friendUid']).child(FirebaseAuth.instance.currentUser!.uid).update({
-        'lastMessage' : '[image] ${element.caption}',
-        'time' : DateTime.now().toString(),
+        'type' : 'imageUploading',
       });
     });
     Get.back();

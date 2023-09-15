@@ -1,6 +1,8 @@
+import 'dart:ui';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
-import 'package:fire_app/Utils/attachButton.dart';
+import 'package:fire_app/Screens/MainScreens/test.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +13,11 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../Utils/constants.dart';
+import '../../Utils/customAttachButtonType.dart';
+import '../../Utils/uploadingImageBuilder.dart';
+import 'filePickerScreen.dart';
+import 'imagePickerScreen.dart';
+import 'dart:io';
 
 class PersonalChatScreen extends StatefulWidget {
   const PersonalChatScreen({Key? key}) : super(key: key);
@@ -45,8 +52,57 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     });
   }
 
-  _scrollToBottom() {
-    _scrollController.jumpTo(_scrollController.position.maxScrollExtent+MediaQuery.of(context).size.height);
+  // _scrollToBottom() {
+  //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent+MediaQuery.of(context).size.height);
+  // }
+
+  Future <void> uploadingImages() async{
+    messageData.forEach((key, value) {
+      if(value['type']=='imageUploading'){
+
+      }
+    });
+  }
+
+
+  Widget AttachButton(double containerHeight) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
+      height: containerHeight,
+      decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          CustomAttachButton((){
+            setState(() {
+              _isAttachButtonPressed = false;
+            });
+            Get.to(()=>FilePickerScreen());
+          }, Icons.file_copy,Colors.purple),
+          CustomAttachButton((){
+            setState(() {
+              _isAttachButtonPressed = false;
+            });
+            Get.to(()=>ImageUploadScreen(selectedImages: [],));
+          }, Icons.audiotrack,Colors.orange),
+          CustomAttachButton(()async{
+            setState(() {
+              _isAttachButtonPressed = false;
+            });
+            Get.to(()=>ImagePickerScreen(),arguments: {
+              'pid' : Get.arguments['pid'],
+              'friendUid' : Get.arguments['friendUid'],
+            });
+          }, Icons.photo_library_sharp,Colors.pinkAccent),
+        ],
+      ),
+    );
   }
 
   Map orderData(messages){
@@ -84,21 +140,21 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     final messageKey = newMessageKey.key;
     final messageText = message.text;
     message.clear();
-    newMessageKey.set({
+    await newMessageKey.set({
       'sender' : FirebaseAuth.instance.currentUser?.uid,
       'content' : messageText,
       'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
       'type' : type
     });
-    FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
+    await FirebaseDatabase.instance.ref('personalChatList').child(FirebaseAuth.instance.currentUser!.uid).child(Get.arguments['friendUid']).update({
       'lastMessage' : messageText,
       'time' : DateTime.now().toString(),
     });
-    FirebaseDatabase.instance.ref('personalChatList').child(Get.arguments['friendUid']).child(FirebaseAuth.instance.currentUser!.uid).update({
+    await FirebaseDatabase.instance.ref('personalChatList').child(Get.arguments['friendUid']).child(FirebaseAuth.instance.currentUser!.uid).update({
       'lastMessage' : messageText,
       'time' : DateTime.now().toString(),
     });
-    _scrollToBottom();
+    //_scrollToBottom();
   }
 
   @override
@@ -112,7 +168,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        AttachButton(containerHeight: _isAttachButtonPressed ? 90:0,),
+        AttachButton(_isAttachButtonPressed ? 90:0,),
         Container(
           padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
           height: 70,
@@ -157,7 +213,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                               });
                             }
                           },
-                          //maxLines: null,
+                          maxLines: null,
                           onTap: (){
                             setState(() {
                               _isEmojiKeyboardVisible = false;
@@ -290,180 +346,229 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
           }),
         ],
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height-(56+MediaQuery.of(context).padding.top),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                //height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
-                child: StreamBuilder(
-                  stream: messageRef.child('messages').orderByChild('timestamp').onValue,
-                  builder: (context, snapshot2){
-                    try{
-                      if(snapshot2.hasData){
-                        messageData = Map<dynamic, dynamic>.from(
-                            (snapshot2.data!).snapshot.value
-                            as Map<dynamic, dynamic>);
-                        messageData = orderData(messageData);
-                        List messageIds = messageData.keys.toList();
-
-                        WidgetsBinding.instance!.addPostFrameCallback((_) {
-                          _scrollController.jumpTo(
-                            _scrollController.position.maxScrollExtent,
-                          );
-                        });
-                        return Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            itemCount: messageData.length,
-                            shrinkWrap: true,
-                            //initialScrollIndex: messageData.length,
-                            // itemScrollController: _scrollController,
-                            controller: _scrollController,
-                            itemBuilder: (context,index){
-                              return Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: messageData[messageIds[index]]['sender']!=myUid?
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: NetworkImage(recProfileImg),
-                                        radius: 15,
-                                      ),
-                                      SizedBox(width: 10,),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.7,
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue.withOpacity(0.3),
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.zero,
-                                              topRight: Radius.circular(10),
-                                              bottomRight:  Radius.circular(10),
-                                              bottomLeft:  Radius.circular(10)),
+      body: GestureDetector(
+        onTap: (){
+          setState(() {
+            _isAttachButtonPressed = false;
+          });
+        },
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height-(56+MediaQuery.of(context).padding.top),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  //height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
+                  child: StreamBuilder(
+                    stream: messageRef.child('messages').orderByChild('timestamp').limitToLast(10).onValue,
+                    builder: (context, snapshot2){
+                      try{
+                        if(snapshot2.hasData){
+                          messageData = Map<dynamic, dynamic>.from(
+                              (snapshot2.data!).snapshot.value
+                              as Map<dynamic, dynamic>);
+                          messageData = orderData(messageData);
+                          List messageIds = messageData.keys.toList().reversed.toList();
+                          // WidgetsBinding.instance!.addPostFrameCallback((_) {
+                          //   _scrollController.jumpTo(
+                          //     _scrollController.position.maxScrollExtent,
+                          //   );
+                          // });
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ListView.builder(
+                              //physics: NeverScrollableScrollPhysics(),
+                              itemCount: messageData.length,
+                              shrinkWrap: true,
+                              reverse: true,
+                              //initialScrollIndex: messageData.length,
+                              // itemScrollController: _scrollController,
+                              //controller: _scrollController,
+                              itemBuilder: (context,index){
+                                return Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: messageData[messageIds[index]]['sender']!=myUid?
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(recProfileImg),
+                                          radius: 15,
                                         ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(recName,style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blue[900],
-                                            ),),
-                                            messageData[messageIds[index]]['type']=='text'?
-                                            Text(messageData[messageIds[index]]['content']):
-                                            messageData[messageIds[index]]['type']=='image'?
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(40),
-                                                  child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
-                                                ),
-                                                Text(messageData[messageIds[index]]['content']['caption'])
-                                              ],
-                                            ) : SizedBox(),
+                                        SizedBox(width: 10,),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width*0.7,
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue.withOpacity(0.3),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.zero,
+                                                topRight: Radius.circular(10),
+                                                bottomRight:  Radius.circular(10),
+                                                bottomLeft:  Radius.circular(10)),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(recName,style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blue[900],
+                                              ),),
+                                              messageData[messageIds[index]]['type']=='text'?
+                                              Text(messageData[messageIds[index]]['content']):
+                                              messageData[messageIds[index]]['type']=='image'?
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(height: 5,),
+                                                  ClipRRect(
+                                                    child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
+                                                    borderRadius: BorderRadius.circular(15),
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(messageData[messageIds[index]]['content']['caption'])
+                                                ],
+                                              ) :
+                                              messageData[messageIds[index]]['type']=='imageUploading'?
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(height: 5,),
+                                                  Stack(
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        child: Stack(
+                                                          children: [
+                                                            Container(
+                                                                height: 200,
+                                                                width: 200,
+                                                                color: Colors.black.withOpacity(0.4)
+                                                            ),
+                                                            Positioned.fill(
+                                                              child: BackdropFilter(
+                                                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                                                child: const SizedBox(),
+                                                              ),
+                                                            ),
+                                                            Positioned.fill(
+                                                              child: Center(
+                                                                child: CircularProgressIndicator(
+                                                                  color: Constants.priColor,
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
 
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(messageData[messageIds[index]]['content']['caption'])
+                                                ],
+                                              ): SizedBox(),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                      color: Colors.blue[900],
+                                                      fontWeight: FontWeight.w400
+                                                  ),),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ):
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: MediaQuery.of(context).size.width*0.7,
+                                              padding: EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue.withOpacity(0.3),
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(10),
+                                                    topRight: Radius.zero,
+                                                    bottomRight:  Radius.circular(10),
+                                                    bottomLeft:  Radius.circular(10)),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(myName,style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
                                                     color: Colors.blue[900],
-                                                    fontWeight: FontWeight.w400
-                                                ),),
-                                              ],
+                                                  ),),
+                                                  messageData[messageIds[index]]['type']=='text'?
+                                                  Text(messageData[messageIds[index]]['content']):
+                                                  messageData[messageIds[index]]['type']=='image'?
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(height: 5,),
+                                                      ClipRRect(
+                                                        child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
+                                                        borderRadius: BorderRadius.circular(15),
+                                                      ),
+                                                      SizedBox(height: 5,),
+                                                      Text(messageData[messageIds[index]]['content']['caption'])
+                                                    ],
+                                                  ) :
+                                                  messageData[messageIds[index]]['type']=='imageUploading'?
+                                                  UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) : SizedBox(),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: [
+                                                      Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                          color: Colors.blue[900],
+                                                          fontWeight: FontWeight.w400
+                                                      ),),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 10,),
+                                            CircleAvatar(
+                                              backgroundImage: NetworkImage(recProfileImg),
+                                              radius: 10,
                                             )
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ):
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width*0.7,
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.withOpacity(0.3),
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  topRight: Radius.zero,
-                                                  bottomRight:  Radius.circular(10),
-                                                  bottomLeft:  Radius.circular(10)),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(myName,style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blue[900],
-                                                ),),
-                                                messageData[messageIds[index]]['type']=='text'?
-                                                Text(messageData[messageIds[index]]['content']):
-                                                messageData[messageIds[index]]['type']=='image'?
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(height: 5,),
-                                                    ClipRRect(
-                                                      child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
-                                                      borderRadius: BorderRadius.circular(15),
-                                                    ),
-                                                    SizedBox(height: 5,),
-                                                    Text(messageData[messageIds[index]]['content']['caption'])
-                                                  ],
-                                                ) : SizedBox(),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
-                                                        color: Colors.blue[900],
-                                                        fontWeight: FontWeight.w400
-                                                    ),),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(height: 10,),
-                                          CircleAvatar(
-                                            backgroundImage: NetworkImage(recProfileImg),
-                                            radius: 10,
-                                          )
-                                        ],
-                                      ),
 
-                                    ],
-                                  )
-                              );
-                            },
-                          ),
-                        );
+                                      ],
+                                    )
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        else{
+                          return Container(
+                            child: Text('...'),
+                          );
+                        }
+                      }catch(e){
+                        print(e.toString());
+                        return const NoDataHomePage(caption: 'Start a conversation');
                       }
-                      else{
-                        return Container(
-                          child: Text('...'),
-                        );
-                      }
-                    }catch(e){
-                      print(e.toString());
-                      return const NoDataHomePage(caption: 'Start a conversation');
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ),
-              chatInput(),
+                chatInput(),
 
-            ],
+              ],
+            ),
           ),
         ),
       )
