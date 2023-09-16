@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
+import 'package:fire_app/Utils/chatScreenImageBuilder.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -512,18 +513,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   messageData[messageIds[index]]['type']=='text'?
                                                   Text(messageData[messageIds[index]]['content']):
                                                   messageData[messageIds[index]]['type']=='image'?
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(height: 5,),
-                                                      ClipRRect(
-                                                        child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
-                                                        borderRadius: BorderRadius.circular(15),
-                                                      ),
-                                                      SizedBox(height: 5,),
-                                                      Text(messageData[messageIds[index]]['content']['caption'])
-                                                    ],
-                                                  ) :
+                                                  ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
                                                   messageData[messageIds[index]]['type']=='imageUploading'?
                                                   UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) : SizedBox(),
                                                   Row(

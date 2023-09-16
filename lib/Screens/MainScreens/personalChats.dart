@@ -25,9 +25,6 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
   void initState() {
     // TODO: implement initState
     super.initState();
-    FirebaseDatabase database = FirebaseDatabase.instance;
-    database.setPersistenceEnabled(true);
-    database.setPersistenceCacheSizeBytes(10000000);
   }
 
   @override

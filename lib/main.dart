@@ -2,11 +2,14 @@ import 'package:fire_app/Utils/authState.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:hive/hive.dart';
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +19,12 @@ Future main() async{
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.appAttest,
   );
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  database.setPersistenceEnabled(true);
+  database.setPersistenceCacheSizeBytes(10000000);
+  final directory = await getApplicationDocumentsDirectory();
+  Hive.init(directory.path);
+  await Hive.openBox('imageData');
   runApp(const MyApp());
 }
 
