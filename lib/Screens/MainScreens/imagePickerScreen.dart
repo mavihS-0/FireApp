@@ -37,17 +37,12 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   }
 
   Future<void> _sendImages() async{
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context)=> Center(child: SpinKitRing(color: Constants.priColor)),
-    );
     _selectedImages.forEach((element) async {
       final newMessageKey = messageRef.child('messages').push();
       final messageKey = newMessageKey.key;
       // final task = await storageRef.child("Images").child(messageKey!).putFile(File(element.imagePath));
       // String imageURL = await task.ref.getDownloadURL();
-      newMessageKey.set({
+      await newMessageKey.set({
         'sender' : FirebaseAuth.instance.currentUser?.uid,
         'content' : {
           'imageURL' : element.imagePath,
@@ -57,7 +52,6 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
         'type' : 'imageUploading',
       });
     });
-    Get.back();
     Get.back();
   }
 

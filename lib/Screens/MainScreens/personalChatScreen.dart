@@ -57,13 +57,6 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent+MediaQuery.of(context).size.height);
   // }
 
-  Future <void> uploadingImages() async{
-    messageData.forEach((key, value) {
-      if(value['type']=='imageUploading'){
-
-      }
-    });
-  }
 
 
   Widget AttachButton(double containerHeight) {
@@ -362,7 +355,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                 Expanded(
                   //height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
                   child: StreamBuilder(
-                    stream: messageRef.child('messages').orderByChild('timestamp').limitToLast(10).onValue,
+                    stream: messageRef.child('messages').orderByChild('timestamp').onValue,
                     builder: (context, snapshot2){
                       try{
                         if(snapshot2.hasData){
@@ -420,18 +413,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                               messageData[messageIds[index]]['type']=='text'?
                                               Text(messageData[messageIds[index]]['content']):
                                               messageData[messageIds[index]]['type']=='image'?
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(height: 5,),
-                                                  ClipRRect(
-                                                    child: Image.network(messageData[messageIds[index]]['content']['imageURL']),
-                                                    borderRadius: BorderRadius.circular(15),
-                                                  ),
-                                                  SizedBox(height: 5,),
-                                                  Text(messageData[messageIds[index]]['content']['caption'])
-                                                ],
-                                              ) :
+                                              ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
                                               messageData[messageIds[index]]['type']=='imageUploading'?
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -25,7 +25,7 @@ class _ChatScreenImageBuilderState extends State<ChatScreenImageBuilder> {
   var imageDataBox = Hive.box('imageData');
   String _filePath='';
 
-  Future<void> getImageFile() async {
+  Future<void> getImageFile()  async {
     try{
       String filePath = await imageDataBox.get('chats')['images']['${widget.pid}+${widget.mid}'];
       setState(() {
@@ -39,7 +39,7 @@ class _ChatScreenImageBuilderState extends State<ChatScreenImageBuilder> {
       final httpsReference = FirebaseStorage.instance.refFromURL(widget.imageData['content']['imageURL']);
       final appDocDir = await getApplicationDocumentsDirectory();
       dataIndices['chatImageCounter'] += 1;
-      String filePath = '${appDocDir.path}/Media/images/FireAppIMG+${dataIndices['chatImageCounter']}';
+      String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
       final file = File(filePath);
       await httpsReference.writeToFile(file);
       presentData['images']['${widget.pid}+${widget.mid}'] = filePath;
@@ -109,6 +109,12 @@ class _ChatScreenImageBuilderState extends State<ChatScreenImageBuilder> {
         ),
         SizedBox(height: 5,),
         Text(widget.imageData['content']['caption']),
+        IconButton(onPressed: (){
+          print(_filePath);
+          String images = imageDataBox.get('chats')['images'][widget.pid+'+'+widget.mid];
+          print(widget.mid);
+          print(images);
+        }, icon: Icon(Icons.add))
       ],
     );
   }

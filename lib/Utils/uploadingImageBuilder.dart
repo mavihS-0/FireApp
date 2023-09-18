@@ -5,6 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'constants.dart';
 
 class UploadingImageBuilder extends StatefulWidget {
@@ -23,6 +25,8 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
   bool _uploading = true;
   double _uploadProgress = 0.0;
   UploadTask? _uploadTask;
+  var imageDataBox = Hive.box('imageData');
+  String _filePath='';
 
   Future<void> _uploadImage(File _imageFile, String mid,String pid, Map imageData,String friendUid) async {
     try {
@@ -41,15 +45,17 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
         await _uploadTask!.whenComplete(() async {
           String downloadUrl = await reference.getDownloadURL();
           DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(pid);
-          await messageRef.child('messages').child(mid).update({
-            'sender' : imageData['sender'],
-            'content' : {
-              'imageURL' : downloadUrl,
-              'caption' : imageData['content']['caption'],
-            },
-            'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
-            'type' : 'image',
-          });
+
+          Map presentData = await imageDataBox.get('chats');
+          Map dataIndices = await imageDataBox.get('indices');
+          //final httpsReference = FirebaseStorage.instance.refFromURL(widget.imageData['content']['imageURL']);
+          final appDocDir = await getApplicationDocumentsDirectory();
+          dataIndices['chatImageCounter'] += 1;
+          String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
+          await _imageFile.copy(filePath);
+          presentData['images']['${widget.pid}+${widget.mid}'] = filePath;
+          await imageDataBox.put('chats', presentData);
+          await imageDataBox.put('incides',dataIndices);
           await FirebaseDatabase.instance.ref('personalChatList').child(friendUid).child(FirebaseAuth.instance.currentUser!.uid).update(
               {
                 'lastMessage' : '[image] ${imageData['content']['caption']}',
@@ -60,6 +66,15 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
                 'lastMessage' : '[image] ${imageData['content']['caption']}',
                 'time' : DateTime.now().toString(),
               });
+          await messageRef.child('messages').child(mid).update({
+            'sender' : imageData['sender'],
+            'content' : {
+              'imageURL' : downloadUrl,
+              'caption' : imageData['content']['caption'],
+            },
+            'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
+            'type' : 'image',
+          });
         });
     } catch (e) {
       Get.snackbar('Error', e.toString());
