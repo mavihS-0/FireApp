@@ -11,6 +11,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../Utils/constants.dart';
@@ -34,7 +35,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
   String? myUid = FirebaseAuth.instance.currentUser?.uid;
   String recName = '...';
-  String recProfileImg ='https://firebasestorage.googleapis.com/v0/b/fireapp-a5221.appspot.com/o/new_profile.png?alt=media&token=00795532-a3e8-4088-b335-ce23ee6750d3';
+  String recProfileImg =Hive.box('imageData').get('profileIcons')[Get.arguments['pid']]['local'];
   String myName = '...';
   final ScrollController _scrollController = ScrollController();
   bool emojiKeyboard = false;
@@ -195,6 +196,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                               color: Colors.grey[500],
                             ),
                           ),
+                          onTapOutside: (event){
+                            _textFocusNode.unfocus();
+                          },
                           onChanged: (value){
                             if(value!=''){
                               setState(() {
@@ -229,6 +233,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                         icon: Icon(Icons.attach_file,color: Colors.grey[500],),
                       ),
                       SizedBox(width: 5,),
+                      !_isNotTyping?SizedBox():
                       IconButton(
                           onPressed: (){
                             Get.to(()=>CameraImagePickerScreen());
@@ -288,25 +293,17 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                     (snapshot.data! as DatabaseEvent).snapshot.value
                     as Map<dynamic, dynamic>);
                 recName = userData['name'];
-                recProfileImg = userData['profileImg'];
+                //recProfileImg = userData['profileImg'];
                 return Row(
                   children: [
                     SizedBox(width: 5,),
                     ClipOval(
-                      child: Image.network(
-                        userData['profileImg'],
+                      child: Image.file(
+                        File(recProfileImg),
                         height: 40,
                         width: 40,
                         fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return SizedBox(
-                            height: 40,
-                            width: 40,
-                            child: SpinKitRing(color: Constants.priColor,size: 25,lineWidth: 4,),
-                          );
-                        },),
+                      ),
                     ),
                     SizedBox(width: 10,),
                     Padding(
@@ -372,7 +369,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           return Align(
                             alignment: Alignment.bottomCenter,
                             child: ListView.builder(
-                              //physics: NeverScrollableScrollPhysics(),
+                              physics: BouncingScrollPhysics(),
                               itemCount: messageData.length,
                               shrinkWrap: true,
                               reverse: true,
@@ -388,7 +385,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         CircleAvatar(
-                                          backgroundImage: NetworkImage(recProfileImg),
+                                          backgroundImage: FileImage(File(recProfileImg)),
                                           radius: 15,
                                         ),
                                         SizedBox(width: 10,),
@@ -512,7 +509,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                             ),
                                             SizedBox(height: 10,),
                                             CircleAvatar(
-                                              backgroundImage: NetworkImage(recProfileImg),
+                                              backgroundImage: FileImage(File(recProfileImg)),
                                               radius: 10,
                                             )
                                           ],

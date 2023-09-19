@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:fire_app/Screens/MainScreens/personalChatScreen.dart';
+import 'package:fire_app/Utils/chatListProfileIconBuilder.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../Utils/noDataHomePage.dart';
 import 'addContact.dart';
 import 'package:intl/intl.dart';
@@ -76,22 +82,15 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                                             onTap: (){
                                               //TODO: profile icon tap function
                                               print('hellow');
+                                              // print(createFolder('Media/profileIcons'));
+                                              var data = Hive.box('imageData');
+                                              if (data.get('blah') == null) {
+                                                print('yes');
+                                              }
+                                              print(data.get('blah'));
                                             },
                                             child: ClipOval(
-                                              child: Image.network(
-                                                userData['profileImg'],
-                                                height: 50,
-                                                width: 50,
-                                                fit: BoxFit.cover,
-                                                loadingBuilder: (BuildContext context, Widget child,
-                                                    ImageChunkEvent? loadingProgress) {
-                                                  if (loadingProgress == null) return child;
-                                                  return SizedBox(
-                                                    height: 50,
-                                                    width: 50,
-                                                    child: SpinKitRing(color: Constants.priColor,size: 25,lineWidth: 4,),
-                                                  );
-                                                },),
+                                              child: ChatListProfileIconBuilder(userData: userData,pid: myMessages[uidList[index]]['pid'],),
                                             ),
                                           ),
                                           const SizedBox(width: 15,),
@@ -166,3 +165,4 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
   @override
   bool get wantKeepAlive => true;
 }
+

@@ -109,12 +109,12 @@ class _ChatScreenImageBuilderState extends State<ChatScreenImageBuilder> {
         ),
         SizedBox(height: 5,),
         Text(widget.imageData['content']['caption']),
-        IconButton(onPressed: (){
-          print(_filePath);
-          String images = imageDataBox.get('chats')['images'][widget.pid+'+'+widget.mid];
-          print(widget.mid);
-          print(images);
-        }, icon: Icon(Icons.add))
+        // IconButton(onPressed: (){
+        //   print(_filePath);
+        //   String images = imageDataBox.get('chats')['images'][widget.pid+'+'+widget.mid];
+        //   print(widget.mid);
+        //   print(images);
+        // }, icon: Icon(Icons.add))
       ],
     );
   }
