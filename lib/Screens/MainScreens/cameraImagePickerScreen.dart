@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -16,6 +19,8 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
   XFile? _capturedImage;
   final TextEditingController _captionController = TextEditingController();
   final FocusNode _captionFocusNode = FocusNode();
+  DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
+  final storageRef = FirebaseStorage.instance.ref('personalChatData').child(Get.arguments['pid']);
 
   Future<void> _captureImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.camera);
@@ -38,6 +43,24 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
   void dispose() {
     _captionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _sendImage() async{
+    if(_capturedImage != null) {
+      final newMessageKey = messageRef.child('messages').push();
+      final messageKey = newMessageKey.key;
+      await newMessageKey.set({
+        'sender' : FirebaseAuth.instance.currentUser?.uid,
+        'content' : {
+          'imageURL' : _capturedImage?.path,
+          'caption' : _captionController.text,
+        },
+        'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
+        'type' : 'imageUploading',
+      });
+      Get.back();
+    }
+
   }
 
   @override
@@ -123,7 +146,7 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
                           // Send _selectedImages and their captions
                           // Implement your send logic here
                           // For this example, we'll just print the selectedImages and captions
-                          print(_capturedImage!.path);
+                          _sendImage();
                         },
                         child: Text('Send Image',style: TextStyle(color: Constants.secColor),),
                         style: ButtonStyle(

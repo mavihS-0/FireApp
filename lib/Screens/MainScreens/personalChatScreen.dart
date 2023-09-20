@@ -78,7 +78,10 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
             setState(() {
               _isAttachButtonPressed = false;
             });
-            Get.to(()=>FilePickerScreen());
+            Get.to(()=>FilePickerScreen(),arguments: {
+              'pid' : Get.arguments['pid'],
+              'friendUid' : Get.arguments['friendUid'],
+            });
           }, Icons.file_copy,Colors.purple),
           CustomAttachButton((){
             setState(() {
@@ -236,7 +239,11 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                       !_isNotTyping?SizedBox():
                       IconButton(
                           onPressed: (){
-                            Get.to(()=>CameraImagePickerScreen());
+                            Get.to(()=>CameraImagePickerScreen(),
+                                arguments: {
+                                  'pid' : Get.arguments['pid'],
+                                  'friendUid' : Get.arguments['friendUid'],
+                                });
                           },
                           icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
                     ],
@@ -393,7 +400,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                           width: MediaQuery.of(context).size.width*0.7,
                                           padding: EdgeInsets.all(10),
                                           decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(0.3),
+                                            color: Constants.chatBubbleColor,
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.zero,
                                                 topRight: Radius.circular(10),
@@ -475,7 +482,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                               width: MediaQuery.of(context).size.width*0.7,
                                               padding: EdgeInsets.all(10),
                                               decoration: BoxDecoration(
-                                                color: Colors.blue.withOpacity(0.3),
+                                                color: Constants.chatBubbleColor,
                                                 borderRadius: BorderRadius.only(
                                                     topLeft: Radius.circular(10),
                                                     topRight: Radius.zero,

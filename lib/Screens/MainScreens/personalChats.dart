@@ -82,12 +82,6 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                                             onTap: (){
                                               //TODO: profile icon tap function
                                               print('hellow');
-                                              // print(createFolder('Media/profileIcons'));
-                                              var data = Hive.box('imageData');
-                                              if (data.get('blah') == null) {
-                                                print('yes');
-                                              }
-                                              print(data.get('blah'));
                                             },
                                             child: ClipOval(
                                               child: ChatListProfileIconBuilder(userData: userData,pid: myMessages[uidList[index]]['pid'],),
@@ -99,7 +93,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(userData['name'],style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w600,
                                                   fontSize: 16,
                                                 ),),
                                                 Text(myMessages[uidList[index]]['lastMessage'],style: TextStyle(
