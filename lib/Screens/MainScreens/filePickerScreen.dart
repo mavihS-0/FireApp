@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
@@ -13,6 +15,24 @@ class FilePickerScreen extends StatefulWidget {
 
 class _FilePickerScreenState extends State<FilePickerScreen> {
   List<PlatformFile> _selectedFiles = [];
+  DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
+
+  Future<void> _sendFiles() async{
+    _selectedFiles.forEach((element) async {
+      final newMessageKey = messageRef.child('messages').push();
+      final messageKey = newMessageKey.key;
+      await newMessageKey.set({
+        'sender' : FirebaseAuth.instance.currentUser?.uid,
+        'content' : {
+          'fileURL' : element.path,
+          'fileName' : element.name,
+        },
+        'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
+        'type' : 'fileUploading',
+      });
+    });
+    Get.back();
+  }
 
   Future<void> _pickFiles() async {
     try {
@@ -110,8 +130,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                      },
+                      onPressed: _sendFiles,
                       child: Text('Send Files',style: TextStyle(color: Constants.secColor),),
                       style: ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(Constants.priColor),
@@ -127,30 +146,3 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
     );
   }
 }
-// Scaffold(
-// appBar: AppBar(
-// title: Text('File Picker and Viewer'),
-// ),
-// body: Column(
-// children: <Widget>[
-// ElevatedButton(
-// onPressed: _pickFiles,
-// child: Text('Pick Files'),
-// ),
-// Expanded(
-// child: ListView.builder(
-// itemCount: _selectedFiles.length,
-// itemBuilder: (context, index) {
-// return ListTile(
-// title: Text(_selectedFiles[index].name),
-// trailing: IconButton(
-// icon: Icon(Icons.delete),
-// onPressed: () => _deleteFile(index),
-// ),
-// );
-// },
-// ),
-// // ),
-// // ],
-// // ),
-// // );

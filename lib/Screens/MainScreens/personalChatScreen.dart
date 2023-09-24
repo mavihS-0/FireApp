@@ -6,6 +6,7 @@ import 'package:fire_app/Screens/MainScreens/test.dart';
 import 'package:fire_app/Utils/chatScreenImageBuilder.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
+import 'package:fire_app/Utils/uploadingFileBuilder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -456,7 +457,24 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   SizedBox(height: 5,),
                                                   Text(messageData[messageIds[index]]['content']['caption'])
                                                 ],
-                                              ): SizedBox(),
+                                              ):
+                                              messageData[messageIds[index]]['type']=='file'?
+                                              Row(
+                                                children: [
+                                                  SizedBox(width: 10,),
+                                                  Expanded(child: Text(messageData[messageIds[index]]['content']['fileName'])),
+                                                  SizedBox(width: 10,),
+                                                  SizedBox(
+                                                      height: 50,
+                                                      width: 50,
+                                                      child: IconButton(
+                                                        icon: Icon(Icons.download),
+                                                        onPressed: (){
+                                                        },
+                                                      )
+                                                  )
+                                                ],
+                                              ) : SizedBox(),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 children: [
@@ -501,7 +519,26 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   messageData[messageIds[index]]['type']=='image'?
                                                   ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
                                                   messageData[messageIds[index]]['type']=='imageUploading'?
-                                                  UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) : SizedBox(),
+                                                  UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) :
+                                                  messageData[messageIds[index]]['type']=='fileUploading'?
+                                                  UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
+                                                  messageData[messageIds[index]]['type']=='file'?
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(width: 10,),
+                                                      Expanded(child: Text(messageData[messageIds[index]]['content']['fileName'])),
+                                                      SizedBox(width: 10,),
+                                                      SizedBox(
+                                                        height: 50,
+                                                        width: 50,
+                                                        child: IconButton(
+                                                          icon: Icon(Icons.download),
+                                                          onPressed: (){
+                                                          },
+                                                        )
+                                                      )
+                                                    ],
+                                                  ) : SizedBox(),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
