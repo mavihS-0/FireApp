@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/SettingsScreens/settingsScreen.dart';
 import 'package:fire_app/Screens/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ Widget customPopUpMenu(String addNew, Function addNewMethod) {
         }
         else if(value == 'New chat'){
           Get.to(()=>AddContact());
+        }
+        else if(value == 'Settings'){
+          Get.to(()=>SettingsScreen());
         }
       },
       itemBuilder: (context){
