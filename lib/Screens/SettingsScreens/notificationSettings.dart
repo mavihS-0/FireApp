@@ -21,19 +21,23 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       ),
       body: ListView(
         children: [
+          SizedBox(height: 10,),
           ListTile(
             title: Text('New message notifications'),
-            trailing: Switch(
-              onChanged: (switchState){
-                setState(() {
-                  newMessageSwitch = switchState;
-                });
-              },
-              value: newMessageSwitch,
-              activeColor: Constants.secColor,
-              activeTrackColor: Constants.priColor,
-              inactiveThumbColor: Constants.priColor,
-              inactiveTrackColor: Constants.secColor,
+            trailing: Transform.scale(
+              scale: 0.8,
+              child: Switch(
+                onChanged: (switchState){
+                  setState(() {
+                    newMessageSwitch = switchState;
+                  });
+                },
+                value: newMessageSwitch,
+                activeColor: Constants.secColor,
+                activeTrackColor: Constants.priColor,
+                inactiveThumbColor: Constants.priColor,
+                inactiveTrackColor: Constants.secColor,
+              ),
             ),
           ),
           Divider(),
@@ -43,17 +47,20 @@ class _NotificationSettingsState extends State<NotificationSettings> {
           Divider(),
           ListTile(
             title: Text('Vibrate'),
-            trailing: Switch(
-              onChanged: (switchState){
-                setState(() {
-                  vibrateSwitch = switchState;
-                });
-              },
-              value: vibrateSwitch,
-              activeColor: Constants.secColor,
-              activeTrackColor: Constants.priColor,
-              inactiveThumbColor: Constants.priColor,
-              inactiveTrackColor: Constants.secColor,
+            trailing: Transform.scale(
+              scale: 0.8,
+              child: Switch(
+                onChanged: (switchState){
+                  setState(() {
+                    vibrateSwitch = switchState;
+                  });
+                },
+                value: vibrateSwitch,
+                activeColor: Constants.secColor,
+                activeTrackColor: Constants.priColor,
+                inactiveThumbColor: Constants.priColor,
+                inactiveTrackColor: Constants.secColor,
+              ),
             ),
           ),
           Divider(),

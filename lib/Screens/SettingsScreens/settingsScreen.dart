@@ -1,4 +1,8 @@
+import 'package:fire_app/Screens/SettingsScreens/aboutScreen.dart';
+import 'package:fire_app/Screens/SettingsScreens/chatSettings.dart';
 import 'package:fire_app/Screens/SettingsScreens/notificationSettings.dart';
+import 'package:fire_app/Screens/SettingsScreens/privacyPolicy.dart';
+import 'package:fire_app/Screens/SettingsScreens/securitySettings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,16 +20,24 @@ class SettingsScreen extends StatelessWidget {
       },
       {'title' : 'Security',
         'leadingIcon' : Icon(Icons.security),
-        'onPress' : (){}},
+        'onPress' : (){
+            Get.to(()=>SecuritySettings());
+        }},
       {'title' : 'Chat',
         'leadingIcon' : Icon(Icons.chat),
-        'onPress' : (){}},
+        'onPress' : (){
+            Get.to(()=>ChatSettings());
+        }},
       {'title' : 'Privacy Policy',
         'leadingIcon' : Icon(Icons.privacy_tip_sharp),
-        'onPress' : (){}},
+        'onPress' : (){
+            Get.to(()=>PrivacyPolicy());
+        }},
       {'title' : 'About',
         'leadingIcon' : Icon(Icons.info),
-        'onPress' : (){}},
+        'onPress' : (){
+            Get.to(()=>AboutScreen());
+        }},
       {'title' : 'Delete Account',
         'leadingIcon' : Icon(Icons.notifications),
         'onPress' : (){}},

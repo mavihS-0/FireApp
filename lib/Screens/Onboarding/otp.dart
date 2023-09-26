@@ -1,7 +1,7 @@
 import 'package:fire_app/Screens/MainScreens/homeScreen.dart';
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
 import 'package:fire_app/Screens/Onboarding/signup.dart';
-import 'package:fire_app/Utils/custom_button.dart';
+import 'package:fire_app/Utils/customButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
