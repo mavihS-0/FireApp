@@ -73,6 +73,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Constants.secColor,
         ),
         useMaterial3: true,
+        dialogBackgroundColor: Constants.secColor
       ),
       home: AnimatedSplashScreen(
         duration: 2000,

@@ -83,16 +83,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/flash_screen.png
-   - assets/splash_pages/page1.png
-   - assets/splash_pages/page2.png
-   - assets/splash_pages/page3.png
-   - assets/signup/number.png
-   - assets/signup/otp.png
-   - assets/signup/profile.png
-   - assets/signup/loading.png
-   - assets/home_page/no_chat.png
-   - assets/home_page/add_chat.png
+   - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
