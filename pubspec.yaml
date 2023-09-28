@@ -57,6 +57,7 @@ dependencies:
   hive_flutter: ^1.1.0
   file_saver: ^0.2.8
   font_awesome_flutter: ^10.5.0
+  url_launcher: ^6.1.14
 
 
 dev_dependencies:
@@ -84,6 +85,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - assets/
+   - assets/home_page/
+   - assets/signup/
+   - assets/splash_pages/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
