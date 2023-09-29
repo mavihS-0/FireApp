@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
+import 'package:fire_app/Utils/chatScreenFileWidget.dart';
 import 'package:fire_app/Utils/chatScreenImageBuilder.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
@@ -459,22 +460,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                 ],
                                               ):
                                               messageData[messageIds[index]]['type']=='file'?
-                                              Row(
-                                                children: [
-                                                  SizedBox(width: 10,),
-                                                  Expanded(child: Text(messageData[messageIds[index]]['content']['fileName'])),
-                                                  SizedBox(width: 10,),
-                                                  SizedBox(
-                                                      height: 50,
-                                                      width: 50,
-                                                      child: IconButton(
-                                                        icon: Icon(Icons.download),
-                                                        onPressed: (){
-                                                        },
-                                                      )
-                                                  )
-                                                ],
-                                              ) : SizedBox(),
+                                              ChatScreenFileWidget(fileData: messageData[messageIds[index]]) : SizedBox(),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 children: [
@@ -523,22 +509,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   messageData[messageIds[index]]['type']=='fileUploading'?
                                                   UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
                                                   messageData[messageIds[index]]['type']=='file'?
-                                                  Row(
-                                                    children: [
-                                                      SizedBox(width: 10,),
-                                                      Expanded(child: Text(messageData[messageIds[index]]['content']['fileName'])),
-                                                      SizedBox(width: 10,),
-                                                      SizedBox(
-                                                        height: 50,
-                                                        width: 50,
-                                                        child: IconButton(
-                                                          icon: Icon(Icons.download),
-                                                          onPressed: (){
-                                                          },
-                                                        )
-                                                      )
-                                                    ],
-                                                  ) : SizedBox(),
+                                                  ChatScreenFileWidget(fileData: messageData[messageIds[index]]): SizedBox(),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
