@@ -103,7 +103,8 @@ Future <void> createDB() async{
   if(box.get('indices')==null){
     await box.put('indices',{
       'profileIconCounter' : 0,
-      'chatImageCounter' : 0
+      'chatImageCounter' : 0,
+      'audioRecordingsCounter' : 0
     });
   }
   if(box.get('chats')==null){

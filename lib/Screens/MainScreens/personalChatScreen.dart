@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
+import 'package:fire_app/Screens/test.dart';
+import 'package:fire_app/Utils/audioRecord.dart';
+import 'package:fire_app/Utils/chatScreenAudioWidget.dart';
 import 'package:fire_app/Utils/chatScreenFileWidget.dart';
 import 'package:fire_app/Utils/chatScreenImageBuilder.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
@@ -11,11 +14,13 @@ import 'package:fire_app/Utils/uploadingFileBuilder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../Utils/constants.dart';
 import '../../Utils/customAttachButtonType.dart';
 import '../../Utils/uploadingImageBuilder.dart';
@@ -46,6 +51,10 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   bool _isEmojiKeyboardVisible = false;
   bool _isNotTyping = true;
   bool _isAttachButtonPressed = false;
+  bool _isRecording = false;
+  bool _isRecorded = true;
+  String recordingFilePath = '';
+  final recorder = FlutterSoundRecorder();
 
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
@@ -86,10 +95,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
             });
           }, Icons.file_copy,Colors.purple),
           CustomAttachButton((){
-            setState(() {
-              _isAttachButtonPressed = false;
-            });
-            Get.to(()=>ImageUploadScreen(selectedImages: [],));
+            //TODO : on press
           }, Icons.audiotrack,Colors.orange),
           CustomAttachButton(()async{
             setState(() {
@@ -162,6 +168,11 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     // TODO: implement initState
     super.initState();
     getUserData();
+    initializeRecorder();
+  }
+
+  Future<void> initializeRecorder()async{
+    await recorder.openRecorder();
   }
 
   Widget chatInput() {
@@ -255,15 +266,43 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
               SizedBox(width: 10,),
               CircleAvatar(
                 backgroundColor: Colors.white,
-                child: IconButton(
-                  icon: Icon(_isNotTyping?Icons.mic:Icons.send,color: Colors.blue,),
-                  onPressed: (){
-                    if(!_isNotTyping){
-                      onSend('text');
+                radius: 30,
+                child: _isNotTyping ? _isRecording ? IconButton(
+                  icon: Icon(Icons.stop,color: Colors.blue,),
+                  onPressed: ()async{
+                    recordingFilePath = (await stopRecording(recorder))!;
+                    print(recordingFilePath);
+                    setState(() {
+                      _isRecording = false;
+                    });
+                    if(_isRecorded == false){
+                      _isRecorded = true;
+
+                      uploadAudioInstance(messageRef,recordingFilePath);
                     }
                   },
+                ) :
+                IconButton(
+                  icon: Icon(Icons.mic,color: Colors.blue,),
+                  onPressed: ()async{
+                    if(!await Permission.microphone.isGranted) {
+                      await Permission.microphone.request();
+                    }
+
+                    await startRecording(recorder);
+
+                    setState(() {
+                      _isRecorded = false;
+                      _isRecording = true;
+                    });
+                  },
+                ) :
+                IconButton(
+                  icon: Icon(Icons.send,color: Colors.blue,),
+                  onPressed: ()  {
+                      onSend('text');
+                  },
                 ),
-                radius: 30,
               )
             ],
           ),
@@ -291,7 +330,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
           IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: (){
-              Get.back();
+                Get.back();
             },
           ),
           StreamBuilder(
@@ -378,10 +417,11 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           return Align(
                             alignment: Alignment.bottomCenter,
                             child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
+                              physics: const AlwaysScrollableScrollPhysics(),
                               itemCount: messageData.length,
                               shrinkWrap: true,
                               reverse: true,
+                              addAutomaticKeepAlives: true,
                               //initialScrollIndex: messageData.length,
                               // itemScrollController: _scrollController,
                               //controller: _scrollController,
@@ -509,7 +549,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   messageData[messageIds[index]]['type']=='fileUploading'?
                                                   UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
                                                   messageData[messageIds[index]]['type']=='file'?
-                                                  ChatScreenFileWidget(fileData: messageData[messageIds[index]]): SizedBox(),
+                                                  ChatScreenFileWidget(fileData: messageData[messageIds[index]]):
+                                                  messageData[messageIds[index]]['type']=='audio'?
+                                                  ChatScreenAudioWidget(audioData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']) : SizedBox(),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
