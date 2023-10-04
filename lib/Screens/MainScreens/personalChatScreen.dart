@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
@@ -14,7 +13,7 @@ import 'package:fire_app/Utils/uploadingFileBuilder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -53,8 +52,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   bool _isAttachButtonPressed = false;
   bool _isRecording = false;
   bool _isRecorded = true;
-  String recordingFilePath = '';
-  final recorder = FlutterSoundRecorder();
+  final FlutterSoundRecord recorder = FlutterSoundRecord();
+  AudioRecordUtil audioUtil = AudioRecordUtil();
 
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
@@ -64,11 +63,6 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     setState(() {
     });
   }
-
-  // _scrollToBottom() {
-  //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent+MediaQuery.of(context).size.height);
-  // }
-
 
 
   Widget AttachButton(double containerHeight) {
@@ -168,12 +162,15 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     // TODO: implement initState
     super.initState();
     getUserData();
-    initializeRecorder();
   }
 
-  Future<void> initializeRecorder()async{
-    await recorder.openRecorder();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    recorder.dispose();
   }
+
 
   Widget chatInput() {
     return Column(
@@ -270,31 +267,22 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                 child: _isNotTyping ? _isRecording ? IconButton(
                   icon: Icon(Icons.stop,color: Colors.blue,),
                   onPressed: ()async{
-                    recordingFilePath = (await stopRecording(recorder))!;
-                    print(recordingFilePath);
                     setState(() {
                       _isRecording = false;
                     });
-                    if(_isRecorded == false){
-                      _isRecorded = true;
+                    await audioUtil.stopRecording(recorder);
+                    audioUtil.uploadAudioInstance(messageRef);
 
-                      uploadAudioInstance(messageRef,recordingFilePath);
-                    }
                   },
                 ) :
                 IconButton(
                   icon: Icon(Icons.mic,color: Colors.blue,),
                   onPressed: ()async{
-                    if(!await Permission.microphone.isGranted) {
-                      await Permission.microphone.request();
-                    }
-
-                    await startRecording(recorder);
-
                     setState(() {
-                      _isRecorded = false;
                       _isRecording = true;
                     });
+                    audioUtil.startRecording(recorder);
+
                   },
                 ) :
                 IconButton(
@@ -414,129 +402,48 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           //     _scrollController.position.maxScrollExtent,
                           //   );
                           // });
-                          return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: messageData.length,
-                              shrinkWrap: true,
-                              reverse: true,
-                              addAutomaticKeepAlives: true,
-                              //initialScrollIndex: messageData.length,
-                              // itemScrollController: _scrollController,
-                              //controller: _scrollController,
-                              itemBuilder: (context,index){
-                                return Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: messageData[messageIds[index]]['sender']!=myUid?
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: FileImage(File(recProfileImg)),
-                                          radius: 15,
-                                        ),
-                                        SizedBox(width: 10,),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width*0.7,
-                                          padding: EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Constants.chatBubbleColor,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.zero,
-                                                topRight: Radius.circular(10),
-                                                bottomRight:  Radius.circular(10),
-                                                bottomLeft:  Radius.circular(10)),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(recName,style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blue[900],
-                                              ),),
-                                              messageData[messageIds[index]]['type']=='text'?
-                                              Text(messageData[messageIds[index]]['content']):
-                                              messageData[messageIds[index]]['type']=='image'?
-                                              ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
-                                              messageData[messageIds[index]]['type']=='imageUploading'?
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(height: 5,),
-                                                  Stack(
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        child: Stack(
-                                                          children: [
-                                                            Container(
-                                                                height: 200,
-                                                                width: 200,
-                                                                color: Colors.black.withOpacity(0.4)
-                                                            ),
-                                                            Positioned.fill(
-                                                              child: BackdropFilter(
-                                                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                                                                child: const SizedBox(),
-                                                              ),
-                                                            ),
-                                                            Positioned.fill(
-                                                              child: Center(
-                                                                child: CircularProgressIndicator(
-                                                                  color: Constants.priColor,
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 5,),
-                                                  Text(messageData[messageIds[index]]['content']['caption'])
-                                                ],
-                                              ):
-                                              messageData[messageIds[index]]['type']=='file'?
-                                              ChatScreenFileWidget(fileData: messageData[messageIds[index]]) : SizedBox(),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
-                                                      color: Colors.blue[900],
-                                                      fontWeight: FontWeight.w400
-                                                  ),),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ):
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                          return SingleChildScrollView(
+                            reverse: true,
+                            child: Container(
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: messageData.length,
+                                  shrinkWrap: true,
+                                  reverse: true,
+                                  addAutomaticKeepAlives: true,
+                                  //initialScrollIndex: messageData.length,
+                                  // itemScrollController: _scrollController,
+                                  //controller: _scrollController,
+                                  itemBuilder: (context,index){
+                                    return Container(
+                                        padding: EdgeInsets.all(10),
+                                        child: messageData[messageIds[index]]['sender']!=myUid?
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
+                                            CircleAvatar(
+                                              backgroundImage: FileImage(File(recProfileImg)),
+                                              radius: 15,
+                                            ),
+                                            SizedBox(width: 10,),
                                             Container(
                                               width: MediaQuery.of(context).size.width*0.7,
                                               padding: EdgeInsets.all(10),
                                               decoration: BoxDecoration(
                                                 color: Constants.chatBubbleColor,
                                                 borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(10),
-                                                    topRight: Radius.zero,
+                                                    topLeft: Radius.zero,
+                                                    topRight: Radius.circular(10),
                                                     bottomRight:  Radius.circular(10),
                                                     bottomLeft:  Radius.circular(10)),
                                               ),
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(myName,style: TextStyle(
+                                                  Text(recName,style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.blue[900],
                                                   ),),
@@ -545,13 +452,46 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   messageData[messageIds[index]]['type']=='image'?
                                                   ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
                                                   messageData[messageIds[index]]['type']=='imageUploading'?
-                                                  UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) :
-                                                  messageData[messageIds[index]]['type']=='fileUploading'?
-                                                  UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(height: 5,),
+                                                      Stack(
+                                                        children: [
+                                                          ClipRRect(
+                                                            borderRadius: BorderRadius.circular(15),
+                                                            child: Stack(
+                                                              children: [
+                                                                Container(
+                                                                    height: 200,
+                                                                    width: 200,
+                                                                    color: Colors.black.withOpacity(0.4)
+                                                                ),
+                                                                Positioned.fill(
+                                                                  child: BackdropFilter(
+                                                                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                                                    child: const SizedBox(),
+                                                                  ),
+                                                                ),
+                                                                Positioned.fill(
+                                                                  child: Center(
+                                                                    child: CircularProgressIndicator(
+                                                                      color: Constants.priColor,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 5,),
+                                                      Text(messageData[messageIds[index]]['content']['caption'])
+                                                    ],
+                                                  ):
                                                   messageData[messageIds[index]]['type']=='file'?
-                                                  ChatScreenFileWidget(fileData: messageData[messageIds[index]]):
-                                                  messageData[messageIds[index]]['type']=='audio'?
-                                                  ChatScreenAudioWidget(audioData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']) : SizedBox(),
+                                                  ChatScreenFileWidget(fileData: messageData[messageIds[index]]) : SizedBox(),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
@@ -563,19 +503,72 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   )
                                                 ],
                                               ),
-                                            ),
-                                            SizedBox(height: 10,),
-                                            CircleAvatar(
-                                              backgroundImage: FileImage(File(recProfileImg)),
-                                              radius: 10,
                                             )
                                           ],
-                                        ),
+                                        ):
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.7,
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    color: Constants.chatBubbleColor,
+                                                    borderRadius: BorderRadius.only(
+                                                        topLeft: Radius.circular(10),
+                                                        topRight: Radius.zero,
+                                                        bottomRight:  Radius.circular(10),
+                                                        bottomLeft:  Radius.circular(10)),
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(myName,style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.blue[900],
+                                                      ),),
+                                                      messageData[messageIds[index]]['type']=='text'?
+                                                      Text(messageData[messageIds[index]]['content']):
+                                                      messageData[messageIds[index]]['type']=='image'?
+                                                      ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
+                                                      messageData[messageIds[index]]['type']=='imageUploading'?
+                                                      UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) :
+                                                      messageData[messageIds[index]]['type']=='fileUploading'?
+                                                      UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
+                                                      messageData[messageIds[index]]['type']=='file'?
+                                                      ChatScreenFileWidget(fileData: messageData[messageIds[index]]): SizedBox(),
+                                                      // messageData[messageIds[index]]['type']=='audio'?
+                                                      // ChatScreenAudioWidget(audioData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']) : SizedBox(),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                          Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
+                                                              color: Colors.blue[900],
+                                                              fontWeight: FontWeight.w400
+                                                          ),),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(height: 10,),
+                                                CircleAvatar(
+                                                  backgroundImage: FileImage(File(recProfileImg)),
+                                                  radius: 10,
+                                                )
+                                              ],
+                                            ),
 
-                                      ],
-                                    )
-                                );
-                              },
+                                          ],
+                                        )
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           );
                         }

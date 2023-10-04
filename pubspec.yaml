@@ -60,8 +60,7 @@ dependencies:
   url_launcher: ^6.1.14
   record_mp3: ^3.0.0
   audioplayers: ^5.2.0
-  flutter_sound: ^9.2.13
-
+  flutter_sound_record: ^3.3.2
 
 dev_dependencies:
   flutter_test:

@@ -111,9 +111,9 @@ class _ChatScreenAudioWidgetState extends State<ChatScreenAudioWidget> {
         icon: Icon(Icons.play_arrow),
         onPressed: ()async{
           final player = AudioPlayer();
-          player.play(AssetSource('startRec.mp3'));
+          print(audioData['content']['audioURL']);
+          player.play(UrlSource(audioData['content']['audioURL']));
         },
-
       );
     }
     return Row(

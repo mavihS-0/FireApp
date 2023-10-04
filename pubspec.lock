@@ -374,30 +374,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.16"
-  flutter_sound:
+  flutter_sound_record:
     dependency: "direct main"
     description:
-      name: flutter_sound
-      sha256: "090a4694b11ecc744c2010621c4ffc5fe7c3079d304ea014961a72c7b72cfe6c"
+      name: flutter_sound_record
+      sha256: "21bd020a528f1de5b23b3f1fb48ef9dae3b880eccc5aa969ed190262aac026bf"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.13"
-  flutter_sound_platform_interface:
+    version: "3.3.2"
+  flutter_sound_record_platform_interface:
     dependency: transitive
     description:
-      name: flutter_sound_platform_interface
-      sha256: "4537eaeb58a32748c42b621ad6116f7f4c6ee0a8d6ffaa501b165fe1c9df4753"
+      name: flutter_sound_record_platform_interface
+      sha256: c1efe56e241a16db5a5adb7effce3100ca1ea97e45e8b045cea2fcd603a12892
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.13"
-  flutter_sound_web:
+    version: "0.3.1"
+  flutter_sound_record_web:
     dependency: transitive
     description:
-      name: flutter_sound_web
-      sha256: ad4ca92671a1879e1f613e900bbbdb8170b20d57d1e4e6363018fe56b055594f
+      name: flutter_sound_record_web
+      sha256: "7b85aab6774765b2cf7558b1a364711ba135142c0ee5f1695b25e9ff8066f298"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.13"
+    version: "0.3.2"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -560,14 +560,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  logger:
-    dependency: transitive
-    description:
-      name: logger
-      sha256: "7ad7215c15420a102ec687bb320a7312afd449bac63bfb1c60d9787c27b9767f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
   matcher:
     dependency: transitive
     description:
@@ -600,14 +592,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   otp_text_field:
     dependency: "direct main"
     description:
@@ -736,14 +720,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      sha256: cdbe7530b12ecd9eb455bdaa2fcb8d4dad22e80b8afb4798b41479d5ce26847f
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.5"
   quiver:
     dependency: transitive
     description:
@@ -752,14 +728,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   record_mp3:
     dependency: "direct main"
     description:
