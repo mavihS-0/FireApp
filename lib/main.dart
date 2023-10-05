@@ -75,13 +75,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         dialogBackgroundColor: Constants.secColor
       ),
-      home: AnimatedSplashScreen(
-        duration: 2000,
-        nextScreen: const AuthState(),
-        splash: Image.asset('assets/flash_screen.png'),
-        splashTransition: SplashTransition.fadeTransition,
-        pageTransitionType: PageTransitionType.fade,
-      ),
+      home: const AuthState(),
+      // home: AnimatedSplashScreen(
+      //   duration: 2000,
+      //   nextScreen: const AuthState(),
+      //   splash: Image.asset('assets/flash_screen.png'),
+      //   splashTransition: SplashTransition.fadeTransition,
+      //   pageTransitionType: PageTransitionType.fade,
+      // ),
     );
   }
 }

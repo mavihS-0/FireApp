@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../Screens/MainScreens/addContact.dart';
+import '../Screens/MainScreens/test.dart';
 
 Widget customPopUpMenu(String addNew, Function addNewMethod) {
   return PopupMenuButton(
@@ -19,6 +20,9 @@ Widget customPopUpMenu(String addNew, Function addNewMethod) {
         }
         else if(value == 'Settings'){
           Get.to(()=>SettingsScreen());
+        }
+        else if(value == 'Profile'){
+          Get.to(()=>Home());
         }
       },
       itemBuilder: (context){

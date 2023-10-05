@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
@@ -6,12 +7,13 @@ import 'package:fire_app/Screens/test.dart';
 import 'package:fire_app/Utils/audioRecord.dart';
 import 'package:fire_app/Utils/chatScreenAudioWidget.dart';
 import 'package:fire_app/Utils/chatScreenFileWidget.dart';
-import 'package:fire_app/Utils/chatScreenImageBuilder.dart';
+import 'package:fire_app/Utils/imageUtil/chatImageUtil.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:fire_app/Utils/uploadingFileBuilder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -19,6 +21,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../Utils/constants.dart';
 import '../../Utils/customAttachButtonType.dart';
@@ -51,9 +54,11 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   bool _isNotTyping = true;
   bool _isAttachButtonPressed = false;
   bool _isRecording = false;
-  bool _isRecorded = true;
+  bool _isRecorded = false;
   final FlutterSoundRecord recorder = FlutterSoundRecord();
   AudioRecordUtil audioUtil = AudioRecordUtil();
+  ChatImageUtil chatImageUtil = ChatImageUtil();
+
 
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
@@ -169,6 +174,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     // TODO: implement dispose
     super.dispose();
     recorder.dispose();
+    chatImageUtil.dispose();
   }
 
 
@@ -176,6 +182,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        RecordingPreview(containerHeight: _isRecorded?70:0, filePath: audioUtil.outputFilePath,),
         AttachButton(_isAttachButtonPressed ? 90:0,),
         Container(
           padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
@@ -264,27 +271,34 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
               CircleAvatar(
                 backgroundColor: Colors.white,
                 radius: 30,
-                child: _isNotTyping ? _isRecording ? IconButton(
-                  icon: Icon(Icons.stop,color: Colors.blue,),
-                  onPressed: ()async{
+                child: _isNotTyping ? GestureDetector(
+                  child: Icon(Icons.mic,color: Colors.blue,),
+                  onLongPressStart: (_)async{
                     setState(() {
-                      _isRecording = false;
+                      _isRecorded = false;
+                    });
+
+                    audioUtil.startRecording(recorder);
+                  },
+                  onLongPressEnd: (_)async{
+                    setState(() {
+                      _isRecorded = true;
                     });
                     await audioUtil.stopRecording(recorder);
-                    audioUtil.uploadAudioInstance(messageRef);
-
+                    //audioUtil.uploadAudioInstance(messageRef);
                   },
                 ) :
-                IconButton(
-                  icon: Icon(Icons.mic,color: Colors.blue,),
-                  onPressed: ()async{
-                    setState(() {
-                      _isRecording = true;
-                    });
-                    audioUtil.startRecording(recorder);
-
-                  },
-                ) :
+                // IconButton(
+                //   icon: Icon(Icons.mic,color: Colors.blue,),
+                //   onPressed: ()async{
+                //     setState(() {
+                //       _isRecording = true;
+                //       _isRecorded = false;
+                //     });
+                //     audioUtil.startRecording(recorder);
+                //
+                //   },
+                // ) :
                 IconButton(
                   icon: Icon(Icons.send,color: Colors.blue,),
                   onPressed: ()  {
@@ -307,6 +321,26 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
         ) :SizedBox(),
       ],
     );
+  }
+
+  Future <void> saveImagesToLocal()async{
+    var dataBox = Hive.box('imageData');
+    Map presentData = dataBox.get('chats');
+    Map dataIndices = dataBox.get('indices');
+    String pid = Get.arguments['pid'];
+    chatImageUtil.notSavedToLocal.forEach((key, value) async {
+      final httpsReference = FirebaseStorage.instance.refFromURL(chatImageUtil.notSavedToLocal[key]);
+      final appDocDir = await getApplicationDocumentsDirectory();
+      dataIndices['chatImageCounter'] += 1;
+      String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
+      final file = File(filePath);
+      await httpsReference.writeToFile(file);
+      presentData['images']['$pid+$key'] = filePath;
+    });
+    await dataBox.put('chats', presentData);
+    await dataBox.put('incides',dataIndices);
+    setState(() {
+    });
   }
 
   @override
@@ -397,6 +431,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                               as Map<dynamic, dynamic>);
                           messageData = orderData(messageData);
                           List messageIds = messageData.keys.toList().reversed.toList();
+                          chatImageUtil.getLocal(messageData,Get.arguments['pid']);
+                          saveImagesToLocal();
                           // WidgetsBinding.instance!.addPostFrameCallback((_) {
                           //   _scrollController.jumpTo(
                           //     _scrollController.position.maxScrollExtent,
@@ -450,46 +486,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                   messageData[messageIds[index]]['type']=='text'?
                                                   Text(messageData[messageIds[index]]['content']):
                                                   messageData[messageIds[index]]['type']=='image'?
-                                                  ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
+                                                  chatImageUtil.chatScreenImageBuilder(messageData[messageIds[index]], messageIds[index]) :
                                                   messageData[messageIds[index]]['type']=='imageUploading'?
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(height: 5,),
-                                                      Stack(
-                                                        children: [
-                                                          ClipRRect(
-                                                            borderRadius: BorderRadius.circular(15),
-                                                            child: Stack(
-                                                              children: [
-                                                                Container(
-                                                                    height: 200,
-                                                                    width: 200,
-                                                                    color: Colors.black.withOpacity(0.4)
-                                                                ),
-                                                                Positioned.fill(
-                                                                  child: BackdropFilter(
-                                                                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                                                                    child: const SizedBox(),
-                                                                  ),
-                                                                ),
-                                                                Positioned.fill(
-                                                                  child: Center(
-                                                                    child: CircularProgressIndicator(
-                                                                      color: Constants.priColor,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 5,),
-                                                      Text(messageData[messageIds[index]]['content']['caption'])
-                                                    ],
-                                                  ):
+                                                  chatImageUtil.imageUploading(messageData[messageIds[index]]):
                                                   messageData[messageIds[index]]['type']=='file'?
                                                   ChatScreenFileWidget(fileData: messageData[messageIds[index]]) : SizedBox(),
                                                   Row(
@@ -534,14 +533,22 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                       messageData[messageIds[index]]['type']=='text'?
                                                       Text(messageData[messageIds[index]]['content']):
                                                       messageData[messageIds[index]]['type']=='image'?
-                                                      ChatScreenImageBuilder(imageData: messageData[messageIds[index]], pid: Get.arguments['pid'], mid: messageIds[index],) :
+                                                      chatImageUtil.chatScreenImageBuilder(messageData[messageIds[index]], messageIds[index]) :
                                                       messageData[messageIds[index]]['type']=='imageUploading'?
                                                       UploadingImageBuilder(imageData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'],) :
                                                       messageData[messageIds[index]]['type']=='fileUploading'?
                                                       UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
                                                       messageData[messageIds[index]]['type']=='file'?
-                                                      ChatScreenFileWidget(fileData: messageData[messageIds[index]]): SizedBox(),
-                                                      // messageData[messageIds[index]]['type']=='audio'?
+                                                      ChatScreenFileWidget(fileData: messageData[messageIds[index]]):
+                                                      messageData[messageIds[index]]['type']=='audio'?
+                                                          IconButton(
+                                                            icon: Icon(Icons.play_arrow),
+                                                            onPressed: (){
+                                                              print(messageData[messageIds[index]]['content']['audioURL']);
+                                                              final player = AudioPlayer();
+                                                              player.play(DeviceFileSource(messageData[messageIds[index]]['content']['audioURL']));
+                                                            },
+                                                          ) : SizedBox(),
                                                       // ChatScreenAudioWidget(audioData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']) : SizedBox(),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.end,
