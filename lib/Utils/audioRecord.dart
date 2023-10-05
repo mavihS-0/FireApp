@@ -107,6 +107,11 @@ class _RecordingPreviewState extends State<RecordingPreview> {
         position = event;
       });
     });
+
+    widget.audioPlayer.onPlayerComplete.listen((event) {
+      widget.audioPlayer.setSource(DeviceFileSource(widget.filePath));
+    });
+
   }
 
   Future setAudio() async{
@@ -131,7 +136,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              icon: Icon(Icons.play_arrow,color: Colors.white,),
+              icon: Icon(isPlaying?Icons.pause:Icons.play_arrow,color: Colors.white,),
               onPressed: ()async{
                 print(filePath);
                 if(isPlaying){
