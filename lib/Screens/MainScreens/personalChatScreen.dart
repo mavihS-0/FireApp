@@ -182,7 +182,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        RecordingPreview(containerHeight: _isRecorded?70:0, filePath: audioUtil.outputFilePath,),
+        RecordingPreview(containerHeight: _isRecorded?70:0, filePath: audioUtil.outputFilePath, audioPlayer: audioUtil.audioPlayer,),
         AttachButton(_isAttachButtonPressed ? 90:0,),
         Container(
           padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
@@ -281,10 +281,11 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                     audioUtil.startRecording(recorder);
                   },
                   onLongPressEnd: (_)async{
+                    await audioUtil.stopRecording(recorder);
+                    await audioUtil.setAudio();
                     setState(() {
                       _isRecorded = true;
                     });
-                    await audioUtil.stopRecording(recorder);
                     //audioUtil.uploadAudioInstance(messageRef);
                   },
                 ) :

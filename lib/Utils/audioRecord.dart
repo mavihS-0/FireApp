@@ -14,6 +14,7 @@ class AudioRecordUtil{
 
   String filePath = '';
   String outputFilePath='';
+  AudioPlayer audioPlayer = AudioPlayer();
 
   Future<void> startRecording(FlutterSoundRecord recorder) async {
     var dataBox = Hive.box('imageData');
@@ -62,12 +63,17 @@ class AudioRecordUtil{
     });
   }
 
+  Future setAudio() async{
+    audioPlayer.setSource(DeviceFileSource(outputFilePath));
+  }
+
 }
 
 class RecordingPreview extends StatefulWidget {
+  final AudioPlayer audioPlayer;
   final double containerHeight;
   final String filePath;
-  const RecordingPreview({Key? key, required this.containerHeight, required this.filePath}) : super(key: key);
+  const RecordingPreview({Key? key, required this.containerHeight, required this.filePath,required this.audioPlayer}) : super(key: key);
 
   @override
   State<RecordingPreview> createState() => _RecordingPreviewState();
@@ -75,7 +81,6 @@ class RecordingPreview extends StatefulWidget {
 
 class _RecordingPreviewState extends State<RecordingPreview> {
 
-  final audioPlayer = AudioPlayer();
   bool isPlaying = false;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
@@ -85,19 +90,19 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     // TODO: implement initState
     super.initState();
 
-    audioPlayer.onPlayerStateChanged.listen((event) {
+    widget.audioPlayer.onPlayerStateChanged.listen((event) {
       setState(() {
         isPlaying = event == PlayerState.playing;
       });
     });
 
-    audioPlayer.onDurationChanged.listen((event) {
+    widget.audioPlayer.onDurationChanged.listen((event) {
       setState(() {
         duration = event;
       });
     });
 
-    audioPlayer.onPositionChanged.listen((event) {
+    widget.audioPlayer.onPositionChanged.listen((event) {
       setState(() {
         position = event;
       });
@@ -105,7 +110,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
   }
 
   Future setAudio() async{
-    audioPlayer.setSource(DeviceFileSource(widget.filePath));
+    widget.audioPlayer.setSource(DeviceFileSource(widget.filePath));
   }
 
   @override
@@ -130,10 +135,9 @@ class _RecordingPreviewState extends State<RecordingPreview> {
               onPressed: ()async{
                 print(filePath);
                 if(isPlaying){
-                  await audioPlayer.pause();
+                  await widget.audioPlayer.pause();
                 }else{
-
-                  await audioPlayer.resume();
+                  await widget.audioPlayer.resume();
                 }
               },
             ),

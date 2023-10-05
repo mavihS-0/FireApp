@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
       //   splash: Image.asset('assets/flash_screen.png'),
       //   splashTransition: SplashTransition.fadeTransition,
       //   pageTransitionType: PageTransitionType.fade,
-      // ),
+      // ),and
     );
   }
 }
