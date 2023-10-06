@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'constants.dart';
+import '../constants.dart';
 
 class UploadingFileBuilder extends StatefulWidget {
   final Map fileData;

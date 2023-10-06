@@ -11,13 +11,17 @@ class ChatImageUtil{
   Map savedToLocal = {};
 
   void getLocal(Map firebaseData, String pid)  {
+    savedToLocal={};
+    notSavedToLocal={};
     Map hiveData = dataBox.get('chats')['images'];
     firebaseData.forEach((key, value) {
-      if(hiveData['$pid+$key']!=null){
-        savedToLocal[key] = hiveData['$pid+$key'];
-      }else{
-        if(value['type']=='image'){
-          notSavedToLocal[key] = value['content']['imageURL'];
+      if(value['type']=='image'){
+        if(hiveData['$pid+$key']!=null){
+          savedToLocal[key] = hiveData['$pid+$key'];
+        }else{
+          if(value['type']=='image'){
+            notSavedToLocal[key] = value['content']['imageURL'];
+          }
         }
       }
     });

@@ -4,13 +4,14 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
 import 'package:fire_app/Screens/test.dart';
-import 'package:fire_app/Utils/audioRecord.dart';
-import 'package:fire_app/Utils/chatScreenAudioWidget.dart';
-import 'package:fire_app/Utils/chatScreenFileWidget.dart';
+import 'package:fire_app/Utils/audioUtil/audioRecord.dart';
+import 'package:fire_app/Utils/audioUtil/chatScreenAudioWidget.dart';
+import 'package:fire_app/Utils/audioUtil/uploadingAudioWidget.dart';
+import 'package:fire_app/Utils/fileUtil/chatScreenFileWidget.dart';
 import 'package:fire_app/Utils/imageUtil/chatImageUtil.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';
-import 'package:fire_app/Utils/uploadingFileBuilder.dart';
+import 'package:fire_app/Utils/fileUtil/uploadingFileBuilder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,7 +26,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../Utils/constants.dart';
 import '../../Utils/customAttachButtonType.dart';
-import '../../Utils/uploadingImageBuilder.dart';
+import '../../Utils/imageUtil/uploadingImageBuilder.dart';
 import 'filePickerScreen.dart';
 import 'imagePickerScreen.dart';
 import 'dart:io';
@@ -37,7 +38,7 @@ class PersonalChatScreen extends StatefulWidget {
   State<PersonalChatScreen> createState() => _PersonalChatScreenState();
 }
 
-class _PersonalChatScreenState extends State<PersonalChatScreen> {
+class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticKeepAliveClientMixin<PersonalChatScreen> {
 
   DatabaseReference userDataRef = FirebaseDatabase.instance.ref('users').child(Get.arguments['friendUid']);
   TextEditingController message = TextEditingController();
@@ -175,6 +176,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     super.dispose();
     recorder.dispose();
     chatImageUtil.dispose();
+    audioUtil.dispose();
   }
 
 
@@ -182,7 +184,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        RecordingPreview(containerHeight: _isRecorded?70:0, filePath: audioUtil.outputFilePath, audioPlayer: audioUtil.audioPlayer,),
+        RecordingPreview(containerHeight: _isRecorded?70:0, audioUtil: audioUtil,pid: Get.arguments['pid'],),
         AttachButton(_isAttachButtonPressed ? 90:0,),
         Container(
           padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
@@ -286,20 +288,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                     setState(() {
                       _isRecorded = true;
                     });
-                    //audioUtil.uploadAudioInstance(messageRef);
+                    // audioUtil.uploadAudioInstance(messageRef);
                   },
                 ) :
-                // IconButton(
-                //   icon: Icon(Icons.mic,color: Colors.blue,),
-                //   onPressed: ()async{
-                //     setState(() {
-                //       _isRecording = true;
-                //       _isRecorded = false;
-                //     });
-                //     audioUtil.startRecording(recorder);
-                //
-                //   },
-                // ) :
                 IconButton(
                   icon: Icon(Icons.send,color: Colors.blue,),
                   onPressed: ()  {
@@ -412,6 +403,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
         onTap: (){
           setState(() {
             _isAttachButtonPressed = false;
+            _isRecorded = false;
           });
         },
         child: SingleChildScrollView(
@@ -541,15 +533,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                                                       UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
                                                       messageData[messageIds[index]]['type']=='file'?
                                                       ChatScreenFileWidget(fileData: messageData[messageIds[index]]):
-                                                      messageData[messageIds[index]]['type']=='audio'?
-                                                          IconButton(
-                                                            icon: Icon(Icons.play_arrow),
-                                                            onPressed: (){
-                                                              print(messageData[messageIds[index]]['content']['audioURL']);
-                                                              final player = AudioPlayer();
-                                                              player.play(DeviceFileSource(messageData[messageIds[index]]['content']['audioURL']));
-                                                            },
-                                                          ) : SizedBox(),
+                                                      messageData[messageIds[index]]['type']=='audio' ? messageData[messageIds[index]]['status']=='uploading'?
+                                                      UploadingAudioWidget(audioData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'])
+                                                      : ChatScreenAudioWidget(audioData: messageData[messageIds[index]]) : SizedBox(),
                                                       // ChatScreenAudioWidget(audioData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']) : SizedBox(),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.end,
@@ -602,6 +588,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     );
 
   }
+  @override
+  bool get wantKeepAlive => true;
 
   String timestampToTime(int timestamp) {
     final DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);

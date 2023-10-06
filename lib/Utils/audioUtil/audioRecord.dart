@@ -67,13 +67,16 @@ class AudioRecordUtil{
     audioPlayer.setSource(DeviceFileSource(outputFilePath));
   }
 
+  void dispose() {
+    audioPlayer.dispose();
+  }
 }
 
 class RecordingPreview extends StatefulWidget {
-  final AudioPlayer audioPlayer;
+  final AudioRecordUtil audioUtil;
   final double containerHeight;
-  final String filePath;
-  const RecordingPreview({Key? key, required this.containerHeight, required this.filePath,required this.audioPlayer}) : super(key: key);
+  final String pid;
+  const RecordingPreview({Key? key, required this.containerHeight, required this.audioUtil, required this.pid}) : super(key: key);
 
   @override
   State<RecordingPreview> createState() => _RecordingPreviewState();
@@ -90,38 +93,40 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     // TODO: implement initState
     super.initState();
 
-    widget.audioPlayer.onPlayerStateChanged.listen((event) {
+    widget.audioUtil.audioPlayer.onPlayerStateChanged.listen((event) {
       setState(() {
         isPlaying = event == PlayerState.playing;
       });
     });
 
-    widget.audioPlayer.onDurationChanged.listen((event) {
+    widget.audioUtil.audioPlayer.onDurationChanged.listen((event) {
       setState(() {
         duration = event;
       });
     });
 
-    widget.audioPlayer.onPositionChanged.listen((event) {
+    widget.audioUtil.audioPlayer.onPositionChanged.listen((event) {
       setState(() {
         position = event;
       });
     });
 
-    widget.audioPlayer.onPlayerComplete.listen((event) {
-      widget.audioPlayer.setSource(DeviceFileSource(widget.filePath));
+    widget.audioUtil.audioPlayer.onPlayerComplete.listen((event) {
+      widget.audioUtil.audioPlayer.setSource(DeviceFileSource(widget.audioUtil.filePath));
     });
 
   }
 
   Future setAudio() async{
-    widget.audioPlayer.setSource(DeviceFileSource(widget.filePath));
+    widget.audioUtil.audioPlayer.setSource(DeviceFileSource(widget.audioUtil.filePath));
   }
 
   @override
   Widget build(BuildContext context) {
+    AudioRecordUtil audioUtil = widget.audioUtil;
     double containerHeight = widget.containerHeight;
-    String filePath = widget.filePath;
+    String filePath = widget.audioUtil.filePath;
+    String pid = widget.pid;
     return AnimatedContainer(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -140,40 +145,25 @@ class _RecordingPreviewState extends State<RecordingPreview> {
               onPressed: ()async{
                 print(filePath);
                 if(isPlaying){
-                  await widget.audioPlayer.pause();
+                  await widget.audioUtil.audioPlayer.pause();
                 }else{
-                  await widget.audioPlayer.resume();
+                  await widget.audioUtil.audioPlayer.resume();
                 }
               },
             ),
-            // containerHeight!=0 ? Column(
-            //   children: [
-                // Slider(
-                //   min: 0,
-                //   max: duration.inSeconds.toDouble(),
-                //   value: position.inSeconds.toDouble(),
-                //   onChanged: (value) async{
-                //     final pos = Duration(seconds: value.toInt());
-                //     await audioPlayer.seek(pos);
-                //   },
-                //   activeColor: Colors.white,
-                // ),
-            //
-            //   ],
-            // ) : SizedBox(),
             Text("${position.toString().split('.').first.padLeft(8, "0")}  -  ${duration.toString().split('.').first.padLeft(8, "0")}",style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 20
             ), ),
-            IconButton(onPressed: (){}, icon: Icon(Icons.send,color: Colors.white,))
+            IconButton(onPressed: (){
+              audioUtil.uploadAudioInstance(FirebaseDatabase.instance.ref('personalChats').child(pid));
+            }, icon: Icon(Icons.send,color: Colors.white,))
           ],
         )
     );
   }
 }
-
-
 
 
 

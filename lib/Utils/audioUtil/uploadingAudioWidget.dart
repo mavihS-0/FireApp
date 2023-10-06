@@ -6,20 +6,20 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:io';
 import 'package:get/get.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
-class ChatScreenAudioWidget extends StatefulWidget {
+class UploadingAudioWidget extends StatefulWidget {
   final Map audioData;
   final String mid;
   final String pid;
   final String friendUid;
-  const ChatScreenAudioWidget({Key? key, required this.audioData, required this.mid, required this.pid, required this.friendUid}) : super(key: key);
+  const UploadingAudioWidget({Key? key, required this.audioData, required this.mid, required this.pid, required this.friendUid}) : super(key: key);
 
   @override
-  State<ChatScreenAudioWidget> createState() => _ChatScreenAudioWidgetState();
+  State<UploadingAudioWidget> createState() => _UploadingAudioWidgetState();
 }
 
-class _ChatScreenAudioWidgetState extends State<ChatScreenAudioWidget> {
+class _UploadingAudioWidgetState extends State<UploadingAudioWidget> {
 
   bool _uploading = true;
   double _uploadProgress = 0.0;
@@ -106,16 +106,6 @@ class _ChatScreenAudioWidgetState extends State<ChatScreenAudioWidget> {
     String mid = widget.mid;
     String pid = widget.pid;
     String friendUid = widget.friendUid;
-    if(audioData['status'] == 'sent'){
-      return IconButton(
-        icon: Icon(Icons.play_arrow),
-        onPressed: ()async{
-          final player = AudioPlayer();
-          print(audioData['content']['audioURL']);
-          player.play(UrlSource(audioData['content']['audioURL']));
-        },
-      );
-    }
     return Row(
       children: [
         SizedBox(width: 10,),
