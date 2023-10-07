@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/Groups/groups.dart';
 import 'package:fire_app/Screens/MainScreens/personalChats.dart';
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
 import 'package:fire_app/Screens/MainScreens/addContact.dart';
@@ -62,9 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: TabBarView(
         children: <Widget>[
-          NoDataHomePage(
-            caption: 'Create a group to start conversation',
-          ),
+          Groups(),
           PersonalChats()
         ],
       ),

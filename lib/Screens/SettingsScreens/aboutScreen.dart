@@ -1,3 +1,4 @@
+import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,7 +22,7 @@ class AboutScreen extends StatelessWidget {
               child: Image.asset('assets/flash_screen.png'),
             ),
             SizedBox(height: 5,),
-            Text('version1.0'),
+            Text('version${Constants.version}'),
             SizedBox(height: 15,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

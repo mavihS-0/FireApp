@@ -51,9 +51,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: Constants.priColor,
           foregroundColor: Constants.secColor,
           titleTextStyle: const TextStyle(
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w500,
-            letterSpacing: 1,
           )
         ),
         tabBarTheme: TabBarTheme(
@@ -73,7 +72,12 @@ class MyApp extends StatelessWidget {
           foregroundColor: Constants.secColor,
         ),
         useMaterial3: true,
-        dialogBackgroundColor: Constants.secColor
+        dialogBackgroundColor: Constants.secColor,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(
+            fontSize: 16
+          )
+        )
       ),
       home: const AuthState(),
       // home: AnimatedSplashScreen(

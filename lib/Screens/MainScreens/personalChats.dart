@@ -146,9 +146,8 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: const ImageIcon(
-          AssetImage('assets/home_page/add_chat.png'),
-        ),
+        heroTag: Text('btn2'),
+        child: Icon(Icons.question_answer_rounded),
         onPressed: (){
           Get.to(()=>AddContact());
         },

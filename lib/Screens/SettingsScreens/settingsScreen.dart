@@ -95,7 +95,7 @@ class SettingsScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Constants.scaffoldBGColor,
         appBar: AppBar(
           title: Text('Settings'),
         ),
@@ -128,7 +128,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10,),
-            Text('version1.0')
+            Text('version${Constants.version}')
           ],
         )
     );

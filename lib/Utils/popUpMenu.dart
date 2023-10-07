@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/profileScreen.dart';
 import 'package:fire_app/Screens/SettingsScreens/settingsScreen.dart';
 import 'package:fire_app/Screens/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +23,7 @@ Widget customPopUpMenu(String addNew, Function addNewMethod) {
           Get.to(()=>SettingsScreen());
         }
         else if(value == 'Profile'){
-          Get.to(()=>Home());
+          Get.to(()=>ProfileScreen());
         }
       },
       itemBuilder: (context){
