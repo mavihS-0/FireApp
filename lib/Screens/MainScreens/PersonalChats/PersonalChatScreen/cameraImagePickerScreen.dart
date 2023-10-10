@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:get/get.dart';
 
-import '../../Utils/constants.dart';
+import '../../../../Utils/constants.dart';
 
 class CameraImagePickerScreen extends StatefulWidget {
   const CameraImagePickerScreen({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:fire_app/Screens/MainScreens/Groups/groups.dart';
-import 'package:fire_app/Screens/MainScreens/personalChats.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/personalChats.dart';
 import 'package:fire_app/Screens/Onboarding/setProfile.dart';
-import 'package:fire_app/Screens/MainScreens/addContact.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/addContact.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:fire_app/Utils/popUpMenu.dart';

@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:fire_app/Screens/MainScreens/cameraImagePickerScreen.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
 import 'package:fire_app/Screens/test.dart';
 import 'package:fire_app/Utils/audioUtil/audioRecord.dart';
@@ -24,9 +24,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../Utils/constants.dart';
-import '../../Utils/customAttachButtonType.dart';
-import '../../Utils/imageUtil/uploadingImageBuilder.dart';
+import '../../../../Utils/constants.dart';
+import '../../../../Utils/customAttachButtonType.dart';
+import '../../../../Utils/imageUtil/uploadingImageBuilder.dart';
 import 'filePickerScreen.dart';
 import 'imagePickerScreen.dart';
 import 'dart:io';
@@ -205,7 +205,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                         onPressed: (){
                           _toggleKeyboard();
                         },
-                        icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Colors.grey[500],),
+                        icon: Icon(_isEmojiKeyboardVisible?Icons.keyboard : Icons.emoji_emotions_rounded,color: Constants.editableWidgetsColorChatScreen,),
                       ),
                       SizedBox(width: 5,),
                       Expanded(
@@ -215,7 +215,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                           decoration: InputDecoration(
                             hintText: 'Type message here...',
                             hintStyle: TextStyle(
-                              color: Colors.grey[500],
+                              color: Constants.editableWidgetsColorChatScreen,
                             ),
                           ),
                           onTapOutside: (event){
@@ -252,7 +252,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                           });
                         },
                         //focusNode: ,
-                        icon: Icon(Icons.attach_file,color: Colors.grey[500],),
+                        icon: Icon(Icons.attach_file,color: Constants.editableWidgetsColorChatScreen,),
                       ),
                       SizedBox(width: 5,),
                       !_isNotTyping?SizedBox():
@@ -264,7 +264,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                   'friendUid' : Get.arguments['friendUid'],
                                 });
                           },
-                          icon: Icon(Icons.camera_alt,color: Colors.grey[500],))
+                          icon: Icon(Icons.camera_alt,color: Constants.editableWidgetsColorChatScreen,))
                     ],
                   ),
                 ),

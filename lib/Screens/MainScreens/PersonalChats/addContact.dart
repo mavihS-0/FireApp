@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:fire_app/Screens/MainScreens/personalChatScreen.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/personalChatScreen.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';

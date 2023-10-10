@@ -1,6 +1,8 @@
+import 'package:fire_app/Screens/MainScreens/ProfileScreens/groupInfo.dart';
+import 'package:fire_app/Screens/MainScreens/ProfileScreens/viewProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupsData.dart';
-
+import 'package:get/get.dart';
 import '../constants.dart';
 
 class GroupIconDialog extends StatelessWidget {
@@ -37,7 +39,9 @@ class GroupIconDialog extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: (){
-
+                      Get.to(()=>GroupInfo(),arguments: {
+                        'dummyData' : dummyData
+                      });
                     },
                     child: Container(
                       height: 44,

@@ -1,9 +1,11 @@
+import 'package:fire_app/Screens/MainScreens/Groups/finalizeGroup.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../../../Utils/constants.dart';
 import '../../../Utils/dummyData/dummyContacts.dart';
 
 class AddGroup extends StatefulWidget {
+  static List <DummyContact> selectedContacts =[];
   const AddGroup({Key? key}) : super(key: key);
 
   @override
@@ -11,8 +13,6 @@ class AddGroup extends StatefulWidget {
 }
 
 class _AddGroupState extends State<AddGroup> {
-
-  List <DummyContact> selectedContacts =[];
   int totalContacts = 0;
   List <bool> isSelected = [];
 
@@ -35,7 +35,7 @@ class _AddGroupState extends State<AddGroup> {
           children: [
             Text('New group'),
             SizedBox(height: 2,),
-            Text('${selectedContacts.length.toString()} of ${totalContacts.toString()} selected',style: TextStyle(
+            Text('${AddGroup.selectedContacts.length.toString()} of ${totalContacts.toString()} selected',style: TextStyle(
               fontSize: 12
             ),)
           ],
@@ -45,17 +45,17 @@ class _AddGroupState extends State<AddGroup> {
         children: [
           AnimatedContainer(
             margin: EdgeInsets.all(10),
-            height: selectedContacts.length!=0 ? 60 : 0,
+            height: AddGroup.selectedContacts.length!=0 ? 60 : 0,
             duration: Duration(milliseconds: 300),
             child: ListView.builder(
-              itemCount: selectedContacts.length,
+              itemCount: AddGroup.selectedContacts.length,
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context,index){
                 return InkWell(
                   onTap: (){
                     setState(() {
-                      selectedContacts.removeAt(index);
+                      AddGroup.selectedContacts.removeAt(index);
                     });
                   },
                   child: Container(
@@ -65,7 +65,7 @@ class _AddGroupState extends State<AddGroup> {
                     child: Stack(
                       children: [
                         CircleAvatar(
-                          backgroundImage: NetworkImage(selectedContacts[index].profileURL),
+                          backgroundImage: NetworkImage(AddGroup.selectedContacts[index].profileURL),
                           radius: 30,
                         ),
                         Align(
@@ -82,7 +82,7 @@ class _AddGroupState extends State<AddGroup> {
               },
             ),
           ),
-          selectedContacts.length!=0 ? Divider() :SizedBox(),
+          AddGroup.selectedContacts.isNotEmpty ? Divider() :SizedBox(),
           Expanded(
             child: ListView.separated(
               shrinkWrap: true,
@@ -91,13 +91,13 @@ class _AddGroupState extends State<AddGroup> {
                 return  InkWell(
                   onTap: (){
                     setState(() {
-                      if(!selectedContacts.contains(dummyContacts[index])){
-                        selectedContacts.add(dummyContacts[index]);
+                      if(!AddGroup.selectedContacts.contains(dummyContacts[index])){
+                        AddGroup.selectedContacts.add(dummyContacts[index]);
                       }
                     });
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal:10,vertical: 5),
                     child: Row(
                       children: [
                         SizedBox(
@@ -109,7 +109,7 @@ class _AddGroupState extends State<AddGroup> {
                                 backgroundImage: NetworkImage(dummyContacts[index].profileURL),
                                 radius: 30,
                               ),
-                              if(selectedContacts.contains(dummyContacts[index]))Align(
+                              if(AddGroup.selectedContacts.contains(dummyContacts[index]))Align(
                                 alignment: Alignment.bottomRight,
                                 child: CircleAvatar(
                                     radius: 9,
@@ -152,7 +152,11 @@ class _AddGroupState extends State<AddGroup> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          Get.to(()=>FinalizeGroup())?.then((value) {
+            setState(() {
 
+            });
+          });
         },
         child: Icon(Icons.check),
       ),

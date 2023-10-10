@@ -1,6 +1,6 @@
 import 'package:fire_app/Utils/dummyData/profileDummyData.dart';
 import 'package:flutter/material.dart';
-import '../../Utils/constants.dart';
+import '../../../Utils/constants.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -24,7 +24,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Container(
             margin: EdgeInsets.all(10),
-            height: 104,
             width: double.infinity,
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -50,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontSize: 18
                       ),),
                       Text(dummyData.mob,style: TextStyle(
-                        fontSize: Constants.smallFontSize
+                        fontSize: Constants.mediumFontSize
                       ),),
                     ],
                   ),
@@ -111,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(dummyData.groupData[index].name, style: TextStyle(
-                                    fontSize: Constants.smallFontSize
+                                    fontSize: Constants.mediumFontSize
                                 ),),
                                 Text(dummyData.groupData[index].admin, style: TextStyle(
                                     fontSize: Constants.smallFontSize,

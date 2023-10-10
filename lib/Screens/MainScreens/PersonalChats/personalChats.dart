@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fire_app/Screens/MainScreens/personalChatScreen.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/personalChatScreen.dart';
 import 'package:fire_app/Utils/chatListProfileIconBuilder.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../Utils/noDataHomePage.dart';
+import '../../../Utils/noDataHomePage.dart';
 import 'addContact.dart';
 import 'package:intl/intl.dart';
 
