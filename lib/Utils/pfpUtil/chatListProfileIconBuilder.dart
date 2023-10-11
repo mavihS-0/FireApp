@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'constants.dart';
+import '../constants.dart';
 import 'package:get/get.dart';
 
 class ChatListProfileIconBuilder extends StatefulWidget {

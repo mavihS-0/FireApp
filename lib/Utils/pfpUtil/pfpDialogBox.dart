@@ -1,13 +1,11 @@
-import 'package:fire_app/Screens/MainScreens/ProfileScreens/groupInfo.dart';
-import 'package:fire_app/Screens/MainScreens/ProfileScreens/viewProfile.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_app/Utils/dummyData/dummyGroupsData.dart';
-import 'package:get/get.dart';
 import '../constants.dart';
 
-class GroupIconDialog extends StatelessWidget {
-  final DummyGroupData dummyData;
-  const GroupIconDialog({Key? key, required this.dummyData}) : super(key: key);
+class PfpDialogBox extends StatelessWidget {
+  final dummyData;
+  final Function() onInfoButtonPress;
+  final Function() onChatButtonPress;
+  const PfpDialogBox({Key? key, required this.dummyData, required this.onInfoButtonPress, required this.onChatButtonPress}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,7 @@ class GroupIconDialog extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  Image.network(dummyData.groupIcon,height: 226,width: 250,fit: BoxFit.fill,),
+                  Image.network(dummyData.pfpURL,height: 226,width: 250,fit: BoxFit.fill,),
                   Container(
                     height: 40,
                     width: 250,
@@ -38,11 +36,7 @@ class GroupIconDialog extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: (){
-                      Get.to(()=>GroupInfo(),arguments: {
-                        'dummyData' : dummyData
-                      });
-                    },
+                    onTap: onInfoButtonPress,
                     child: Container(
                       height: 44,
                       width: 125,
@@ -59,9 +53,7 @@ class GroupIconDialog extends StatelessWidget {
                   ),
                   Divider(color: Colors.white,thickness: 5,),
                   GestureDetector(
-                    onTap: (){
-
-                    },
+                    onTap: onChatButtonPress,
                     child: Container(
                       height: 44,
                       width: 125,

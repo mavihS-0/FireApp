@@ -1,10 +1,12 @@
 import 'package:fire_app/Screens/MainScreens/Groups/addGroup.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupsData.dart';
-import 'package:fire_app/Utils/groupsHomeScreenUtil/groupIconDialog.dart';
 import 'package:fire_app/Utils/noDataHomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../Utils/pfpUtil/pfpDialogBox.dart';
+import '../ProfileScreens/groupInfo.dart';
 
 class Groups extends StatefulWidget {
   const Groups({Key? key}) : super(key: key);
@@ -35,12 +37,20 @@ class _GroupsState extends State<Groups> {
                     onTap: (){
                       //TODO: profile icon tap function
                       showDialog(context: context, builder: (context){
-                        return GroupIconDialog(dummyData: dummyGroupData[index]);
+                        return PfpDialogBox(
+                          dummyData: dummyGroupData[index],
+                          onInfoButtonPress: () {
+                            Get.back();
+                            Get.to(()=>GroupInfo(),arguments: {
+                              'dummyData' : dummyGroupData[index]
+                            });
+                          },
+                          onChatButtonPress: () {  },);
                       });
                     },
                     child: ClipOval(
                       child: Image.network(
-                        dummyGroupData[index].groupIcon,
+                        dummyGroupData[index].pfpURL,
                         height: 50,
                         width: 50,
                         fit: BoxFit.cover,

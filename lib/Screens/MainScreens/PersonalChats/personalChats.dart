@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/personalChatScreen.dart';
-import 'package:fire_app/Utils/chatListProfileIconBuilder.dart';
+import 'package:fire_app/Screens/MainScreens/ProfileScreens/viewProfile.dart';
+import 'package:fire_app/Utils/dummyData/dummyViewProfileData.dart';
+import 'package:fire_app/Utils/pfpUtil/chatListProfileIconBuilder.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -12,6 +14,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../Utils/noDataHomePage.dart';
+import '../../../Utils/pfpUtil/pfpDialogBox.dart';
 import 'addContact.dart';
 import 'package:intl/intl.dart';
 
@@ -26,6 +29,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
 
   DatabaseReference databaseRef = FirebaseDatabase.instance.ref('personalChatList/${FirebaseAuth.instance.currentUser?.uid}');
   DatabaseReference userDataRef = FirebaseDatabase.instance.ref('users');
+  DummyViewProfileData dummyData = DummyViewProfileData();
 
   @override
   void initState() {
@@ -81,7 +85,16 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                                           InkWell(
                                             onTap: (){
                                               //TODO: profile icon tap function
-                                              print('hellow');
+                                              showDialog(context: context, builder: (context){
+                                                return PfpDialogBox(
+                                                  dummyData: dummyData,
+                                                  onInfoButtonPress: () {
+                                                    Get.to(()=>ViewProfile(),arguments: {
+                                                      'dummyData' : dummyData
+                                                    });
+                                                  },
+                                                  onChatButtonPress: () {  },);
+                                              });
                                             },
                                             child: ClipOval(
                                               child: ChatListProfileIconBuilder(userData: userData,pid: myMessages[uidList[index]]['pid'],),
