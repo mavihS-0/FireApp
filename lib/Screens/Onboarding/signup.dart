@@ -1,5 +1,5 @@
 import 'package:fire_app/Screens/Onboarding/otp.dart';
-import 'package:fire_app/Utils/customButton.dart';
+import 'package:fire_app/Utils/customTextButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';

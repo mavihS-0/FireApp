@@ -1,4 +1,5 @@
 import 'package:fire_app/Screens/MainScreens/ProfileScreens/myProfileScreen.dart';
+import 'package:fire_app/Screens/OtherScreens/updateScreen.dart';
 import 'package:fire_app/Screens/SettingsScreens/settingsScreen.dart';
 import 'package:fire_app/Screens/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +25,9 @@ Widget customPopUpMenu(String addNew, Function addNewMethod) {
         }
         else if(value == 'Profile'){
           Get.to(()=>ProfileScreen());
+        }
+        else if(value == 'New group'){
+          Get.to(()=>UpdateScreen());
         }
       },
       itemBuilder: (context){

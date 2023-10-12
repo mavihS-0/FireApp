@@ -1,5 +1,5 @@
 import 'package:fire_app/Screens/Onboarding/signup.dart';
-import 'package:fire_app/Utils/customButton.dart';
+import 'package:fire_app/Utils/customTextButton.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

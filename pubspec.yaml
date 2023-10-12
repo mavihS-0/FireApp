@@ -61,6 +61,7 @@ dependencies:
   audioplayers: ^5.2.0
   flutter_sound_record: ^3.3.2
   audio_waveforms: ^1.0.4
+  local_auth: ^2.1.7
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +91,7 @@ flutter:
    - assets/home_page/
    - assets/signup/
    - assets/splash_pages/
+   - assets/other_pages/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

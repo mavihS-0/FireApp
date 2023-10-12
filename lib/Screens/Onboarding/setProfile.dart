@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:fire_app/Screens/Onboarding/signupLoading.dart';
 import 'package:fire_app/Utils/constants.dart';
-import 'package:fire_app/Utils/customButton.dart';
+import 'package:fire_app/Utils/customTextButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
