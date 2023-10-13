@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/Groups/GroupChatScreen/groupChatScreen.dart';
 import 'package:fire_app/Screens/MainScreens/Groups/addGroup.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupsData.dart';
@@ -28,6 +29,7 @@ class _GroupsState extends State<Groups> {
           return InkWell(
             //TODO: go to chat screen function
             onTap: (){
+              Get.to(()=>GroupChatScreen());
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
@@ -45,7 +47,10 @@ class _GroupsState extends State<Groups> {
                               'dummyData' : dummyGroupData[index]
                             });
                           },
-                          onChatButtonPress: () {  },);
+                          onChatButtonPress: () {
+                            Get.back();
+                            Get.to(()=>GroupChatScreen());
+                          },);
                       });
                     },
                     child: ClipOval(

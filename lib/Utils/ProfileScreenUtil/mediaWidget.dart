@@ -1,5 +1,6 @@
+import 'package:fire_app/Screens/MainScreens/ProfileScreens/MediaLinksAndDocs/mediaLinksAndDocs.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../constants.dart';
 import '../roundedContainer.dart';
 
@@ -13,23 +14,30 @@ class MediaWidget extends StatelessWidget {
       widget: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Media, Links, and docs',style: TextStyle(
-                  color: Constants.priColor,
-                  fontSize: Constants.smallFontSize
-              ),),
-              Row(
-                children: [
-                  Text(dummyData.media.length.toString(),style: TextStyle(
-                      color: Constants.priColor,
-                      fontSize: Constants.smallFontSize
-                  ),),
-                  Icon(Icons.arrow_forward_ios,color: Constants.priColor,size: Constants.smallFontSize,)
-                ],
-              ),
-            ],
+          InkWell(
+            onTap: (){
+              Get.to(()=>MediaLinksAndDocs(),arguments: {
+                'name' : dummyData.name
+              });
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Media, Links, and docs',style: TextStyle(
+                    color: Constants.priColor,
+                    fontSize: Constants.smallFontSize
+                ),),
+                Row(
+                  children: [
+                    Text(dummyData.media.length.toString(),style: TextStyle(
+                        color: Constants.priColor,
+                        fontSize: Constants.smallFontSize
+                    ),),
+                    Icon(Icons.arrow_forward_ios,color: Constants.priColor,size: Constants.smallFontSize,)
+                  ],
+                ),
+              ],
+            ),
           ),
           SizedBox(height: 10,),
           SizedBox(

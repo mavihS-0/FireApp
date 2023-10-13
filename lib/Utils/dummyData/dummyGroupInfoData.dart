@@ -1,6 +1,7 @@
 import 'package:fire_app/Utils/dummyData/dummyContacts.dart';
 
 class DummyGroupInfoData{
+  String name = 'Friends 🗿';
   String createdBy = 'Rahul';
   String dateCreated = '02/06/2023';
   String themeImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg';
