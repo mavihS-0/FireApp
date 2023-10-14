@@ -15,4 +15,6 @@ class Constants{
   static Color editableWidgetsColorChatScreen = const Color(0xFFB3B3B3);
   static Color editableWidgetsColorAddGroup = const Color(0xFFD7D7D7);
   static Color alertColor = const Color(0xFFFF0D0D);
+  static Color senderNameColor = const Color(0xFF1B418C);
+  static double timeFontSize = 10.0;
 }

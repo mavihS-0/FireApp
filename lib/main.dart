@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
         dialogBackgroundColor: Constants.secColor,
         textTheme: TextTheme(
           bodyMedium: TextStyle(
-            fontSize: 16
+            fontSize: 14
           )
         )
       ),
