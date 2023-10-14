@@ -1,7 +1,6 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Utils/chatScreenUtil/chatBubbleContainer.dart';
 import 'package:fire_app/Utils/chatScreenUtil/chatBubbleData.dart';
-import 'package:fire_app/Utils/chatScreenUtil/chatBubbles/textChatBubble.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,23 +61,27 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           children: [
             Expanded(
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                margin: EdgeInsets.symmetric(vertical: 5),
                 child: ListView.builder(
                   itemCount: dummyData.messages.length,
                   reverse: true,
                   itemBuilder: (context,i){
                     int index = dummyData.messages.length - i - 1;
                     bool _isMe = dummyData.messages[index]['sender'] == 'Me';
-                    return ChatBubbleContainer(
-                      isMe: _isMe,
-                      senderName: dummyData.messages[index]['sender'],
-                      time: dummyData.messages[index]['timestamp'],
-                      senderProfileURL: dummyData.messages[index]['senderProfileURL'],
-                      child: ChatBubbleData(
-                        type: dummyData.messages[index]['type'],
-                        content: dummyData.messages[index]['content'],
-                      ),
-                      viewedBy: dummyData.messages[index]['viewedBy'],
+                    return Stack(
+                      children: [
+                        ChatBubbleContainer(
+                          isMe: _isMe,
+                          senderName: dummyData.messages[index]['sender'],
+                          time: dummyData.messages[index]['timestamp'],
+                          senderProfileURL: dummyData.messages[index]['senderProfileURL'],
+                          child: ChatBubbleData(
+                            type: dummyData.messages[index]['type'],
+                            content: dummyData.messages[index]['content'],
+                          ),
+                          viewedBy: dummyData.messages[index]['viewedBy'],
+                        ),
+                      ]
                     );
                   },
                 ),
@@ -101,38 +104,40 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           Get.back();
         },
       ),
-      Row(
-        children: [
-          SizedBox(width: 5,),
-          ClipOval(
-            child: Image.network(
-              dummyData.groupIcon,
-              height: 40,
-              width: 40,
-              fit: BoxFit.cover,
+      Expanded(
+        child: Row(
+          children: [
+            SizedBox(width: 5,),
+            ClipOval(
+              child: Image.network(
+                dummyData.groupIcon,
+                height: 40,
+                width: 40,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          SizedBox(width: 10,),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(dummyData.name,style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold
-                ),),
-                //TODO: user status
-                Text(dummyData.participants.toString().substring(1,dummyData.participants.toString().length-1),style: TextStyle(
-                    fontSize: 12
-                ),),
-              ],
-            ),
-          ),
-        ],
+            SizedBox(width: 10,),
+            Expanded(child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(dummyData.name,style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                  ),),
+                  //TODO: user status
+                  Text(dummyData.participants.toString().substring(1,dummyData.participants.toString().length-1),style: TextStyle(
+                      fontSize: 12
+                  ),
+                  overflow: TextOverflow.ellipsis,),
+                ],
+              ),
+            ),)
+          ],
+        ),
       ),
-      Expanded(child: SizedBox()),
       customPopUpMenu('Group Info', (){
 
       }),

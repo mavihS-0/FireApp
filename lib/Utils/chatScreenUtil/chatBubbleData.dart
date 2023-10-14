@@ -1,3 +1,4 @@
+import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ChatBubbleData extends StatelessWidget {
@@ -8,7 +9,10 @@ class ChatBubbleData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if(type == 'text')
-      return Text(content);
+      return Text(content,style: TextStyle(
+        fontSize: Constants.mediumFontSize,
+        fontWeight: FontWeight.w400
+      ),);
     else if(type == 'image') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

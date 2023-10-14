@@ -28,10 +28,10 @@ class _ViewProfileState extends State<ViewProfile> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    Image.network(dummyData.pfpURL,
-                      height: 240,
-                      width: double.infinity,
-                      fit: BoxFit.fitWidth,),
+                    CircleAvatar(
+                      radius: 120,
+                      backgroundImage: NetworkImage(dummyData.pfpURL),
+                    ),
                     RoundedContainer(
                       widget: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

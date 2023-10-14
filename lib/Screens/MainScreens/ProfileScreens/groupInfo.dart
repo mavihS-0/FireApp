@@ -44,10 +44,11 @@ class _GroupInfoState extends State<GroupInfo> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Image.network(dummyData.pfpURL,
-                    height: 240,
-                    width: double.infinity,
-                    fit: BoxFit.fitWidth,),
+                  SizedBox(height: 5,),
+                  CircleAvatar(
+                    radius: 120,
+                    backgroundImage: NetworkImage(dummyData.pfpURL),
+                  ),
                   RoundedContainer(
                     widget: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

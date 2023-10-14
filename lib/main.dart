@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        fontFamily: GoogleFonts.roboto().fontFamily,
+        //fontFamily: GoogleFonts.roboto().fontFamily,
         colorScheme: ColorScheme.fromSeed(seedColor: Constants.secColor),
         appBarTheme: AppBarTheme(
           backgroundColor: Constants.priColor,
@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
         dialogBackgroundColor: Constants.secColor,
         textTheme: TextTheme(
           bodyMedium: TextStyle(
-            fontSize: 14
+            fontSize: 16,
           )
         )
       ),
