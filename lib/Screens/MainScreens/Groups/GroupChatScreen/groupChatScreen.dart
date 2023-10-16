@@ -59,6 +59,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         },
         child: Column(
           children: [
+            MembersScrollView(),
             Expanded(
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5),
@@ -297,5 +298,32 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         ),
       ),
     ) :SizedBox();
+  }
+
+  Widget MembersScrollView(){
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+          color: Colors.grey[200]
+      ),
+      child: ListView.builder(
+          itemCount: 10,
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context,index){
+            return Container(
+              padding: EdgeInsets.all(5),
+              child: CircleAvatar(
+                radius: 28,
+                backgroundColor: index%2==0?Colors.lightGreen:Colors.grey[200],
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDV6AFwPlhFA0lutcscKiTdqI-7Mi8IDjrJeLArcE&s'),
+                  radius: 25,
+                ),
+              ),
+            );
+          }
+      ),
+    );
   }
 }
