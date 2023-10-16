@@ -80,7 +80,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             type: dummyData.messages[index]['type'],
                             content: dummyData.messages[index]['content'],
                           ),
-                          viewedBy: dummyData.messages[index]['viewedBy'],
+                          viewedBy: dummyData.messages[index]['viewedBy'], dummyData: dummyData, index: index,
                         ),
                       ]
                     );
@@ -292,6 +292,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       child: EmojiPicker(
         onBackspacePressed: _onBackspacePressed,
         textEditingController: _messageController,
+        onEmojiSelected: (event,emoji){
+          print(_messageController.text);
+        },
         config: Config(
           columns: 7,
           emojiSizeMax: 32.0,
