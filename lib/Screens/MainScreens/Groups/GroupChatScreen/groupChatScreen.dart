@@ -1,6 +1,7 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Utils/chatScreenUtil/chatBubbleContainer.dart';
 import 'package:fire_app/Utils/chatScreenUtil/chatBubbleData.dart';
+import 'package:fire_app/Utils/chatScreenUtil/reactionUtil.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   bool _isAttachButtonPressed = false;
   TextEditingController _messageController = TextEditingController();
   FocusNode _textFocusNode = FocusNode();
+  ScrollController chatScrollController = ScrollController();
+  ReactionUtil reactionUtil = ReactionUtil();
 
   void _toggleKeyboard() {
     setState(() {
@@ -44,32 +47,37 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    reactionUtil.reactionKeyboardStream.listen((event) {
+      setState(() {
+        //print(_isEmojiKeyboardVisible);
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: appBar(),
       ),
-      body: GestureDetector(
-        onTap: (){
-          setState(() {
-            _isAttachButtonPressed = false;
-            _isEmojiKeyboardVisible = false;
-          });
-        },
-        child: Column(
-          children: [
-            MembersScrollView(),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                child: ListView.builder(
-                  itemCount: dummyData.messages.length,
-                  reverse: true,
-                  itemBuilder: (context,i){
-                    int index = dummyData.messages.length - i - 1;
-                    bool _isMe = dummyData.messages[index]['sender'] == 'Me';
-                    return Stack(
+      body: Column(
+        children: [
+          MembersScrollView(),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 5),
+              child: ListView.builder(
+                itemCount: dummyData.messages.length,
+                reverse: true,
+                controller: chatScrollController,
+                itemBuilder: (context,i){
+                  int index = dummyData.messages.length - i - 1;
+                  bool _isMe = dummyData.messages[index]['sender'] == 'Me';
+                  return Stack(
                       children: [
                         ChatBubbleContainer(
                           isMe: _isMe,
@@ -81,18 +89,27 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                             content: dummyData.messages[index]['content'],
                           ),
                           viewedBy: dummyData.messages[index]['viewedBy'], dummyData: dummyData, index: index,
+                          reactionUtil: reactionUtil,
                         ),
                       ]
-                    );
-                  },
-                ),
+                  );
+                },
               ),
             ),
-            AttachButton(_isAttachButtonPressed ? 90:0,),
-            ChatInput(),
-            EmojiPickerWidget()
-          ],
-        ),
+          ),
+          AttachButton(_isAttachButtonPressed ? 90:0,),
+          ChatInput(),
+          EmojiPickerWidget(),
+          reactionUtil.ReactionKeyboardWidget(
+              (category, emoji){
+                setState(() {
+                  dummyData.messages[reactionUtil.chatBubbleIndex]['reactions'].add(emoji.emoji);
+                  reactionUtil.changeReactionKeyboard(false);
+                  reactionUtil.isEmojiSelected = true;
+                });
+              }
+          ),
+        ],
       ),
     );
   }
@@ -254,50 +271,64 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Widget AttachButton(double containerHeight) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      height: containerHeight,
-      decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(10)
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          CustomAttachButton((){
-            setState(() {
-              _isAttachButtonPressed = false;
-            });
-          }, Icons.file_copy,Colors.purple),
-          CustomAttachButton((){
-            //TODO : on press
+    return TapRegion(
+      onTapOutside: (event){
+        setState(() {
+          _isAttachButtonPressed = false;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        margin: _isAttachButtonPressed ? EdgeInsets.all(10) : EdgeInsets.all(0),
+        padding: EdgeInsets.all(10),
+        height: containerHeight,
+        decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(10)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CustomAttachButton((){
+              setState(() {
+                _isAttachButtonPressed = false;
+              });
+            }, Icons.file_copy,Colors.purple),
+            CustomAttachButton((){
+              //TODO : on press
 
-          }, Icons.audiotrack,Colors.orange),
-          CustomAttachButton(()async{
-            setState(() {
-              _isAttachButtonPressed = false;
-            });
-          }, Icons.photo_library_sharp,Colors.pinkAccent),
-        ],
+            }, Icons.audiotrack,Colors.orange),
+            CustomAttachButton(()async{
+              setState(() {
+                _isAttachButtonPressed = false;
+              });
+            }, Icons.photo_library_sharp,Colors.pinkAccent),
+          ],
+        ),
       ),
     );
   }
 
   Widget EmojiPickerWidget() {
-    return _isEmojiKeyboardVisible ? Container(
-      height: 270,
-      child: EmojiPicker(
-        onBackspacePressed: _onBackspacePressed,
-        textEditingController: _messageController,
-        onEmojiSelected: (event,emoji){
-          print(_messageController.text);
-        },
-        config: Config(
-          columns: 7,
-          emojiSizeMax: 32.0,
+    return _isEmojiKeyboardVisible ? TapRegion(
+      onTapOutside: (event){
+        setState(() {
+          _isEmojiKeyboardVisible = false;
+        });
+      },
+      child: Container(
+        height: 270,
+        child: EmojiPicker(
+          onBackspacePressed: _onBackspacePressed,
+          textEditingController: _messageController,
+          onEmojiSelected: (event,emoji){
+            print(_messageController.text);
+          },
+          config: Config(
+            columns: 7,
+            emojiSizeMax: 32.0,
+          ),
         ),
       ),
     ) :SizedBox();

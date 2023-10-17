@@ -1,7 +1,7 @@
+import 'package:fire_app/Utils/chatScreenUtil/reactionUtil.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ChatBubbleContainer extends StatefulWidget {
   final Widget child;
@@ -12,6 +12,7 @@ class ChatBubbleContainer extends StatefulWidget {
   final String time;
   final int index;
   final DummyGroupChatScreenData dummyData;
+  final ReactionUtil reactionUtil;
   const ChatBubbleContainer(
       {Key? key,
       required this.child,
@@ -21,6 +22,7 @@ class ChatBubbleContainer extends StatefulWidget {
       this.senderName,
       required this.time,
       required this.dummyData,
+      required this.reactionUtil,
       required this.index})
       : super(key: key);
 
@@ -36,6 +38,12 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
   List commonEmojis = ['👍','♥','😂','😢','😡','😯'];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isMe = widget.isMe;
     String? senderProfileURL = widget.senderProfileURL;
@@ -45,8 +53,13 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
     Widget child = widget.child;
     DummyGroupChatScreenData dummyData = widget.dummyData;
     int dataIndex = widget.index;
+    if(widget.index == widget.reactionUtil.chatBubbleIndex && widget.reactionUtil.isEmojiSelected){
+      showOverlay = false;
+      widget.reactionUtil.chatBubbleIndex = -1;
+    }
 
-    if(firstCall) WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    if(firstCall) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       final renderBox = context.findRenderObject() as RenderBox;
       final size = renderBox.size;
       setState(() {
@@ -54,6 +67,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
         overlayHeigh = size.height;
       });
     });
+    }
 
     return Stack(
       children: [
@@ -200,11 +214,14 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                 child: Row(
                   children: List.generate(7, (index){
                     return InkWell(
-                      onTap: (){
-                        index!=6?setState(() {
+                      onTap: index!=6?(){
+                        setState(() {
                           dummyData.messages[dataIndex]['reactions'].add(commonEmojis[index]);
                           showOverlay = false;
-                        }):print('add');
+                        });
+                        } : (){
+                        widget.reactionUtil.changeReactionKeyboard(true);
+                        widget.reactionUtil.chatBubbleIndex = widget.index;
                       },
                       child: SizedBox(
                         height: 50,
