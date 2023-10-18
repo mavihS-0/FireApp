@@ -32,4 +32,8 @@ class ReactionUtil{
       ),
     ) :SizedBox();
   }
+
+  void dispose(){
+    _keyboardStreamController.close();
+  }
 }

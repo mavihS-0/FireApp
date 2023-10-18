@@ -25,10 +25,7 @@ class DummyGroupChatScreenData{
       'sender' : 'Shivam',
       'senderProfileURL' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU',
       'status' : 'sent',
-      'viewedBy' : ['https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU',
-        'https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg',
-      ],
+      'viewedBy' : [],
       'reactions' : ['👍','♥']
     },
    {
@@ -41,10 +38,7 @@ class DummyGroupChatScreenData{
       'senderProfileURL' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU',
       'sender' : 'Me',
       'status' : 'sent',
-      'viewedBy' : ['https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU',
-        'https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU'
+      'viewedBy' : [
       ],
       'reactions' : ['♥']
     },
@@ -55,8 +49,7 @@ class DummyGroupChatScreenData{
       'sender' : 'Rahul Sharma',
       'senderProfileURL' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU',
       'status' : 'sent',
-      'viewedBy' : ['https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU'
+      'viewedBy' : [
       ],
       'reactions' : []
     },
@@ -77,7 +70,7 @@ class DummyGroupChatScreenData{
       'sender' : 'Mav',
       'senderProfileURL' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU',
       'status' : 'sent',
-      'viewedBy' : [],
+      'viewedBy' : ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_azxknR2LOno_BTqO4IAiq8gLGIqj2SY1xw&usqp=CAU'],
       'reactions' : ['👍','♥']
     },
     {

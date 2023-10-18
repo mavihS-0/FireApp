@@ -1,4 +1,4 @@
-import 'package:fire_app/Utils/chatScreenUtil/reactionUtil.dart';
+import 'package:fire_app/Utils/groupChatScreenUtil/reactionUtil.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ class ChatBubbleContainer extends StatefulWidget {
   final Widget child;
   final bool isMe;
   final String? senderProfileURL;
-  final List? viewedBy;
+  final List? seenSoFar;
   final String? senderName;
   final String time;
   final int index;
@@ -18,7 +18,7 @@ class ChatBubbleContainer extends StatefulWidget {
       required this.child,
       required this.isMe,
       this.senderProfileURL,
-      this.viewedBy,
+      this.seenSoFar,
       this.senderName,
       required this.time,
       required this.dummyData,
@@ -34,8 +34,8 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
 
   double overlayHeigh = 0;
   bool showOverlay = false;
-  bool firstCall = true;
   List commonEmojis = ['👍','♥','😂','😢','😡','😯'];
+  int callCount = 0;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
   Widget build(BuildContext context) {
     bool isMe = widget.isMe;
     String? senderProfileURL = widget.senderProfileURL;
-    List? viewedBy = widget.viewedBy;
+    List? seenSoFar = widget.seenSoFar;
     String? senderName = widget.senderName;
     String time = widget.time;
     Widget child = widget.child;
@@ -57,13 +57,12 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
       showOverlay = false;
       widget.reactionUtil.chatBubbleIndex = -1;
     }
-
-    if(firstCall) {
+    callCount+=1;
+    if(callCount == 2){
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       final renderBox = context.findRenderObject() as RenderBox;
       final size = renderBox.size;
       setState(() {
-        firstCall = false;
         overlayHeigh = size.height;
       });
     });
@@ -134,37 +133,14 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                                   ],
                                 ),
                               ),
-                              if(viewedBy!.isNotEmpty || dummyData.messages[dataIndex]['reactions'].isNotEmpty)
-                                Row(
-                                  mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 25,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        shrinkWrap: true,
-                                        itemCount: viewedBy!.length > 4 ? 4 : viewedBy!.length,
-                                        itemBuilder: (context, index){
-                                          return SizedBox(
-                                              height: 16,
-                                              width: 16,
-                                              child: CircleAvatar(
-                                                backgroundImage: NetworkImage(viewedBy![index]),
-                                              )
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  ],
-                                ),
+                              SizedBox(height: dummyData.messages[dataIndex]['reactions'].isNotEmpty ? 12 : 0,),
                             ],
                           ),
                         ),
                         dummyData.messages[dataIndex]['reactions'].isNotEmpty ?
                         Positioned(
-                          bottom: 3,
-                          right: isMe ? null : 0,
-                          left: isMe ? 0 : null,
+                          bottom: 0,
+                          left: 0,
                           child: Container(
                             height: 30,
                             width: dummyData.messages[dataIndex]['reactions'].length==1 ? 35 : 50,
@@ -186,6 +162,26 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                     ),
                   ],
                 ),
+                seenSoFar!.isNotEmpty ? Align(
+                  alignment: Alignment.bottomRight,
+                  child: SizedBox(
+                    height: 25,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: seenSoFar!.length > 4 ? 4 : seenSoFar!.length,
+                      itemBuilder: (context, index){
+                        return SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(seenSoFar![index]),
+                            )
+                        );
+                      },
+                    ),
+                  ),
+                ) : SizedBox()
               ],
             ),
           ),
