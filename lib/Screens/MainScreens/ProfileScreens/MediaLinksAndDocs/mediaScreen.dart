@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../../../../Utils/constants.dart';
+import '../../../OtherScreens/imagePreview.dart';
 
 class MediaScreen extends StatelessWidget {
   const MediaScreen({Key? key}) : super(key: key);
@@ -30,7 +31,9 @@ class MediaSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
+        Container(
+          color: Colors.white,
+          width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
           child: Text(title,style: TextStyle(
               color: Constants.FGcolor,
@@ -45,11 +48,13 @@ class MediaSection extends StatelessWidget {
           ),
           itemCount: media.length,
           itemBuilder: (context,index){
-            return Container(
+            return InkWell(
+              onTap: (){
+                Get.to(()=>ImagePreview());
+              },
+              child: Image.asset('assets/home_page/no_chat.png',
               height: 100,
-              decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.5)
-              ),
+              fit: BoxFit.fitHeight,),
             );
           },
         ),

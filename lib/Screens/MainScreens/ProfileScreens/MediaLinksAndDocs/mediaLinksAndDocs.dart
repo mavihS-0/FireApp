@@ -1,3 +1,5 @@
+import 'package:fire_app/Screens/MainScreens/ProfileScreens/MediaLinksAndDocs/documentsScreen.dart';
+import 'package:fire_app/Screens/MainScreens/ProfileScreens/MediaLinksAndDocs/linksScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../Utils/constants.dart';
@@ -49,8 +51,8 @@ class _MediaLinksAndDocsState extends State<MediaLinksAndDocs> {
       body: TabBarView(
         children: <Widget>[
           MediaScreen(),
-          SizedBox(),
-          SizedBox(),
+          DocumentsScreen(),
+          LinksScreen(),
         ],
       ),
     ));
