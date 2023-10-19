@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Utils/groupChatScreenUtil/chatBubbleContainer.dart';
 import 'package:fire_app/Utils/groupChatScreenUtil/chatBubbleData.dart';
@@ -152,12 +153,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
           children: [
             SizedBox(width: 5,),
             ClipOval(
-              child: Image.network(
-                dummyData.groupIcon,
+              child: CachedNetworkImage(
+                imageUrl: dummyData.groupIcon,
                 height: 40,
                 width: 40,
                 fit: BoxFit.cover,
-              ),
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error,color: Constants.FGcolor),
+              )
             ),
             SizedBox(width: 10,),
             Expanded(child: Padding(
@@ -365,7 +368,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
                 radius: 28,
                 backgroundColor: index%2==0?Colors.lightGreen:Colors.grey[200],
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDV6AFwPlhFA0lutcscKiTdqI-7Mi8IDjrJeLArcE&s'),
+                  backgroundImage: CachedNetworkImageProvider(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDV6AFwPlhFA0lutcscKiTdqI-7Mi8IDjrJeLArcE&s',
+                  ),
                   radius: 25,
                 ),
               ),

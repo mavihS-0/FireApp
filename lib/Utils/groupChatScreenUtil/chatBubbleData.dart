@@ -21,6 +21,17 @@ class ChatBubbleData extends StatelessWidget {
           CachedNetworkImage(
             imageUrl : content['imageURL'],
             placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) {
+              return Column(
+                children: [
+                  Icon(Icons.error,color: Constants.FGcolor.withOpacity(0.4)),
+                  Text('Image not found',style: TextStyle(
+                    fontSize: Constants.mediumFontSize,
+                    fontWeight: FontWeight.w400
+                  ),)
+                ],
+              );
+            },
           ),
           SizedBox(height: 5,),
           if(content['caption'] != '') Text(content['caption'])

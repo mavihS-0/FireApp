@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fire_app/Utils/groupChatScreenUtil/reactionUtil.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
@@ -89,7 +90,11 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                         height: 36,
                         width: 36,
                         child: ClipOval(
-                          child: Image.network(senderProfileURL!),
+                          child: CachedNetworkImage(
+                            imageUrl: senderProfileURL!,
+                            placeholder: (context, url) => const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => Icon(Icons.error,color: Constants.FGcolor.withOpacity(0.4)),
+                          ),
                         ),
                       ),
                     if(!isMe) SizedBox(width: 5,),
@@ -175,7 +180,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                             height: 16,
                             width: 16,
                             child: CircleAvatar(
-                              backgroundImage: NetworkImage(seenSoFar![index]),
+                              backgroundImage: CachedNetworkImageProvider(seenSoFar![index]),
                             )
                         );
                       },

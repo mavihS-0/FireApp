@@ -31,7 +31,7 @@ class DummyGroupChatScreenData{
    {
       'type' : 'image',
        'content' : {
-         'imageURL' : 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg',
+         'imageURL' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDV6AFwPlhFA0lutcscKiTdqI-7Mi8IDjrJeLArcE&s',
          'caption' : ''
        },
       'timestamp' : '8:00 PM',

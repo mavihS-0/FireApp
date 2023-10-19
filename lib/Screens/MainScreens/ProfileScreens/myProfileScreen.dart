@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fire_app/Utils/dummyData/profileDummyData.dart';
 import 'package:fire_app/Utils/roundedContainer.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +29,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               widget: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
+                  CachedNetworkImage(
+                    imageUrl: dummyData.profileURL,
+                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) {
+                      return Icon(Icons.error, color: Constants.FGcolor);
+                    },
                     height: 80,
                     width: 80,
-                    child: ClipOval(
-                      child: Image.network(dummyData.profileURL),
-                    ),
                   ),
                   Expanded(
                     child: Column(
@@ -89,7 +92,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 40,
                             width: 40,
                             child: ClipOval(
-                              child: Image.network(dummyData.groupData[index].pfpURL),
+                              child: CachedNetworkImage(
+                                imageUrl: dummyData.groupData[index].pfpURL,
+                                placeholder: (context, url) => const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>  Icon(Icons.error,color: Constants.FGcolor.withOpacity(0.4)),
+                              ),
                             ),
                           ),
                           SizedBox(width: 10,),
