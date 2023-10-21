@@ -7,7 +7,8 @@ import '../../../../Utils/constants.dart';
 
 
 class FilePickerScreen extends StatefulWidget {
-  const FilePickerScreen({Key? key}) : super(key: key);
+  final bool isAudio;
+  const FilePickerScreen({Key? key, required this.isAudio}) : super(key: key);
 
   @override
   State<FilePickerScreen> createState() => _FilePickerScreenState();
@@ -28,7 +29,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
           'fileName' : element.name,
         },
         'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
-        'type' : 'fileUploading',
+        'type' : widget.isAudio?'audioUploading':'fileUploading',
       });
     });
     Get.back();
@@ -38,7 +39,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'txt'], // Customize the allowed file types
+        allowedExtensions: widget.isAudio ? ['wav','mp3']:['pdf', 'doc', 'docx', 'txt'], // Customize the allowed file types
         allowMultiple: true, // Allow multiple file selection
       );
 
@@ -48,6 +49,8 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
             _selectedFiles.add(element);
           });
         });
+      }else{
+        Get.back();
       }
     } catch (e) {
       Get.snackbar('Error', e.toString());

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/cameraImagePickerScreen.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/filePickerScreen.dart';
+import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/imagePickerScreen.dart';
 import 'package:fire_app/Utils/groupChatScreenUtil/chatBubbleContainer.dart';
 import 'package:fire_app/Utils/groupChatScreenUtil/chatBubbleData.dart';
 import 'package:fire_app/Utils/groupChatScreenUtil/reactionUtil.dart';
@@ -129,7 +132,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
           reactionUtil.ReactionKeyboardWidget(
               (category, emoji){
                 setState(() {
-                  dummyData.messages[reactionUtil.chatBubbleIndex]['reactions'].add(emoji.emoji);
+                  reactionUtil.addEmoji(dummyData.messages[reactionUtil.chatBubbleIndex], emoji.emoji);
                   reactionUtil.changeReactionKeyboard(false);
                   reactionUtil.isEmojiSelected = true;
                 });
@@ -268,7 +271,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
                   !_isNotTyping?SizedBox():
                   IconButton(
                       onPressed: (){
-
+                        Get.to(()=>CameraImagePickerScreen(),
+                            arguments: {
+                              'pid' : '',
+                              'friendUid' : '',
+                            });
                       },
                       icon: Icon(Icons.camera_alt,color: Constants.editableWidgetsColorChatScreen,))
                 ],
@@ -319,14 +326,28 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
             setState(() {
               _isAttachButtonPressed = false;
             });
+            Get.to(()=>FilePickerScreen(isAudio: false,),arguments: {
+              'pid' : '',
+              'friendUid' : '',
+            });
           }, Icons.file_copy,Colors.purple),
           CustomAttachButton((){
             //TODO : on press
-
+            setState(() {
+              _isAttachButtonPressed = false;
+            });
+            Get.to(()=>FilePickerScreen(isAudio: true,),arguments: {
+              'pid' : '',
+              'friendUid' : '',
+            });
           }, Icons.audiotrack,Colors.orange),
           CustomAttachButton(()async{
             setState(() {
               _isAttachButtonPressed = false;
+            });
+            Get.to(()=>ImagePickerScreen(),arguments: {
+              'pid' : '',
+              'friendUid' : '',
             });
           }, Icons.photo_library_sharp,Colors.pinkAccent),
         ],

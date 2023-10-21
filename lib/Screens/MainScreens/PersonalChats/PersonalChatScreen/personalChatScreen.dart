@@ -90,13 +90,20 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
             setState(() {
               _isAttachButtonPressed = false;
             });
-            Get.to(()=>FilePickerScreen(),arguments: {
+            Get.to(()=>FilePickerScreen(isAudio: false,),arguments: {
               'pid' : Get.arguments['pid'],
               'friendUid' : Get.arguments['friendUid'],
             });
           }, Icons.file_copy,Colors.purple),
           CustomAttachButton((){
             //TODO : on press
+            setState(() {
+              _isAttachButtonPressed = false;
+            });
+            Get.to(()=>FilePickerScreen(isAudio: true,),arguments: {
+              'pid' : Get.arguments['pid'],
+              'friendUid' : Get.arguments['friendUid'],
+            });
           }, Icons.audiotrack,Colors.orange),
           CustomAttachButton(()async{
             setState(() {
@@ -533,9 +540,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                                       UploadingFileBuilder(fileData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']):
                                                       messageData[messageIds[index]]['type']=='file'?
                                                       ChatScreenFileWidget(fileData: messageData[messageIds[index]]):
-                                                      messageData[messageIds[index]]['type']=='audio' ? messageData[messageIds[index]]['status']=='uploading'?
+                                                      messageData[messageIds[index]]['type']=='audioUploading' ?
                                                       UploadingAudioWidget(audioData: messageData[messageIds[index]], mid: messageIds[index], pid: Get.arguments['pid'],friendUid: Get.arguments['friendUid'])
-                                                      : ChatScreenAudioWidget(audioData: messageData[messageIds[index]]) : SizedBox(),
+                                                      : messageData[messageIds[index]]['status']== 'audio' ? ChatScreenAudioWidget(audioData: messageData[messageIds[index]]) : SizedBox(),
                                                       // ChatScreenAudioWidget(audioData: messageData[messageIds[index]],mid: messageIds[index], pid: Get.arguments['pid'], friendUid: Get.arguments['friendUid']) : SizedBox(),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.end,

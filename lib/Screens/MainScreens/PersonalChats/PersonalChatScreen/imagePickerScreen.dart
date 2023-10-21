@@ -34,6 +34,9 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
         }));
       });
     }
+    if(_selectedImages.isEmpty){
+      Get.back();
+    }
   }
 
   Future<void> _sendImages() async{

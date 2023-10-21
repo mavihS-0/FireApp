@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/cupertino.dart';
 
 class ReactionUtil{
@@ -35,5 +36,27 @@ class ReactionUtil{
 
   void dispose(){
     _keyboardStreamController.close();
+  }
+
+  void addEmoji(Map data,String emoji){
+    int index =-1;
+    if (data['reactions'].contains(emoji)){
+      index = data['reactions'].indexOf(emoji);
+      data['reactionUsers'][index].add('Me');
+    }
+    else {
+      data['reactions'].add(emoji);
+      index = data['reactions'].length -1 ;
+      data['reactionUsers'].add(['Me']);
+    }
+  }
+
+  num getTotalLength(Map data){
+    List l1 =data['reactionUsers'];
+    num total =0;
+    l1.forEach((element) {
+      total += element.length;
+    });
+    return total;
   }
 }

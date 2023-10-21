@@ -58,8 +58,7 @@ class AudioRecordUtil{
         'audioURL' : outputFilePath
       },
       'timestamp' : DateTime.now().millisecondsSinceEpoch.toString(),
-      'type' : 'audio',
-      'status' : 'uploading'
+      'type' : 'audioUploading',
     });
   }
 

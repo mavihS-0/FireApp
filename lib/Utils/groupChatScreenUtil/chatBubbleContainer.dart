@@ -210,14 +210,14 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                             },
                             child: Container(
                               height: 30,
-                              width: dummyData.messages[dataIndex]['reactions'].length==1 ? 35 : 50,
+                              width: widget.reactionUtil.getTotalLength(dummyData.messages[dataIndex])==1 ? 35 : 50,
                               decoration: BoxDecoration(
                                   color: Constants.priColor,
                                   borderRadius: BorderRadius.circular(30)
                               ),
                               child: Center(
-                                child: Text(dummyData.messages[dataIndex]['reactions'].length==1 ? dummyData.messages[dataIndex]['reactions'][0] :
-                                  '${dummyData.messages[dataIndex]['reactions'][0]} ${dummyData.messages[dataIndex]['reactions'].length}' ,
+                                child: Text(widget.reactionUtil.getTotalLength(dummyData.messages[dataIndex])==1 ? dummyData.messages[dataIndex]['reactions'][0] :
+                                  '${dummyData.messages[dataIndex]['reactions'][0]} ${widget.reactionUtil.getTotalLength(dummyData.messages[dataIndex])}',
                                   style: TextStyle(
                                     color: Constants.secColor
                                   ),
@@ -280,7 +280,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                     return InkWell(
                       onTap: index!=6?(){
                         setState(() {
-                          dummyData.messages[dataIndex]['reactions'].add(commonEmojis[index]);
+                          widget.reactionUtil.addEmoji(dummyData.messages[dataIndex], commonEmojis[index]);
                           showOverlay = false;
                         });
                         } : (){

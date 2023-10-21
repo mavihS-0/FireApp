@@ -29,6 +29,8 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
       setState(() {
         _capturedImage = image;
       });
+    }else{
+      Get.back();
     }
   }
 
