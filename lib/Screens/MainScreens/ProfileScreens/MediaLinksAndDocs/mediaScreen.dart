@@ -50,7 +50,9 @@ class MediaSection extends StatelessWidget {
           itemBuilder: (context,index){
             return InkWell(
               onTap: (){
-                Get.to(()=>ImagePreview());
+                Get.to(()=>ImagePreview(),arguments: {
+                  'imageURL' : 'assets/home_page/no_chat.png',
+                });
               },
               child: Image.asset('assets/home_page/no_chat.png',
               height: 100,

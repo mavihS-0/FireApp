@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Screens/MainScreens/PersonalChats/PersonalChatScreen/cameraImagePickerScreen.dart';
 import 'package:fire_app/Screens/MainScreens/test.dart';
@@ -44,8 +45,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
   DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
   String? myUid = FirebaseAuth.instance.currentUser?.uid;
   String recName = '...';
-  String recProfileImg =Hive.box('imageData').get('profileIcons')[Get.arguments['pid']]['local'];
+  // String recProfileImg =Hive.box('imageData').get('profileIcons')[Get.arguments['pid']]['local'];
   String myName = '...';
+  String recProfileImg = 'https://firebasestorage.googleapis.com/v0/b/fireapp-a5221.appspot.com/o/new_profile.png?alt=media&token=00795532-a3e8-4088-b335-ce23ee6750d3&_gl=1*1rqbd46*_ga*MTk4NjQ4MTI2OC4xNjg3Njk1MDg2*_ga_CW55HF8NVT*MTY5Nzg2ODYwNy4xMC4xLjE2OTc4Njg3MTguMTYuMC4w';
   final ScrollController _scrollController = ScrollController();
   bool emojiKeyboard = false;
   Map <dynamic,dynamic> messageData = {};
@@ -55,7 +57,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
   bool _isAttachButtonPressed = false;
   bool _isRecording = false;
   bool _isRecorded = false;
-  final FlutterSoundRecord recorder = FlutterSoundRecord();
+  //final FlutterSoundRecord recorder = FlutterSoundRecord();
   AudioRecordUtil audioUtil = AudioRecordUtil();
   ChatImageUtil chatImageUtil = ChatImageUtil();
 
@@ -173,8 +175,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    recorder.dispose();
-    chatImageUtil.dispose();
+    //recorder.dispose();
+    //chatImageUtil.dispose();
     audioUtil.dispose();
   }
 
@@ -275,18 +277,18 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                 child: _isNotTyping ? GestureDetector(
                   child: Icon(Icons.mic,color: Colors.blue,),
                   onLongPressStart: (_)async{
-                    setState(() {
-                      _isRecorded = false;
-                    });
-
-                    audioUtil.startRecording(recorder);
+                    // setState(() {
+                    //   _isRecorded = false;
+                    // });
+                    //
+                    // audioUtil.startRecording(recorder);
                   },
                   onLongPressEnd: (_)async{
-                    await audioUtil.stopRecording(recorder);
-                    await audioUtil.setAudio();
-                    setState(() {
-                      _isRecorded = true;
-                    });
+                    // await audioUtil.stopRecording(recorder);
+                    // await audioUtil.setAudio();
+                    // setState(() {
+                    //   _isRecorded = true;
+                    // });
                     // audioUtil.uploadAudioInstance(messageRef);
                   },
                 ) :
@@ -314,25 +316,25 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     );
   }
 
-  Future <void> saveImagesToLocal()async{
-    var dataBox = Hive.box('imageData');
-    Map presentData = dataBox.get('chats');
-    Map dataIndices = dataBox.get('indices');
-    String pid = Get.arguments['pid'];
-    chatImageUtil.notSavedToLocal.forEach((key, value) async {
-      final httpsReference = FirebaseStorage.instance.refFromURL(chatImageUtil.notSavedToLocal[key]);
-      final appDocDir = await getApplicationDocumentsDirectory();
-      dataIndices['chatImageCounter'] += 1;
-      String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
-      final file = File(filePath);
-      await httpsReference.writeToFile(file);
-      presentData['images']['$pid+$key'] = filePath;
-    });
-    await dataBox.put('chats', presentData);
-    await dataBox.put('incides',dataIndices);
-    setState(() {
-    });
-  }
+  // Future <void> saveImagesToLocal()async{
+  //   var dataBox = Hive.box('imageData');
+  //   Map presentData = dataBox.get('chats');
+  //   Map dataIndices = dataBox.get('indices');
+  //   String pid = Get.arguments['pid'];
+  //   chatImageUtil.notSavedToLocal.forEach((key, value) async {
+  //     final httpsReference = FirebaseStorage.instance.refFromURL(chatImageUtil.notSavedToLocal[key]);
+  //     final appDocDir = await getApplicationDocumentsDirectory();
+  //     dataIndices['chatImageCounter'] += 1;
+  //     String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
+  //     final file = File(filePath);
+  //     await httpsReference.writeToFile(file);
+  //     presentData['images']['$pid+$key'] = filePath;
+  //   });
+  //   await dataBox.put('chats', presentData);
+  //   await dataBox.put('incides',dataIndices);
+  //   setState(() {
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -353,14 +355,14 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                 final userData = Map<dynamic, dynamic>.from(
                     (snapshot.data! as DatabaseEvent).snapshot.value
                     as Map<dynamic, dynamic>);
-                recName = userData['name'];
-                //recProfileImg = userData['profileImg'];
+                // recName = userData['name'];
+                recProfileImg = userData['profileImg'];
                 return Row(
                   children: [
                     SizedBox(width: 5,),
                     ClipOval(
-                      child: Image.file(
-                        File(recProfileImg),
+                      child: CachedNetworkImage(
+                        imageUrl: userData['profileImg'],
                         height: 40,
                         width: 40,
                         fit: BoxFit.cover,
@@ -412,7 +414,6 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  //height: (MediaQuery.of(context).size.height*0.82)-(_isEmojiKeyboardVisible?270:0),
                   child: StreamBuilder(
                     stream: messageRef.child('messages').orderByChild('timestamp').onValue,
                     builder: (context, snapshot2){
@@ -423,13 +424,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                               as Map<dynamic, dynamic>);
                           messageData = orderData(messageData);
                           List messageIds = messageData.keys.toList().reversed.toList();
-                          chatImageUtil.getLocal(messageData,Get.arguments['pid']);
-                          saveImagesToLocal();
-                          // WidgetsBinding.instance!.addPostFrameCallback((_) {
-                          //   _scrollController.jumpTo(
-                          //     _scrollController.position.maxScrollExtent,
-                          //   );
-                          // });
+                          // chatImageUtil.getLocal(messageData,Get.arguments['pid']);
+                          // saveImagesToLocal();
                           return SingleChildScrollView(
                             reverse: true,
                             child: Container(
@@ -453,7 +449,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             CircleAvatar(
-                                              backgroundImage: FileImage(File(recProfileImg)),
+                                              backgroundImage: CachedNetworkImageProvider(recProfileImg),
                                               radius: 15,
                                             ),
                                             SizedBox(width: 10,),
@@ -472,11 +468,13 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(recName,style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.blue[900],
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Constants.senderNameColor,
                                                   ),),
                                                   messageData[messageIds[index]]['type']=='text'?
-                                                  Text(messageData[messageIds[index]]['content']):
+                                                  Text(messageData[messageIds[index]]['content'],style: TextStyle(
+                                                    fontSize: Constants.mediumFontSize
+                                                  ),):
                                                   messageData[messageIds[index]]['type']=='image'?
                                                   chatImageUtil.chatScreenImageBuilder(messageData[messageIds[index]], messageIds[index]) :
                                                   messageData[messageIds[index]]['type']=='imageUploading'?
@@ -487,8 +485,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
-                                                          color: Colors.blue[900],
-                                                          fontWeight: FontWeight.w400
+                                                          color: Constants.senderNameColor,
+                                                          fontWeight: FontWeight.w400,
+                                                        fontSize: Constants.timeFontSize
                                                       ),),
                                                     ],
                                                   )
@@ -519,11 +518,13 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(myName,style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.blue[900],
+                                                          fontWeight: FontWeight.w600,
+                                                          color: Constants.senderNameColor,
                                                       ),),
                                                       messageData[messageIds[index]]['type']=='text'?
-                                                      Text(messageData[messageIds[index]]['content']):
+                                                      Text(messageData[messageIds[index]]['content'],style: TextStyle(
+                                                          fontSize: Constants.mediumFontSize
+                                                      ),):
                                                       messageData[messageIds[index]]['type']=='image'?
                                                       chatImageUtil.chatScreenImageBuilder(messageData[messageIds[index]], messageIds[index]) :
                                                       messageData[messageIds[index]]['type']=='imageUploading'?
@@ -540,8 +541,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                                         mainAxisAlignment: MainAxisAlignment.end,
                                                         children: [
                                                           Text(timestampToTime(int.parse(messageData[messageIds[index]]['timestamp'])), style: TextStyle(
-                                                              color: Colors.blue[900],
-                                                              fontWeight: FontWeight.w400
+                                                              color: Constants.senderNameColor,
+                                                              fontWeight: FontWeight.w400,
+                                                            fontSize: Constants.timeFontSize
                                                           ),),
                                                         ],
                                                       )
@@ -550,7 +552,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                                                 ),
                                                 SizedBox(height: 10,),
                                                 CircleAvatar(
-                                                  backgroundImage: FileImage(File(recProfileImg)),
+                                                  backgroundImage: CachedNetworkImageProvider(recProfileImg),
                                                   radius: 10,
                                                 )
                                               ],

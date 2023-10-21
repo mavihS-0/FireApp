@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fire_app/Screens/OtherScreens/imagePreview.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ChatBubbleData extends StatelessWidget {
   final String type;
@@ -18,20 +20,33 @@ class ChatBubbleData extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CachedNetworkImage(
-            imageUrl : content['imageURL'],
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) {
-              return Column(
-                children: [
-                  Icon(Icons.error,color: Constants.FGcolor.withOpacity(0.4)),
-                  Text('Image not found',style: TextStyle(
-                    fontSize: Constants.mediumFontSize,
-                    fontWeight: FontWeight.w400
-                  ),)
-                ],
-              );
+          InkWell(
+            onTap: (){
+              Get.to(()=>ImagePreview(),arguments: {
+                'imageURL' : content['imageURL'],
+              });
             },
+            child: CachedNetworkImage(
+              imageUrl : content['imageURL'],
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              imageBuilder: (context,image){
+                return ClipRRect(
+                  child: Image(image: image,),
+                  borderRadius: BorderRadius.circular(10),
+                );
+              },
+              errorWidget: (context, url, error) {
+                return Column(
+                  children: [
+                    Icon(Icons.error,color: Constants.FGcolor.withOpacity(0.4)),
+                    Text('Image not found',style: TextStyle(
+                      fontSize: Constants.mediumFontSize,
+                      fontWeight: FontWeight.w400
+                    ),)
+                  ],
+                );
+              },
+            ),
           ),
           SizedBox(height: 5,),
           if(content['caption'] != '') Text(content['caption'])

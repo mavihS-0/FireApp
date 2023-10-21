@@ -45,17 +45,17 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
         await _uploadTask!.whenComplete(() async {
           String downloadUrl = await reference.getDownloadURL();
           DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(pid);
-
-          Map presentData = await imageDataBox.get('chats');
-          Map dataIndices = await imageDataBox.get('indices');
-          //final httpsReference = FirebaseStorage.instance.refFromURL(widget.imageData['content']['imageURL']);
-          final appDocDir = await getApplicationDocumentsDirectory();
-          dataIndices['chatImageCounter'] += 1;
-          String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
-          await _imageFile.copy(filePath);
-          presentData['images']['${widget.pid}+${widget.mid}'] = filePath;
-          await imageDataBox.put('chats', presentData);
-          await imageDataBox.put('incides',dataIndices);
+          //
+          // Map presentData = await imageDataBox.get('chats');
+          // Map dataIndices = await imageDataBox.get('indices');
+          // //final httpsReference = FirebaseStorage.instance.refFromURL(widget.imageData['content']['imageURL']);
+          // final appDocDir = await getApplicationDocumentsDirectory();
+          // dataIndices['chatImageCounter'] += 1;
+          // String filePath = '${appDocDir.path}/Media/images/FireAppIMG${dataIndices['chatImageCounter']}';
+          // await _imageFile.copy(filePath);
+          // presentData['images']['${widget.pid}+${widget.mid}'] = filePath;
+          // await imageDataBox.put('chats', presentData);
+          // await imageDataBox.put('incides',dataIndices);
           await FirebaseDatabase.instance.ref('personalChatList').child(friendUid).child(FirebaseAuth.instance.currentUser!.uid).update(
               {
                 'lastMessage' : '[image] ${imageData['content']['caption']}',

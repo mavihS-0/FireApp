@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fire_app/Screens/OtherScreens/imagePreview.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
+import 'package:get/get.dart';
 
 class PfpDialogBox extends StatelessWidget {
   final dummyData;
@@ -18,27 +20,34 @@ class PfpDialogBox extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: dummyData.pfpURL,
-                    height: 226,
-                    width: 250,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) => Center(
-                      child: Container(
-                        height: 226,
-                        width: 250,
-                        color: Constants.scaffoldBGColor,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.error,color: Constants.FGcolor,size: 50,),
-                            SizedBox(height: 10,),
-                            Text('Error loading image',style: TextStyle(
-                                color: Constants.FGcolor
-                            ),)
-                          ],
-                        )
+                  GestureDetector(
+                    onTap: (){
+                      Get.to(()=>ImagePreview(),arguments: {
+                        'imageURL' : dummyData.pfpURL
+                      });
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: dummyData.pfpURL,
+                      height: 226,
+                      width: 250,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Center(
+                        child: Container(
+                          height: 226,
+                          width: 250,
+                          color: Constants.scaffoldBGColor,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.error,color: Constants.FGcolor,size: 50,),
+                              SizedBox(height: 10,),
+                              Text('Error loading image',style: TextStyle(
+                                  color: Constants.FGcolor
+                              ),)
+                            ],
+                          )
+                        ),
                       ),
                     ),
                   ),

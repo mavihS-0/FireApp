@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ImagePreview extends StatelessWidget {
   const ImagePreview({Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class ImagePreview extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Image.asset('assets/home_page/no_chat.png'),
+        child: CachedNetworkImage(imageUrl: Get.arguments['imageURL'], fit: BoxFit.fill, width: double.infinity,),
       ),
     );
   }

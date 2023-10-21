@@ -36,7 +36,7 @@ class HomeScreenListTile extends StatelessWidget {
                   height: 50,
                   width: 50,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center( child: CircularProgressIndicator(),),
+                  //placeholder: (context, url) => const Center( child: CircularProgressIndicator(),)
                   errorWidget: (context, url, error) => Icon(Icons.error,color: Constants.FGcolor.withOpacity(0.4)),
                 ),
               ),

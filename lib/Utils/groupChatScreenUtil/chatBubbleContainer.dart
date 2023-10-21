@@ -37,6 +37,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
   bool showOverlay = false;
   List commonEmojis = ['👍','♥','😂','😢','😡','😯'];
   int callCount = 0;
+  int reactionIndex = 0;
 
   @override
   void initState() {
@@ -146,18 +147,80 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                         Positioned(
                           bottom: 0,
                           left: 0,
-                          child: Container(
-                            height: 30,
-                            width: dummyData.messages[dataIndex]['reactions'].length==1 ? 35 : 50,
-                            decoration: BoxDecoration(
-                                color: Constants.priColor,
-                                borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Center(
-                              child: Text(dummyData.messages[dataIndex]['reactions'].length==1 ? dummyData.messages[dataIndex]['reactions'][0] :
-                                '${dummyData.messages[dataIndex]['reactions'][0]} ${dummyData.messages[dataIndex]['reactions'].length}' ,
-                                style: TextStyle(
-                                  color: Constants.secColor
+                          child: InkWell(
+                            onTap: (){
+                              showDialog(context: context, builder: (context){
+                                return StatefulBuilder(
+                                  builder: (context,setState){
+                                    return AlertDialog(
+                                      content: Container(
+                                        height: 350,
+                                        width: double.maxFinite,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 40,
+                                              child: ListView.separated(
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.horizontal,
+                                                itemCount: dummyData.messages[dataIndex]['reactions'].length,
+                                                itemBuilder: (context,index){
+                                                  return InkWell(
+                                                    onTap: (){
+                                                      setState(() {
+                                                        reactionIndex = index;
+                                                      });
+                                                    },
+                                                    child: Text('${dummyData.messages[dataIndex]['reactions'][index]}${dummyData.messages[dataIndex]['reactionUsers'][index].length}',
+                                                      style: TextStyle(
+                                                          fontSize: 20
+                                                      ), ),
+                                                  );
+                                                },
+                                                separatorBuilder: (context,index){
+                                                  return SizedBox(width: 20,);
+                                                },
+                                              ),
+                                            ),
+                                            Divider(),
+                                            SizedBox(
+                                              height: 290,
+                                              child: ListView.separated(
+                                                  shrinkWrap: true,
+                                                  itemCount: dummyData.messages[dataIndex]['reactionUsers'][reactionIndex].length,
+                                                  itemBuilder: (context,index){
+                                                    return Container(
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                                        child: Text(dummyData.messages[dataIndex]['reactionUsers'][reactionIndex][index])
+                                                    );
+                                                  },
+                                                  separatorBuilder: (context,index){
+                                                    return SizedBox(height: 10,);
+                                                  }
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              });
+                            },
+                            child: Container(
+                              height: 30,
+                              width: dummyData.messages[dataIndex]['reactions'].length==1 ? 35 : 50,
+                              decoration: BoxDecoration(
+                                  color: Constants.priColor,
+                                  borderRadius: BorderRadius.circular(30)
+                              ),
+                              child: Center(
+                                child: Text(dummyData.messages[dataIndex]['reactions'].length==1 ? dummyData.messages[dataIndex]['reactions'][0] :
+                                  '${dummyData.messages[dataIndex]['reactions'][0]} ${dummyData.messages[dataIndex]['reactions'].length}' ,
+                                  style: TextStyle(
+                                    color: Constants.secColor
+                                  ),
                                 ),
                               ),
                             ),

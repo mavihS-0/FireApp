@@ -89,9 +89,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                           );
                         }
                         else{
-                          return Center(
-                            child: SpinKitThreeBounce(color: Constants.priColor,size: 30,),
-                          );
+                          return SizedBox();
                         }
 
                       },
