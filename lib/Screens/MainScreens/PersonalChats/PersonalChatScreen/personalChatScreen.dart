@@ -191,7 +191,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
           padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
           height: 70,
           width: MediaQuery.of(context).size.width,
-          color: Colors.blue,
+          color: Constants.priColor,
           child: Row(
             children: [
               Expanded(
