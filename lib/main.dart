@@ -1,18 +1,16 @@
-import 'dart:io';
-
 import 'package:fire_app/Utils/authState.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:animated_splash_screen/animated_splash_screen.dart';
+// import 'package:page_transition/page_transition.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,10 +25,11 @@ Future main() async{
   database.setPersistenceCacheSizeBytes(10000000);
   final directory = await getApplicationDocumentsDirectory();
   Hive.init(directory.path);
-  await createFolder('Media');
-  await createFolder('Media/profileIcons');
-  await createFolder('Media/images');
   await Hive.openBox('imageData');
+
+  // await createFolder('Media');
+  // await createFolder('Media/profileIcons');
+  // await createFolder('Media/images');
   await createDB();
   runApp(const MyApp());
 }
@@ -91,40 +90,40 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> createFolder(String cow) async {
-  final dir = Directory((await getApplicationDocumentsDirectory()).path + '/$cow');
-  if ((await dir.exists())) {
-  } else {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-    dir.create();
-  }
-}
+// Future<void> createFolder(String cow) async {
+//   final dir = Directory((await getApplicationDocumentsDirectory()).path + '/$cow');
+//   if ((await dir.exists())) {
+//   } else {
+//     var status = await Permission.storage.status;
+//     if (!status.isGranted) {
+//       await Permission.storage.request();
+//     }
+//     dir.create();
+//   }
+// }
 
 Future <void> createDB() async{
   var box = Hive.box('imageData');
   if(box.get('indices')==null){
     await box.put('indices',{
-      'profileIconCounter' : 0,
-      'chatImageCounter' : 0,
+      //'profileIconCounter' : 0,
+      //'chatImageCounter' : 0,
       'audioRecordingsCounter' : 0
     });
   }
-  if(box.get('chats')==null){
-    await box.put('chats',{
-      'images': {
-        '':''
-      }
-    });
-  }
-  if(box.get('profileIcons')==null){
-    await box.put('profileIcons',{
-      '' :{
-        'local' : '',
-        'web' : '',
-      }
-    });
-  }
+  // if(box.get('chats')==null){
+  //   await box.put('chats',{
+  //     'images': {
+  //       '':''
+  //     }
+  //   });
+  // }
+  // if(box.get('profileIcons')==null){
+  //   await box.put('profileIcons',{
+  //     '' :{
+  //       'local' : '',
+  //       'web' : '',
+  //     }
+  //   });
+  // }
 }

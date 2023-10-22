@@ -388,9 +388,6 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
             child: EmojiPicker(
               onBackspacePressed: _onBackspacePressed,
               textEditingController: _messageController,
-              onEmojiSelected: (event, emoji) {
-                print(_messageController.text);
-              },
               config: Config(
                 columns: 7,
                 emojiSizeMax: 32.0,

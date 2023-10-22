@@ -73,9 +73,9 @@ class AudioRecordUtil{
 
 class RecordingPreview extends StatefulWidget {
   final AudioRecordUtil audioUtil;
-  final double containerHeight;
   final String pid;
-  const RecordingPreview({Key? key, required this.containerHeight, required this.audioUtil, required this.pid}) : super(key: key);
+  final bool isRecorded;
+  const RecordingPreview({Key? key, required this.audioUtil, required this.pid, required this.isRecorded}) : super(key: key);
 
   @override
   State<RecordingPreview> createState() => _RecordingPreviewState();
@@ -87,11 +87,8 @@ class _RecordingPreviewState extends State<RecordingPreview> {
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
 
+  void gettingThingsStarted(){
     widget.audioUtil.audioPlayer.onPlayerStateChanged.listen((event) {
       setState(() {
         isPlaying = event == PlayerState.playing;
@@ -113,7 +110,20 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     widget.audioUtil.audioPlayer.onPlayerComplete.listen((event) {
       widget.audioUtil.audioPlayer.setSource(DeviceFileSource(widget.audioUtil.filePath));
     });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.isRecorded){
+      gettingThingsStarted();
+    }
+  }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Future setAudio() async{
@@ -123,48 +133,31 @@ class _RecordingPreviewState extends State<RecordingPreview> {
   @override
   Widget build(BuildContext context) {
     AudioRecordUtil audioUtil = widget.audioUtil;
-    double containerHeight = widget.containerHeight;
     String filePath = widget.audioUtil.filePath;
     String pid = widget.pid;
-    return AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        padding: EdgeInsets.all(10),
-        height: containerHeight,
-        decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(10)
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          icon: Icon(isPlaying?Icons.pause:Icons.play_arrow,color: Colors.white,),
+          onPressed: ()async{
+            print(filePath);
+            if(isPlaying){
+              await widget.audioUtil.audioPlayer.pause();
+            }else{
+              await widget.audioUtil.audioPlayer.resume();
+            }
+          },
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              icon: Icon(isPlaying?Icons.pause:Icons.play_arrow,color: Colors.white,),
-              onPressed: ()async{
-                print(filePath);
-                if(isPlaying){
-                  await widget.audioUtil.audioPlayer.pause();
-                }else{
-                  await widget.audioUtil.audioPlayer.resume();
-                }
-              },
-            ),
-            Text("${position.toString().split('.').first.padLeft(8, "0")}  -  ${duration.toString().split('.').first.padLeft(8, "0")}",style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20
-            ), ),
-            IconButton(onPressed: (){
-              audioUtil.uploadAudioInstance(FirebaseDatabase.instance.ref('personalChats').child(pid));
-            }, icon: Icon(Icons.send,color: Colors.white,))
-          ],
-        )
+        Text("${position.toString().split('.').first.padLeft(8, "0")}  -  ${duration.toString().split('.').first.padLeft(8, "0")}",style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20
+        ), ),
+        IconButton(onPressed: (){
+          audioUtil.uploadAudioInstance(FirebaseDatabase.instance.ref('personalChats').child(pid));
+        }, icon: Icon(Icons.send,color: Colors.white,))
+      ],
     );
   }
 }
-
-
-
-
-

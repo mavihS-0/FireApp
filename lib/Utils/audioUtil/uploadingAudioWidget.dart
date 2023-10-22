@@ -95,7 +95,7 @@ class _UploadingAudioWidgetState extends State<UploadingAudioWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(widget.audioData['status']=='uploading'){
+    if(widget.audioData['status']=='audioUploading'){
       _uploadAudio(File(widget.audioData['content']['audioURL']), widget.mid, widget.pid, widget.audioData, widget.friendUid);
     }
   }

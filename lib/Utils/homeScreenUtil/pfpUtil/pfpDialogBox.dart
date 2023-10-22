@@ -22,7 +22,7 @@ class PfpDialogBox extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      Get.to(()=>ImagePreview(),arguments: {
+                      Get.off(()=>ImagePreview(),arguments: {
                         'imageURL' : dummyData.pfpURL
                       });
                     },

@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import '../constants.dart';
 
@@ -25,12 +25,13 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
   bool _uploading = true;
   double _uploadProgress = 0.0;
   UploadTask? _uploadTask;
-  var imageDataBox = Hive.box('imageData');
+  //var imageDataBox = Hive.box('imageData');
   String _filePath='';
 
   Future<void> _uploadImage(File _imageFile, String mid,String pid, Map imageData,String friendUid) async {
     try {
-        final Reference reference = FirebaseStorage.instance.ref('personalChatData').child(pid).child('Images').child(mid);
+        String fileExtension = _imageFile.path.split('.').last;
+        final Reference reference = FirebaseStorage.instance.ref('personalChatData').child(pid).child('Images').child('$mid.$fileExtension');
 
         _uploadTask = reference.putFile(
           _imageFile

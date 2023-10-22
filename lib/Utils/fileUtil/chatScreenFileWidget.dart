@@ -12,11 +12,19 @@ class ChatScreenFileWidget extends StatelessWidget {
   Future<void> downloadFile() async {
     Directory? directory;
     try{
-      //directory = await getExternalStorageDirectory();
-      directory = Directory('/storage/16F2-1618/Android/data/com.example.fire_app/files');
+      //path for emulator
+      directory = Directory('/sdcard/Download');
+
+      //path for real device (android)
+      //directory = Directory('/storage/emulated/0/Download');
+
+      //path for real device (ios)
+      //directory = await getApplicationDocumentsDirectory();
+
       String filePath = '${directory!.path}/${fileData['content']['fileName']}';
       final file = File(filePath);
       final httpsReference = FirebaseStorage.instance.refFromURL(fileData['content']['fileURL']);
+      await httpsReference.getMetadata().then((value) => filePath+='.${value.name.split('.').last}');
       await httpsReference.writeToFile(file);
       Get.snackbar("Download Complete", 'File downloaded successfully');
     }catch(e){

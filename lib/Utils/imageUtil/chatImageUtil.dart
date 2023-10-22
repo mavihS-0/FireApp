@@ -2,8 +2,9 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-
+// import 'package:hive/hive.dart';
+import 'package:get/get.dart';
+import '../../Screens/OtherScreens/imagePreview.dart';
 import '../constants.dart';
 
 class ChatImageUtil{
@@ -93,9 +94,16 @@ class ChatImageUtil{
           imageUrl : imageData['content']['imageURL'],
           placeholder: (context, url) => const CircularProgressIndicator(),
           imageBuilder: (context,image){
-            return ClipRRect(
-              child: Image(image: image,),
-              borderRadius: BorderRadius.circular(10),
+            return InkWell(
+              onTap: (){
+                Get.to(()=>const ImagePreview(),arguments: {
+                  'imageURL' : imageData['content']['imageURL'],
+                });
+              },
+              child: ClipRRect(
+                child: Image(image: image,),
+                borderRadius: BorderRadius.circular(10),
+              ),
             );
           },
           errorWidget: (context, url, error) {
