@@ -21,12 +21,16 @@ Future main() async{
     appleProvider: AppleProvider.appAttest,
   );
   FirebaseDatabase database = FirebaseDatabase.instance;
+  // enabling data persistence
   database.setPersistenceEnabled(true);
   database.setPersistenceCacheSizeBytes(10000000);
+
+  //creating hive db
   final directory = await getApplicationDocumentsDirectory();
   Hive.init(directory.path);
   await Hive.openBox('imageData');
 
+  // creating directories to store media locally (using hive db reference)
   // await createFolder('Media');
   // await createFolder('Media/profileIcons');
   // await createFolder('Media/images');
@@ -79,6 +83,8 @@ class MyApp extends StatelessWidget {
         )
       ),
       home: const AuthState(),
+
+      // splash screen (currently not used)
       // home: AnimatedSplashScreen(
       //   duration: 2000,
       //   nextScreen: const AuthState(),
@@ -90,6 +96,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// function to create folders to store media locally
 // Future<void> createFolder(String cow) async {
 //   final dir = Directory((await getApplicationDocumentsDirectory()).path + '/$cow');
 //   if ((await dir.exists())) {
@@ -102,6 +109,7 @@ class MyApp extends StatelessWidget {
 //   }
 // }
 
+// function to create hive db
 Future <void> createDB() async{
   var box = Hive.box('imageData');
   if(box.get('indices')==null){

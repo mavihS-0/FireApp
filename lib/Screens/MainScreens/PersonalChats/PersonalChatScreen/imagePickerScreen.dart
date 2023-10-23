@@ -10,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../Utils/constants.dart';
 import '../../../../Utils/imageUtil/imageData.dart';
 
+//screen for picking images from gallery
 class ImagePickerScreen extends StatefulWidget {
   @override
   _ImagePickerScreenState createState() => _ImagePickerScreenState();
@@ -23,6 +24,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
   DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
   final storageRef = FirebaseStorage.instance.ref('personalChatData').child(Get.arguments['pid']);
 
+  //pick images from gallery
   Future<void> _pickImages() async {
     final images = await _picker.pickMultiImage();
     if (images != null) {
@@ -39,6 +41,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     }
   }
 
+  //create image instance in firebase
   Future<void> _sendImages() async{
     _selectedImages.forEach((element) async {
       final newMessageKey = messageRef.child('messages').push();
@@ -66,6 +69,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
     _captionControllers.add(TextEditingController());
   }
 
+  //function to build image preview (one page for each image)
   Widget _buildImagePreview() {
     return PageView.builder(
       reverse: false,
@@ -84,6 +88,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 ),
               ),
             ),
+            //Icon to indicate the swipe direction (right)
             _selectedImages.length>1 && index != _selectedImages.length-1 ?
             Align(
               alignment: Alignment.centerRight,
@@ -93,10 +98,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 width: 20,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.black.withOpacity(0.5)
+                  color: Constants.FGcolor.withOpacity(0.5)
                 ),
                   child: Icon(Icons.arrow_forward_ios,color: Constants.secColor,size: 15,)),
             ) : SizedBox(),
+            //Icon to indicate the swipe direction (left)
             index != 0 ?
             Align(
               alignment: Alignment.centerLeft,
@@ -106,7 +112,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   width: 20,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.black.withOpacity(0.5)
+                      color: Constants.FGcolor.withOpacity(0.5)
                   ),
                   child: Icon(Icons.arrow_back_ios,color: Constants.secColor,size: 15,)),
             ) : SizedBox(),
@@ -120,7 +126,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.black.withOpacity(0.5),
+                  color: Constants.FGcolor.withOpacity(0.5),
                 ),
                 child: TextField(
                   focusNode: _captionFocusNode,
@@ -133,11 +139,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                   onTapOutside: (event){
                     _captionFocusNode.unfocus();
                   },
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Constants.secColor),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Add a caption',
-                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: Constants.secColor.withOpacity(0.7)),
                   ),
                 ),
               ),
@@ -145,10 +151,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
             Positioned(
               top: 16.0,
               right: 16.0,
+              //delete current image button
               child: InkWell(
                 child: CircleAvatar(
-                  backgroundColor: Colors.black.withOpacity(0.5),
-                  child: Icon(Icons.delete, color: Colors.white),
+                  backgroundColor: Constants.FGcolor.withOpacity(0.5),
+                  child: Icon(Icons.delete, color: Constants.secColor),
                 ),
                 onTap: () {
                   setState(() {
@@ -160,10 +167,11 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
             Positioned(
               top: 16.0,
               left: 16.0,
+              //close button
               child: InkWell(
                 child: CircleAvatar(
-                  backgroundColor: Colors.black.withOpacity(0.5),
-                  child: Icon(Icons.close, color: Colors.white),
+                  backgroundColor: Constants.FGcolor.withOpacity(0.5),
+                  child: Icon(Icons.close, color: Constants.secColor),
                 ),
                 onTap: () {
                   Get.back();
@@ -192,6 +200,7 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
                   children: <Widget>[
+                    //add more images button
                     InkWell(
                       child: CircleAvatar(
                         radius: 25,
@@ -203,12 +212,10 @@ class _ImagePickerScreenState extends State<ImagePickerScreen> {
                     SizedBox(
                       width: 20,
                     ),
+                    //send images button
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          // Send _selectedImages and their captions
-                          // Implement your send logic here
-                          // For this example, we'll just print the selectedImages and captions
                           _sendImages();
                         },
                         child: Text('Send Images',style: TextStyle(color: Constants.secColor),),

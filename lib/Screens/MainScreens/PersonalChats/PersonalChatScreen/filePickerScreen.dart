@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import '../../../../Utils/constants.dart';
 
-
+//screen for picking files
 class FilePickerScreen extends StatefulWidget {
   final bool isAudio;
   const FilePickerScreen({Key? key, required this.isAudio}) : super(key: key);
@@ -18,6 +18,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
   List<PlatformFile> _selectedFiles = [];
   DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
 
+  //send file instances to firebase (if audio: audioUploading, else: fileUploading)
   Future<void> _sendFiles() async{
     _selectedFiles.forEach((element) async {
       final newMessageKey = messageRef.child('messages').push();
@@ -35,10 +36,12 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
     Get.back();
   }
 
+  //pick files from device
   Future<void> _pickFiles() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
+        //extensions for audio/files
         allowedExtensions: widget.isAudio ? ['wav','mp3']:['pdf', 'doc', 'docx', 'txt'], // Customize the allowed file types
         allowMultiple: true, // Allow multiple file selection
       );
@@ -64,6 +67,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
     _pickFiles();
   }
 
+  //delete file from list
   void _deleteFile(int index) {
     setState(() {
       _selectedFiles.removeAt(index);
@@ -76,6 +80,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
       child: Scaffold(
         body: Column(
           children: <Widget>[
+            //close button
             Align(
               alignment: Alignment.topLeft,
               child: Padding(
@@ -91,6 +96,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
                 ),
               ),
             ),
+            //list of selected files
             Expanded(
               child: ListView.builder(
                 itemCount: _selectedFiles.length,
@@ -120,6 +126,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
                 children: <Widget>[
+                  //add more files
                   InkWell(
                     child: CircleAvatar(
                       radius: 25,
@@ -131,6 +138,7 @@ class _FilePickerScreenState extends State<FilePickerScreen> {
                   SizedBox(
                     width: 20,
                   ),
+                  //send files
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _sendFiles,

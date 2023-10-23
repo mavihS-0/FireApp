@@ -7,6 +7,7 @@ import '../../../Utils/ProfileScreenUtil/themeDataWidget.dart';
 import '../../../Utils/constants.dart';
 import '../../../Utils/roundedContainer.dart';
 
+//screen to show user profile (other user)
 class ViewProfile extends StatefulWidget {
   const ViewProfile({Key? key}) : super(key: key);
 
@@ -58,6 +59,7 @@ class _ViewProfileState extends State<ViewProfile> {
                     ),
                     ThemeDataWidget(
                       dummyData: dummyData,
+                      //change chat theme
                       onThemeChange: (){
 
                       },
@@ -73,6 +75,7 @@ class _ViewProfileState extends State<ViewProfile> {
                           value: dummyData.muteNotifications,
                         ),
                     ),
+                    //widget to show media shared by user
                     MediaWidget(
                       dummyData: dummyData,
                     ),

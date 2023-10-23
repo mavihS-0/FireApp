@@ -8,6 +8,7 @@ import 'package:fire_app/Utils/popUpMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+//helper widget to switch between groups and personal chats
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 

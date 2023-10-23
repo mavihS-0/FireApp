@@ -1,6 +1,7 @@
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
+//screen for showing shared documents
 class DocumentsScreen extends StatelessWidget {
   const DocumentsScreen({Key? key}) : super(key: key);
 

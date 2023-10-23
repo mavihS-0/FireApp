@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Utils/constants.dart';
 
+//screen for chat settings
 class ChatSettings extends StatefulWidget {
   const ChatSettings({Key? key}) : super(key: key);
 

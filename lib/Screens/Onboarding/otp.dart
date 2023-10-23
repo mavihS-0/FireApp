@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:get/get.dart';
 
+//screen to put the otp
 class OTPScreen extends StatefulWidget {
   const OTPScreen({Key? key}) : super(key: key);
 
@@ -55,6 +56,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       print("Completed: " + pin);
                     }),
                 const SizedBox(height: 10,),
+                //Resend OTP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -87,6 +89,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     )
                   ],
                 ),
+                //Verify Button
                 CustomTextButton(title: 'VERIFY', onPress: () async {
                   showDialog(
                     context: context,

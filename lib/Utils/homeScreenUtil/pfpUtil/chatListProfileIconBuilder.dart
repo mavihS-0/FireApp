@@ -7,6 +7,7 @@ import 'dart:io';
 import '../../constants.dart';
 import 'package:get/get.dart';
 
+//widget to build profile icon in chat list using local storage and hive (currently not used)
 class ChatListProfileIconBuilder extends StatefulWidget {
   final Map userData;
   final String pid;
@@ -21,9 +22,10 @@ class _ChatListProfileIconBuilderState extends State<ChatListProfileIconBuilder>
   var imageDataBox = Hive.box('imageData');
   String _filePath = '';
 
-
+  //function to get image file from local storage
   Future<void> getImageFile()  async {
     try{
+      //if image is already present in local storage then get filepath
       Map presentData = await imageDataBox.get('profileIcons');
       if(presentData.containsKey(widget.pid)){
         if(presentData[widget.pid]['web']==widget.userData['profileImg']){
@@ -44,7 +46,9 @@ class _ChatListProfileIconBuilderState extends State<ChatListProfileIconBuilder>
             isLoading = false;
           });
         }
-      }else{
+      }
+      //if image is not present in local storage then download it from firebase storage
+      else{
         Map dataIndices = imageDataBox.get('indices');
         final httpsReference = FirebaseStorage.instance.refFromURL(widget.userData['profileImg']);
         final appDocDir = await getApplicationDocumentsDirectory();

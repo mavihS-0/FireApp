@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fire_app/Screens/MainScreens/Groups/inviteLinkScreen.dart';
 import 'package:fire_app/Utils/ProfileScreenUtil/mediaWidget.dart';
 import 'package:fire_app/Utils/ProfileScreenUtil/themeDataWidget.dart';
@@ -12,7 +13,7 @@ import 'package:get/get.dart';
 
 import '../../../Utils/roundedContainer.dart';
 
-
+//screen for group info
 class GroupInfo extends StatefulWidget {
   const GroupInfo({Key? key}) : super(key: key);
 
@@ -31,6 +32,7 @@ class _GroupInfoState extends State<GroupInfo> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //if participants are more than 3 then show more participants button
     showMoreParticipants = dummyGroupInfoData.participants.length >3;
   }
 
@@ -128,6 +130,7 @@ class _GroupInfoState extends State<GroupInfo> {
                   ),
                   ThemeDataWidget(
                     dummyData: dummyGroupInfoData,
+                    //function to change chat theme
                     onThemeChange: (){
 
                     },
@@ -156,9 +159,12 @@ class _GroupInfoState extends State<GroupInfo> {
                       ],
                     )
                   ),
+
+                  //widget to show media images/files
                   MediaWidget(
                     dummyData: dummyGroupInfoData,
                   ),
+
                   RoundedContainer(
                     widget: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,12 +230,13 @@ class _GroupInfoState extends State<GroupInfo> {
                         ListView.separated(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
+                          //show max 3 participants
                           itemCount: showMoreParticipants ? 3: dummyGroupInfoData.participants.length,
                           itemBuilder: (context,index){
                             return Row(
                               children: [
                                 ClipOval(
-                                  child: Image.network(dummyGroupInfoData.participants[index].profileURL,
+                                  child: CachedNetworkImage(imageUrl : dummyGroupInfoData.participants[index].profileURL,
                                     height: 50,
                                     width: 50,
                                     fit: BoxFit.fill,),
@@ -271,6 +278,7 @@ class _GroupInfoState extends State<GroupInfo> {
                             return SizedBox(height: 10,);
                           },
                         ),
+                        //show view all button if participants are more than 3
                         SizedBox(height: showMoreParticipants ? 10 : 0,),
                         showMoreParticipants ? Center(
                           child: OutlinedButton(

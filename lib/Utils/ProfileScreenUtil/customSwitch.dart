@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
+//widget for custom switch (used in profile screens)
 class CustomSwitch extends StatelessWidget {
   final String title;
   final Function(bool) onChanged;

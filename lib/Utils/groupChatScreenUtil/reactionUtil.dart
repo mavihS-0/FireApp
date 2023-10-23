@@ -3,12 +3,15 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/cupertino.dart';
 
+//helper class for reactions
 class ReactionUtil{
   List commonEmojis = ['👍','♥','😂','😢','😡','😯'];
   bool showReactionKeyboard = false;
+  //creating stream to notify the widget to show reaction keyboard (notify parent stateful widget from child stateful widget)
   final StreamController<bool> _keyboardStreamController = StreamController<bool>();
   Stream <bool> get reactionKeyboardStream => _keyboardStreamController.stream;
   bool isEmojiSelected = false;
+  //adding event to stream to notify the widget to show reaction keyboard
   void changeReactionKeyboard(bool showReactionKeyboard){
     this.showReactionKeyboard = showReactionKeyboard;
     _keyboardStreamController.add(showReactionKeyboard);
@@ -16,6 +19,7 @@ class ReactionUtil{
 
   int chatBubbleIndex = -1;
 
+  //reaction keyboard widget
   Widget ReactionKeyboardWidget(Function(Category? category,Emoji emoji) onEmojiSelected) {
     return showReactionKeyboard ? TapRegion(
       onTapOutside: (event){
@@ -38,6 +42,7 @@ class ReactionUtil{
     _keyboardStreamController.close();
   }
 
+  //adding emoji to the message
   void addEmoji(Map data,String emoji){
     int index =-1;
     if (data['reactions'].contains(emoji)){
@@ -51,6 +56,7 @@ class ReactionUtil{
     }
   }
 
+  //get total number of reactions
   num getTotalLength(Map data){
     List l1 =data['reactionUsers'];
     num total =0;

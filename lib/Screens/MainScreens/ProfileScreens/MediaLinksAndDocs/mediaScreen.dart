@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../../Utils/constants.dart';
 import '../../../OtherScreens/imagePreview.dart';
 
+//screen for showing shared media
 class MediaScreen extends StatelessWidget {
   const MediaScreen({Key? key}) : super(key: key);
 

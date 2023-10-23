@@ -4,6 +4,7 @@ import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+//widget to show data inside chat bubble depending on its type for newly built group chat screen
 class ChatBubbleData extends StatelessWidget {
   final String type;
   final content;

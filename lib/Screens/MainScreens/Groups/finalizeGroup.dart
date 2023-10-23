@@ -2,6 +2,7 @@ import 'package:fire_app/Screens/MainScreens/Groups/addGroup.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
+//screen to finalize the group creation
 class FinalizeGroup extends StatefulWidget {
   const FinalizeGroup({Key? key}) : super(key: key);
 
@@ -37,6 +38,8 @@ class _FinalizeGroupState extends State<FinalizeGroup> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+
+                //group icon
                 Container(
                   height: 60,
                   width: 60,
@@ -50,6 +53,7 @@ class _FinalizeGroupState extends State<FinalizeGroup> {
                     child: Icon(Icons.camera_alt,color: Colors.white,),
                   ),
                 ),
+
                 SizedBox(width: 10,),
                 Expanded(
                   child: SizedBox(

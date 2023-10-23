@@ -14,6 +14,7 @@ import '../../../../Utils/constants.dart';
 import '../../../../Utils/customAttachButtonType.dart';
 import '../../../../Utils/popUpMenu.dart';
 
+//chat screen for groups
 class GroupChatScreen extends StatefulWidget {
   const GroupChatScreen({Key? key}) : super(key: key);
 
@@ -31,6 +32,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
   ScrollController chatScrollController = ScrollController();
   ReactionUtil reactionUtil = ReactionUtil();
 
+  //function to toggle between emoji keyboard and normal keyboard
   void _toggleKeyboard() {
     setState(() {
       _isEmojiKeyboardVisible = !_isEmojiKeyboardVisible;
@@ -45,6 +47,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
   @override
   bool get wantKeepAlive => true;
 
+  //function to handle backspace button on emoji keyboard
   _onBackspacePressed() {
     _messageController
       ..text = _messageController.text.characters.toString()
@@ -55,9 +58,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    //listener to check if user is reacting to a message
     reactionUtil.reactionKeyboardStream.listen((event) {
       setState(() {
-        //print(_isEmojiKeyboardVisible);
       });
     });
   }
@@ -86,6 +90,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
             child: Container(
               decoration: const BoxDecoration(image: DecorationImage(image: AssetImage("assets/home_page/no_chat.png"))),
               margin: const EdgeInsets.symmetric(vertical: 5),
+
+              //chat bubble list view
               child: ListView.builder(
                 itemCount: dummyData.messages.length,
                 reverse: true,
@@ -113,6 +119,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
               ),
             ),
           ),
+
+          //tap region to detect tap outside (to close the widget) of emoji keyboard/attach button widget/normal keyboard/recording preview
           TapRegion(
             onTapOutside: (event) {
               setState(() {
@@ -142,6 +150,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
     );
   }
 
+  //function to build app bar
   List<Widget> appBar() {
     return [
       IconButton(
@@ -199,6 +208,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
     ];
   }
 
+  //bottom chat input widget
   Widget ChatInput() {
     return Container(
       padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
@@ -264,6 +274,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
                   SizedBox(
                     width: 5,
                   ),
+
+                  //if person is not typing, show attach and camera button
                   !_isNotTyping
                       ? SizedBox()
                       : IconButton(
@@ -329,6 +341,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
     );
   }
 
+  //attach button widget
   Widget AttachButton(double containerHeight) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
@@ -348,6 +361,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
                 () => FilePickerScreen(
                       isAudio: false,
                     ),
+                //passing blank as arguments because we are using dummy data here
                 arguments: {
                   'pid': '',
                   'friendUid': '',
@@ -381,6 +395,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
     );
   }
 
+  //emoji keyboard widget
   Widget EmojiPickerWidget() {
     return _isEmojiKeyboardVisible
         ? Container(
@@ -397,6 +412,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
         : SizedBox();
   }
 
+  //members' story/status scroll view
   Widget MembersScrollView() {
     return Container(
       height: 70,

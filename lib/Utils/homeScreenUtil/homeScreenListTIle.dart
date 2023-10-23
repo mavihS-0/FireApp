@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
+//widget to display list tile on home screens (both personal chats and groups)
 class HomeScreenListTile extends StatelessWidget {
   final Function() onListTileTap;
   final Function() onProfileIconTap;

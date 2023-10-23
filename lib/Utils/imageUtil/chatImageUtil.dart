@@ -7,11 +7,13 @@ import 'package:get/get.dart';
 import '../../Screens/OtherScreens/imagePreview.dart';
 import '../constants.dart';
 
+//helper class to display image in chat screen using local storage (currently not used), also has function to display image using cached_network_image (currently used)
 class ChatImageUtil{
   // var dataBox = Hive.box('imageData');
   // Map notSavedToLocal = {};
   // Map savedToLocal = {};
   //
+  //function to get image file from local storage
   // void getLocal(Map firebaseData, String pid)  {
   //   savedToLocal={};
   //   notSavedToLocal={};
@@ -30,7 +32,7 @@ class ChatImageUtil{
   // }
 
 
-
+  // widget to display message (type : image) in chat screen from local storage
   // Widget chatScreenImageBuilder(Map imageData, String mid){
   //   if(savedToLocal[mid]==null) {
   //     return Column(
@@ -86,6 +88,7 @@ class ChatImageUtil{
   //   }
   // }
 
+  // widget to display message (type : image) in chat screen using cached_network_image
   Widget chatScreenImageBuilder(Map imageData, String mid){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +127,7 @@ class ChatImageUtil{
     );
   }
 
+  // widget to display uploading image message for the receiver (currently just a placeholder)
   Widget imageUploading(Map imageData){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

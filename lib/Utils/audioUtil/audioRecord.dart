@@ -10,16 +10,21 @@ import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_sound_record/flutter_sound_record.dart';
 
+//helper class for recording audio
 class AudioRecordUtil{
 
   String filePath = '';
   String outputFilePath='';
   AudioPlayer audioPlayer = AudioPlayer();
 
+  //function for starting recording
   Future<void> startRecording(FlutterSoundRecord recorder) async {
     var dataBox = Hive.box('imageData');
+    //getting the indices for the audio recordings adding 1 to it and then updating it each time a new recording is made
+    //file is saved as aud'index'
     Map indices = dataBox.get('indices');
     final player = AudioPlayer();
+    //playing the sound to indicate that recording has started
     player.play(AssetSource('startRec.mp3'));
     try {
       Directory dir = await getApplicationDocumentsDirectory();
@@ -38,9 +43,11 @@ class AudioRecordUtil{
     }
   }
 
+  //function for stopping recording
   Future<void> stopRecording(FlutterSoundRecord recorder) async {
     try {
       final player = AudioPlayer();
+      //playing the sound to indicate that recording has stopped
       player.play(AssetSource('endRec.mp3'));
       outputFilePath =  (await recorder.stop())!;
     } catch (e) {
@@ -49,6 +56,7 @@ class AudioRecordUtil{
     }
   }
 
+  //function for uploading the audio instance to the database
   Future<void> uploadAudioInstance(DatabaseReference messageRef)async {
     final newMessageKey = messageRef.child('messages').push();
     final messageKey = newMessageKey.key;
@@ -62,6 +70,7 @@ class AudioRecordUtil{
     });
   }
 
+  //function for setting source to play the audio
   Future setAudio() async{
     audioPlayer.setSource(DeviceFileSource(outputFilePath));
   }
@@ -71,6 +80,7 @@ class AudioRecordUtil{
   }
 }
 
+//widget for showing the recording preview after recording is done
 class RecordingPreview extends StatefulWidget {
   final AudioRecordUtil audioUtil;
   final String pid;
@@ -87,7 +97,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
 
-
+ //function for getting the audio player state and updating the UI accordingly
   void gettingThingsStarted(){
     widget.audioUtil.audioPlayer.onPlayerStateChanged.listen((event) {
       setState(() {
@@ -111,6 +121,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
       widget.audioUtil.audioPlayer.setSource(DeviceFileSource(widget.audioUtil.filePath));
     });
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -126,6 +137,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     super.dispose();
   }
 
+  //function for setting source to play the audio
   Future setAudio() async{
     widget.audioUtil.audioPlayer.setSource(DeviceFileSource(widget.audioUtil.filePath));
   }
@@ -149,6 +161,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
             }
           },
         ),
+        //text showing the duration of the audio and current position of the audio
         Text("${position.toString().split('.').first.padLeft(8, "0")}  -  ${duration.toString().split('.').first.padLeft(8, "0")}",style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:get/get.dart';
 
+//screen to enter phone number for otp verification
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
   static String verify = "";
@@ -68,6 +69,7 @@ class _SignUpState extends State<SignUp> {
                     )
                   ],
                 ),
+                //button validate phone number and route to otp screen
                 CustomTextButton(title: 'VERIFY', onPress: () async {
                   showDialog(
                     context: context,

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../constants.dart';
 import '../roundedContainer.dart';
 
+//media widget to show recent media as list view on profile screens
 class MediaWidget extends StatelessWidget {
   final dummyData;
   const MediaWidget({Key? key, required this.dummyData}) : super(key: key);

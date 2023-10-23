@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../../Utils/constants.dart';
 import 'mediaScreen.dart';
 
+//helper widget to switch between media, links and documents
 class MediaLinksAndDocs extends StatefulWidget {
   const MediaLinksAndDocs({Key? key}) : super(key: key);
 

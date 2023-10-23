@@ -1,6 +1,7 @@
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
+//screen for notification settings
 class NotificationSettings extends StatefulWidget {
   const NotificationSettings({Key? key}) : super(key: key);
 

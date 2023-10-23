@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+//screen to add contacts to app (has complications)
 class AddContact extends StatefulWidget {
   const AddContact({Key? key}) : super(key: key);
 
@@ -42,6 +43,8 @@ class _AddContactState extends State<AddContact> {
         final snapshot = await databaseRef.get();
         Map data;
         data = snapshot.value as Map;
+
+        //function to check if contact is on app (in our database)
         phoneContacts.forEach((element) {
           String? phoneNo=element.phones?[0].value.toString().replaceAll(' ', '');
           String? name=element.displayName.toString().capitalize;
@@ -135,6 +138,8 @@ class _AddContactState extends State<AddContact> {
                           try{
                             final snapshot = await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).get();
                             Map data = snapshot.value as Map;
+
+                            //check if chat already exists
                             if (data.containsKey(recUid)){
                               pid = data[recUid]['pid'];
                             }
@@ -142,6 +147,7 @@ class _AddContactState extends State<AddContact> {
                               throw Exception();
                             }
                           }catch(e){
+                            //create a new entry in personal chats list if chat doesn't exist
                             final newChatKey = chatRef.push();
                             pid = newChatKey.key;
                             await FirebaseDatabase.instance.ref('personalChatList').child(myUid!).child(recUid!).set({
@@ -205,6 +211,8 @@ class _AddContactState extends State<AddContact> {
                   );
                 },
               ),
+
+              //if there are contacts not on app then show them under this
               contactsNotOnApp.length==0 ? SizedBox() :
               Text('Contacts not on FireAppX',style: TextStyle(
                 color: Constants.priColor,
@@ -221,7 +229,9 @@ class _AddContactState extends State<AddContact> {
                   return Column(
                     children: [
                       InkWell(
+                        // function to invite contacts not on app
                         onTap: (){},
+
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                           child: Row(

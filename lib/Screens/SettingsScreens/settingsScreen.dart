@@ -7,6 +7,7 @@ import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+//home screen for settings
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 

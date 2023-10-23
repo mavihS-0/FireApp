@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'constants.dart';
 
+// rounded container used in settings and profile screens
 class RoundedContainer extends StatelessWidget {
   final Widget widget;
   const RoundedContainer({Key? key, required this.widget}) : super(key: key);

@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+//screen for creating entries in database while signing up
 class SignupLoading extends StatefulWidget {
   const SignupLoading({Key? key}) : super(key: key);
   @override
@@ -19,6 +20,7 @@ class _SignupLoadingState extends State<SignupLoading> {
   final databaseRef3 = FirebaseDatabase.instance.ref('personalChatList');
   final storageRef = FirebaseStorage.instance.ref('profileImage').child('${SignUp.auth.currentUser?.uid}');
 
+  //function for uploading data to database
   void uploadData() async{
     String imageURL = '';
     try {

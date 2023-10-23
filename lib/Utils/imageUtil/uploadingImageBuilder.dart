@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import '../constants.dart';
 
+//widget to display uploading image progress and to cancel or re-upload image
 class UploadingImageBuilder extends StatefulWidget {
   final Map imageData;
   final String mid;
@@ -28,25 +29,30 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
   //var imageDataBox = Hive.box('imageData');
   String _filePath='';
 
+  //upload image to firebase storage
   Future<void> _uploadImage(File _imageFile, String mid,String pid, Map imageData,String friendUid) async {
     try {
         String fileExtension = _imageFile.path.split('.').last;
         final Reference reference = FirebaseStorage.instance.ref('personalChatData').child(pid).child('Images').child('$mid.$fileExtension');
 
+        // Start upload
         _uploadTask = reference.putFile(
           _imageFile
         );
 
+        // Listen to progress
         _uploadTask!.snapshotEvents.listen((event) {
           setState(() {
             _uploadProgress = event.bytesTransferred / event.totalBytes;
           });
         });
 
+        // change data in database after upload is complete
         await _uploadTask!.whenComplete(() async {
           String downloadUrl = await reference.getDownloadURL();
           DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(pid);
-          //
+
+          // Create an entry in hive database for the uploaded image
           // Map presentData = await imageDataBox.get('chats');
           // Map dataIndices = await imageDataBox.get('indices');
           // //final httpsReference = FirebaseStorage.instance.refFromURL(widget.imageData['content']['imageURL']);
@@ -57,6 +63,7 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
           // presentData['images']['${widget.pid}+${widget.mid}'] = filePath;
           // await imageDataBox.put('chats', presentData);
           // await imageDataBox.put('incides',dataIndices);
+
           await FirebaseDatabase.instance.ref('personalChatList').child(friendUid).child(FirebaseAuth.instance.currentUser!.uid).update(
               {
                 'lastMessage' : '[image] ${imageData['content']['caption']}',
@@ -128,13 +135,16 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
               borderRadius: BorderRadius.circular(15),
               child: Stack(
                 children: [
+                  //selected image
                   Image.file(File(imageData['content']['imageURL'])),
+                  //blur filter
                   Positioned.fill(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: const SizedBox(),
                     ),
                   ),
+                  //progress indicator
                   _uploading ?
                   Positioned.fill(
                     child: Center(
@@ -148,6 +158,7 @@ class _UploadingImageBuilderState extends State<UploadingImageBuilder> {
                       ),
                     ),
                   ) : SizedBox(),
+                  //cancel or re-upload button
                   Positioned.fill(
                     child: Center(
                       child: IconButton(

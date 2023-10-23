@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//screen for displaying app's privacy policy
 class PrivacyPolicy extends StatelessWidget {
   const PrivacyPolicy({Key? key}) : super(key: key);
 

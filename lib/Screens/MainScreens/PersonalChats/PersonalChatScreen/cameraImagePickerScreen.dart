@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import '../../../../Utils/constants.dart';
 
+//screen for capturing image from camera and initiating an instance of it in chat
 class CameraImagePickerScreen extends StatefulWidget {
   const CameraImagePickerScreen({Key? key}) : super(key: key);
   
@@ -22,6 +23,7 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
   DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(Get.arguments['pid']);
   final storageRef = FirebaseStorage.instance.ref('personalChatData').child(Get.arguments['pid']);
 
+  //capturing image from camera
   Future<void> _captureImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.camera);
 
@@ -47,6 +49,7 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
     super.dispose();
   }
 
+  //creating image instance in firebase
   Future<void> _sendImage() async{
     if(_capturedImage != null) {
       final newMessageKey = messageRef.child('messages').push();
@@ -62,7 +65,6 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
       });
       Get.back();
     }
-
   }
 
   @override
@@ -71,6 +73,7 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
       child: Scaffold(
         body: Stack(
           children: [
+            //null check for image
             _capturedImage!=null?
             Align(
               alignment: Alignment.center,
@@ -92,7 +95,7 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.black.withOpacity(0.5),
+                  color: Constants.FGcolor.withOpacity(0.5),
                 ),
                 child: TextField(
                   focusNode: _captionFocusNode,
@@ -100,15 +103,17 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
                   onTapOutside: (event){
                     _captionFocusNode.unfocus();
                   },
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Constants.secColor),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Add a caption',
-                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                    hintStyle: TextStyle(color: Constants.secColor.withOpacity(0.7)),
                   ),
                 ),
               ),
             ),
+
+            //close button
             Positioned(
               top: 16.0,
               left: 16.0,
@@ -132,6 +137,8 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
                 child: Row(
                   children: <Widget>[
                     InkWell(
+
+                      //recapture image
                       child: CircleAvatar(
                         radius: 25,
                         backgroundColor: Colors.black.withOpacity(0.5),
@@ -145,9 +152,6 @@ class _CameraImagePickerScreenState extends State<CameraImagePickerScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          // Send _selectedImages and their captions
-                          // Implement your send logic here
-                          // For this example, we'll just print the selectedImages and captions
                           _sendImage();
                         },
                         child: Text('Send Image',style: TextStyle(color: Constants.secColor),),

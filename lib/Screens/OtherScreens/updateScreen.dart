@@ -4,6 +4,7 @@ import 'package:fire_app/Utils/customTextButton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+//screen to show updates
 class UpdateScreen extends StatefulWidget {
   const UpdateScreen({Key? key}) : super(key: key);
 
@@ -13,6 +14,7 @@ class UpdateScreen extends StatefulWidget {
 
 class _UpdateScreenState extends State<UpdateScreen> {
 
+  //variable to check if update is compulsory or not to allow user to ignore it
   bool isCompulsoryUpdate = false;
 
   @override

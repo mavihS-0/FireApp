@@ -1,6 +1,7 @@
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
+//screen to show QR code of group
 class QRCodeScreen extends StatelessWidget {
   const QRCodeScreen({Key? key}) : super(key: key);
 

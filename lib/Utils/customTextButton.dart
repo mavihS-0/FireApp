@@ -1,6 +1,7 @@
 import 'package:fire_app/Utils/constants.dart';
 import 'package:flutter/material.dart';
 
+//text buttons used in splash screens
 class CustomTextButton extends StatelessWidget {
   final Function() onPress;
   final String title;

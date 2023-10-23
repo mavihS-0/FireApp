@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../Utils/constants.dart';
 
+//screen for local backup settings
 class LocalBackupSettings extends StatefulWidget {
   const LocalBackupSettings({Key? key}) : super(key: key);
 

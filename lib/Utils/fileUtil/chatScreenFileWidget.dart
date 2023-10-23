@@ -5,18 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 
+//widget for showing message (type: file) in chat screen
 class ChatScreenFileWidget extends StatelessWidget {
   final Map fileData;
   const ChatScreenFileWidget({Key? key, required this.fileData}) : super(key: key);
 
+  //function for downloading file
   Future<void> downloadFile() async {
     Directory? directory;
     try{
-      //path for emulator
+      //path for emulator and android device
       directory = Directory('/sdcard/Download');
-
-      //path for real device (android)
-      //directory = Directory('/storage/emulated/0/Download');
 
       //path for real device (ios)
       //directory = await getApplicationDocumentsDirectory();

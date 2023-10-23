@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../Screens/MainScreens/PersonalChats/addContact.dart';
-import '../Screens/MainScreens/test.dart';
 
+//custom pop up menu widget for home screens
 Widget customPopUpMenu(String addNew, Function addNewMethod) {
   return PopupMenuButton(
 //TODO: Popup menu

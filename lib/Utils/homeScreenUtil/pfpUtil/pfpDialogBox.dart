@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'package:get/get.dart';
 
+//widget to dialog box when profile pic is pressed on home screen
 class PfpDialogBox extends StatelessWidget {
   final dummyData;
   final Function() onInfoButtonPress;

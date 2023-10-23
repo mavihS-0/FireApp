@@ -26,6 +26,7 @@ import '../../../../Utils/imageUtil/uploadingImageBuilder.dart';
 import 'filePickerScreen.dart';
 import 'imagePickerScreen.dart';
 
+//chat screen for personal chats
 class PersonalChatScreen extends StatefulWidget {
   const PersonalChatScreen({Key? key}) : super(key: key);
 
@@ -33,7 +34,7 @@ class PersonalChatScreen extends StatefulWidget {
   State<PersonalChatScreen> createState() => _PersonalChatScreenState();
 }
 
-class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticKeepAliveClientMixin<PersonalChatScreen> {
+class _PersonalChatScreenState extends State<PersonalChatScreen>{
 
   DatabaseReference userDataRef = FirebaseDatabase.instance.ref('users').child(Get.arguments['friendUid']);
   TextEditingController messageController = TextEditingController();
@@ -56,7 +57,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
   AudioRecordUtil audioUtil = AudioRecordUtil();
   ChatImageUtil chatImageUtil = ChatImageUtil();
 
-
+  //get user data from firebase
   Future <void> getUserData()async{
     final snapshot = await FirebaseDatabase.instance.ref('users').child(myUid!).child('name').get();
     if(snapshot.exists){
@@ -66,7 +67,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     });
   }
 
-
+  //attach button widget
   Widget AttachButton(double containerHeight) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
@@ -114,6 +115,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     );
   }
 
+  //function to order data fetched from firebase according to time
   Map orderData(messages){
     List list = messages.entries.toList();
     list.sort((a, b) => a.value['timestamp'].compareTo(b.value['timestamp']));
@@ -124,6 +126,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     return sortedMessages;
   }
 
+  //function to toggle between emoji keyboard and normal keyboard
   void _toggleKeyboard() {
     setState(() {
       _isEmojiKeyboardVisible = !_isEmojiKeyboardVisible;
@@ -135,6 +138,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     });
   }
 
+  //function to send message (type : text)
   void onSend(String type)async{
     setState(() {
       _isNotTyping=true;
@@ -176,7 +180,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     audioUtil.dispose();
   }
 
-
+  //bottom chat input widget
   Widget chatInput() {
     return Container(
       padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
@@ -279,7 +283,6 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                 setState(() {
                   _isRecorded = false;
                 });
-
                 audioUtil.startRecording(recorder);
               },
               onLongPressEnd: (_)async{
@@ -302,6 +305,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     );
   }
 
+  //emoji keyboard widget
   Widget EmojiPickerWidget() {
     return _isEmojiKeyboardVisible
         ? Container(
@@ -318,12 +322,14 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
         : SizedBox();
   }
 
+  //function to handle backspace button on emoji keyboard
   _onBackspacePressed() {
     messageController
       ..text = messageController.text.characters.toString()
       ..selection = TextSelection.fromPosition(TextPosition(offset: messageController.text.length));
   }
 
+  //function to get image data from hive (currently not in use)
   // Future <void> saveImagesToLocal()async{
   //   var dataBox = Hive.box('imageData');
   //   Map presentData = dataBox.get('chats');
@@ -356,6 +362,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                 Get.back();
             },
           ),
+          //stream to get friend's data in realtime
           StreamBuilder(
             stream: userDataRef.onValue,
             builder: (context,snapshot){
@@ -412,6 +419,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
+            //stream to get messages
             child: StreamBuilder(
               stream: messageRef.child('messages').orderByChild('timestamp').onValue,
               builder: (context, snapshot2){
@@ -558,11 +566,13 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
                       },
                     );
                   }
+                  //placeholder
                   else{
                     return Container(
                       child: Text('...'),
                     );
                   }
+                //if stream has no data
                 }catch(e){
                   print(e.toString());
                   return const NoDataHomePage(caption: 'Start a conversation');
@@ -570,6 +580,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
               },
             ),
           ),
+
+          //tap region to detect tap outside (to close the widget) of emoji keyboard/attach button widget/normal keyboard/recording preview
           TapRegion(
             onTapOutside: (event) {
               setState(() {
@@ -606,9 +618,8 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> with AutomaticK
     );
 
   }
-  @override
-  bool get wantKeepAlive => true;
 
+  //function to convert timestamp to readable time
   String timestampToTime(int timestamp) {
     final DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
     final String formattedTime = DateFormat.jm().format(dateTime); // 'jm' stands for 12-hour format

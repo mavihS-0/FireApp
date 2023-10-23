@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+//screen to show options for inviting people to group
 class InviteLinkScreen extends StatefulWidget {
   const InviteLinkScreen({Key? key}) : super(key: key);
 

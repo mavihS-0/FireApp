@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+//helper class to check if user is logged in or not
 class AuthState extends StatelessWidget {
   const AuthState({Key? key}) : super(key: key);
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
+//splash screens to help familiarize user with the app
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -15,6 +16,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   final PageController _pageController = PageController();
+  //list of splash pages' data
   List PageData = [
     {'image' : 'assets/splash_pages/page1.png', 'title': 'Lorem ipsum dolor sit am',
     'desc': 'Lorem ipsum dolor sit amet, consectetur adipiscing'},

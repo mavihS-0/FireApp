@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fire_app/Screens/MainScreens/Groups/finalizeGroup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../Utils/constants.dart';
 import '../../../Utils/dummyData/dummyContacts.dart';
 
+//screen to create a group
 class AddGroup extends StatefulWidget {
   static List <DummyContact> selectedContacts =[];
   const AddGroup({Key? key}) : super(key: key);
@@ -45,7 +47,10 @@ class _AddGroupState extends State<AddGroup> {
         children: [
           AnimatedContainer(
             margin: EdgeInsets.all(10),
+
+            //if no contacts are selected then the container will be of 0 height
             height: AddGroup.selectedContacts.length!=0 ? 60 : 0,
+
             duration: Duration(milliseconds: 300),
             child: ListView.builder(
               itemCount: AddGroup.selectedContacts.length,
@@ -65,7 +70,7 @@ class _AddGroupState extends State<AddGroup> {
                     child: Stack(
                       children: [
                         CircleAvatar(
-                          backgroundImage: NetworkImage(AddGroup.selectedContacts[index].profileURL),
+                          backgroundImage: CachedNetworkImageProvider(AddGroup.selectedContacts[index].profileURL),
                           radius: 30,
                         ),
                         Align(
@@ -82,7 +87,10 @@ class _AddGroupState extends State<AddGroup> {
               },
             ),
           ),
+
+          //if no contacts are selected then the container will be of 0 height
           AddGroup.selectedContacts.isNotEmpty ? Divider() :SizedBox(),
+
           Expanded(
             child: ListView.separated(
               shrinkWrap: true,
@@ -91,6 +99,7 @@ class _AddGroupState extends State<AddGroup> {
                 return  InkWell(
                   onTap: (){
                     setState(() {
+                      //if the contact is not already selected then add it to the list
                       if(!AddGroup.selectedContacts.contains(dummyContacts[index])){
                         AddGroup.selectedContacts.add(dummyContacts[index]);
                       }
@@ -106,7 +115,7 @@ class _AddGroupState extends State<AddGroup> {
                           child: Stack(
                             children: [
                               CircleAvatar(
-                                backgroundImage: NetworkImage(dummyContacts[index].profileURL),
+                                backgroundImage: CachedNetworkImageProvider(dummyContacts[index].profileURL),
                                 radius: 30,
                               ),
                               if(AddGroup.selectedContacts.contains(dummyContacts[index]))Align(
@@ -154,11 +163,10 @@ class _AddGroupState extends State<AddGroup> {
         onPressed: (){
           Get.to(()=>FinalizeGroup())?.then((value) {
             setState(() {
-
             });
           });
         },
-        child: Icon(Icons.check),
+        child: const Icon(Icons.check),
       ),
     );
   }

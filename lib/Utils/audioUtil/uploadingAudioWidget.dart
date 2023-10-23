@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import '../constants.dart';
 
+//widget to display uploading audio progress and to cancel or re-upload audio
 class UploadingAudioWidget extends StatefulWidget {
   final Map audioData;
   final String mid;
@@ -30,16 +31,19 @@ class _UploadingAudioWidgetState extends State<UploadingAudioWidget> {
     try {
       final Reference reference = FirebaseStorage.instance.ref('personalChatData').child(pid).child('Audio').child(mid);
 
+      // Start upload
       _uploadTask = reference.putFile(
           _file
       );
 
+      // Listen to progress
       _uploadTask!.snapshotEvents.listen((event) {
         setState(() {
           _uploadProgress = event.bytesTransferred / event.totalBytes;
         });
       });
 
+      // change data in database after upload is complete
       await _uploadTask!.whenComplete(() async {
         String downloadUrl = await reference.getDownloadURL();
         DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(pid);

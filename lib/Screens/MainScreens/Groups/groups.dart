@@ -11,6 +11,7 @@ import '../../../Utils/homeScreenUtil/homeScreenListTIle.dart';
 import '../../../Utils/homeScreenUtil/pfpUtil/pfpDialogBox.dart';
 import '../ProfileScreens/groupInfo.dart';
 
+//screen to show all the groups (home screen)
 class Groups extends StatefulWidget {
   const Groups({Key? key}) : super(key: key);
 
@@ -21,13 +22,17 @@ class Groups extends StatefulWidget {
 class _GroupsState extends State<Groups> {
   @override
   Widget build(BuildContext context) {
+
+    //if no groups are created then show NoDataHomePage
     if(dummyGroupData.length==0){
       return NoDataHomePage(caption: 'Create a group to start conversation');
     }
+
     return Scaffold(
       body: ListView.separated(
         itemCount: dummyGroupData.length,
         itemBuilder: (context,index){
+          //widget to display each group (in utils)
           return HomeScreenListTile(
             name: dummyGroupData[index].name,
             pfpURL: dummyGroupData[index].pfpURL,
@@ -37,6 +42,7 @@ class _GroupsState extends State<Groups> {
               Get.to(()=>GroupChatScreen());
             },
             onProfileIconTap: (){
+              //show dialog box to show group info and chat button
               showDialog(context: context, builder: (context){
                 return PfpDialogBox(
                   dummyData: dummyGroupData[index],
@@ -59,6 +65,7 @@ class _GroupsState extends State<Groups> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        //hero tag to differentiate between two floating action buttons on homescreen (personal chats and groups)
         heroTag: const Text('btn1'),
         onPressed: (){
           Get.to(()=>AddGroup());

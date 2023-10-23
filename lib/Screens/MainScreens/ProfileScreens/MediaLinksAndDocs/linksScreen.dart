@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../Utils/constants.dart';
 
+//screen for showing shared links
 class LinksScreen extends StatelessWidget {
   const LinksScreen({Key? key}) : super(key: key);
 

@@ -4,6 +4,7 @@ import 'package:fire_app/Utils/constants.dart';
 import 'package:fire_app/Utils/dummyData/dummyGroupChatScreenData.dart';
 import 'package:flutter/material.dart';
 
+//chat bubble widget for newly built group chat screen
 class ChatBubbleContainer extends StatefulWidget {
   final Widget child;
   final bool isMe;
@@ -34,6 +35,7 @@ class ChatBubbleContainer extends StatefulWidget {
 class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
   double overlayHeigh = 0;
   bool showOverlay = false;
+  //common emojis to display on chat bubble hold
   List commonEmojis = ['👍', '♥', '😂', '😢', '😡', '😯'];
   int callCount = 0;
   int reactionIndex = 0;
@@ -54,11 +56,14 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
     Widget child = widget.child;
     DummyGroupChatScreenData dummyData = widget.dummyData;
     int dataIndex = widget.index;
+    //to hide the overlay when the emoji is selected
     if (widget.index == widget.reactionUtil.chatBubbleIndex && widget.reactionUtil.isEmojiSelected) {
       showOverlay = false;
       widget.reactionUtil.chatBubbleIndex = -1;
     }
     callCount += 1;
+
+    //to get the height of the chat bubble
     if (callCount == 2) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         final renderBox = context.findRenderObject() as RenderBox;
@@ -155,6 +160,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                                 left: 0,
                                 child: InkWell(
                                   onTap: () {
+                                    //dialog to show the reactions
                                     showDialog(
                                         context: context,
                                         builder: (context) {
@@ -239,6 +245,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                     ),
                   ],
                 ),
+                //seen so far widget
                 seenSoFar!.isNotEmpty
                     ? Align(
                         alignment: Alignment.bottomRight,
@@ -264,6 +271,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
             ),
           ),
         ),
+        //overlay
         showOverlay
             ? InkWell(
                 onTap: () {
@@ -277,6 +285,7 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                 ),
               )
             : SizedBox(),
+        //reactions overlay
         showOverlay
             ? Column(
                 children: [
@@ -291,12 +300,14 @@ class _ChatBubbleContainerState extends State<ChatBubbleContainer> {
                         children: List.generate(7, (index) {
                       return InkWell(
                         onTap: index != 6
+                              //if reaction in common emojis, add it to the message
                             ? () {
                                 setState(() {
                                   widget.reactionUtil.addEmoji(dummyData.messages[dataIndex], commonEmojis[index]);
                                   showOverlay = false;
                                 });
                               }
+                              //else show the reaction keyboard
                             : () {
                                 widget.reactionUtil.changeReactionKeyboard(true);
                                 widget.reactionUtil.chatBubbleIndex = widget.index;

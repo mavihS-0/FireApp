@@ -4,6 +4,7 @@ import 'package:fire_app/Utils/roundedContainer.dart';
 import 'package:flutter/material.dart';
 import '../../../Utils/constants.dart';
 
+//screen to show user profile (current user)
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 

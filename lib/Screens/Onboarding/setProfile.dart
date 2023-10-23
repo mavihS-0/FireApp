@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
+//screen to set profile info after successful otp verification
 class SetProfileName extends StatefulWidget {
   const SetProfileName({Key? key}) : super(key: key);
 
@@ -21,6 +22,7 @@ class _SetProfileNameState extends State<SetProfileName> {
   final TextEditingController _nameController = TextEditingController();
   late File _imageFile;
 
+  //get placeholder image from assets
   Future<void> getImageFileFromAssets() async {
     final byteData = await rootBundle.load('assets/signup/profile.png');
 
@@ -31,6 +33,7 @@ class _SetProfileNameState extends State<SetProfileName> {
     _imageFile = file;
   }
 
+  //pick profile image from gallery
   Future<void> _pickImage(ImageSource source) async {
     try {
       final pickedFile = await ImagePicker().pickImage(source: source);

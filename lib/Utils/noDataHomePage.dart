@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// no data placeholder widgets for home pages (both personal chats and groups)
 class NoDataHomePage extends StatelessWidget {
   final String caption;
   const NoDataHomePage({Key? key, required this.caption}) : super(key: key);

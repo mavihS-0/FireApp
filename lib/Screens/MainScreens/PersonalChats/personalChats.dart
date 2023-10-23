@@ -18,6 +18,7 @@ import '../../../Utils/noDataHomePage.dart';
 import 'addContact.dart';
 import 'package:intl/intl.dart';
 
+//screen to show all the personal chats - list (home screen)
 class PersonalChats extends StatefulWidget {
   const PersonalChats({Key? key}) : super(key: key);
 
@@ -29,6 +30,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
 
   DatabaseReference databaseRef = FirebaseDatabase.instance.ref('personalChatList/${FirebaseAuth.instance.currentUser?.uid}');
   DatabaseReference userDataRef = FirebaseDatabase.instance.ref('users');
+  //dummy data for view profile screen
   DummyViewProfileData dummyData = DummyViewProfileData();
 
   @override
@@ -82,7 +84,12 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
                                       'dummyData' : dummyData
                                     });
                                   },
-                                  onChatButtonPress: () {  },);
+                                  onChatButtonPress: () {
+                                    Get.to(()=>PersonalChatScreen(),arguments: {
+                                      'friendUid' : uidList[index],
+                                      'pid' : myMessages[uidList[index]]['pid']
+                                    });
+                                  },);
                               });
                             },
 
@@ -102,6 +109,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
               );
             }
             else{
+              // loading widger
               return Center(
                   child: SpinKitRing(color: Constants.priColor,lineWidth: 5,)
               );
@@ -114,6 +122,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
         },
       ),
       floatingActionButton: FloatingActionButton(
+        //hero tag to differentiate between two floating action buttons on homescreen (personal chats and groups)
         heroTag: Text('btn2'),
         child: Icon(Icons.question_answer_rounded),
         onPressed: (){
@@ -123,6 +132,7 @@ class _PersonalChatsState extends State<PersonalChats> with AutomaticKeepAliveCl
     );
   }
 
+  //to keep both the home screens alive at the same time
   @override
   bool get wantKeepAlive => true;
 }

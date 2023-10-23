@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../roundedContainer.dart';
 
+//theme data widget to show chat theme on profile screens
 class ThemeDataWidget extends StatelessWidget {
   final dummyData;
   final Function() onThemeChange;

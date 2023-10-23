@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import '../constants.dart';
 
+//widget to build uploading image
 class UploadingFileBuilder extends StatefulWidget {
   final Map fileData;
   final String mid;
@@ -32,16 +33,19 @@ class _UploadingFileBuilderState extends State<UploadingFileBuilder> {
       String fileExtension = _file.path.split('.').last;
       final Reference reference = FirebaseStorage.instance.ref('personalChatData').child(pid).child('Files').child('$mid.$fileExtension');
 
+      //start upload
       _uploadTask = reference.putFile(
           _file
       );
 
+      //listen to upload progress
       _uploadTask!.snapshotEvents.listen((event) {
         setState(() {
           _uploadProgress = event.bytesTransferred / event.totalBytes;
         });
       });
 
+      //update database when upload is complete
       await _uploadTask!.whenComplete(() async {
         String downloadUrl = await reference.getDownloadURL();
         DatabaseReference messageRef = FirebaseDatabase.instance.ref('personalChats').child(pid);

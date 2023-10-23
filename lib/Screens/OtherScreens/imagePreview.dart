@@ -7,18 +7,17 @@ import 'package:get/get.dart';
 
 import '../../Utils/constants.dart';
 
+//screen for previewing image in full screen (on tap)
 class ImagePreview extends StatelessWidget {
   const ImagePreview({Key? key}) : super(key: key);
 
+  //fucntion to download image
   Future<void> downloadFile(String fileName) async {
     Directory? directory;
     Get.back();
     try{
-      //path for emulator
+      //path for emulator and android device
       directory = Directory('/sdcard/Download');
-
-      //path for real device (android)
-      //directory = Directory('/storage/emulated/0/Download');
 
       //path for real device (ios)
       //directory = await getApplicationDocumentsDirectory();
@@ -36,6 +35,7 @@ class ImagePreview extends StatelessWidget {
     return ;
   }
 
+  //function for showing dialog box for downloading file with text-field for file name
   void onDownloadButtonPress(BuildContext context){
     TextEditingController _fileNameController = TextEditingController();
     FocusNode _fileNameFocusNode = FocusNode();

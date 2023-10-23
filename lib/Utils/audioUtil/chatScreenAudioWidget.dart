@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
+//widget for showing message (type: audio) in chat screen and playing the audio
 class ChatScreenAudioWidget extends StatefulWidget {
   final Map audioData;
   const ChatScreenAudioWidget({Key? key, required this.audioData}) : super(key: key);
@@ -20,6 +21,7 @@ class _ChatScreenAudioWidgetState extends State<ChatScreenAudioWidget> {
     // TODO: implement initState
     super.initState();
 
+    //functions for getting the audio player state and updating the UI accordingly
     audioPlayer.setSource(UrlSource(widget.audioData['content']['audioURL']));
 
     audioPlayer.onPlayerStateChanged.listen((event) {

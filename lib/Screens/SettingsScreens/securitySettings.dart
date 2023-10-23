@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../Utils/constants.dart';
 
+//screen for security settings
 class SecuritySettings extends StatefulWidget {
   const SecuritySettings({Key? key}) : super(key: key);
 
