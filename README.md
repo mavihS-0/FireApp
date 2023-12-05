@@ -21,8 +21,7 @@ FireApp prides itself on a sleek and intuitive user interface, ensuring a pleasa
  
 ## Screenshots 📸
 
-<!-- Include screenshots of your application -->
-Placeholder for Screenshots Here
+!(https://cdn.discordapp.com/attachments/1010602676909776949/1181668062475329656/Screenshot_2023-12-06-00-04-35-33_2e6d0a5d45063b5afe2025f6e10d17ac.png?ex=6581e524&is=656f7024&hm=9e229d38fa3269bc63234fdf7bf81d6a29c0893520098ea4cb5d34e08882e8bc&)
 
  
 ## Getting Started 🚀
