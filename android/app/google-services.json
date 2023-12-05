@@ -1,51 +1,27 @@
 {
   "project_info": {
-    "project_number": "317030118714",
-    "project_id": "fireapp-a5221",
-    "storage_bucket": "fireapp-a5221.appspot.com"
+    "project_number": "59646134687",
+    "firebase_url": "https://fireapp-a1528-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fireapp-a1528",
+    "storage_bucket": "fireapp-a1528.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:317030118714:android:ca9ba863591dea15544c03",
+        "mobilesdk_app_id": "1:59646134687:android:8ead828e6b5675e65855aa",
         "android_client_info": {
           "package_name": "com.example.fire_app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "317030118714-35fk9lrjaaqpmuoqv697tea3ut5kfd5b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.fire_app",
-            "certificate_hash": "6fcbb9b7a65804beb628fc1a792820e0fc8ff2f0"
-          }
-        },
-        {
-          "client_id": "317030118714-htdfbridcksmrn037njhev1001vqeo27.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAfrOUeW8_amDQnHa8lXJQwIJHmd-ZrSRo"
+          "current_key": "AIzaSyAuQ74P4w0jDJ6vQ1FiOTuoLwN6w_QIeRU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "317030118714-htdfbridcksmrn037njhev1001vqeo27.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "317030118714-hnideoe5fof1ko36up4v1gsju413q9ic.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.fireApp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
