@@ -36,7 +36,7 @@ class _SignupLoadingState extends State<SignupLoading> {
         'phone' : SignUp.auth.currentUser?.phoneNumber,
         'profileImg' : imageURL,
       }).then((value) {
-        Get.offAll(()=>HomeScreen());
+        Get.offAll(()=>const HomeScreen());
       }).onError((error, stackTrace) {
         Get.snackbar('Error', error.toString());
         Get.back();

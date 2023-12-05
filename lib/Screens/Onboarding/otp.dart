@@ -53,7 +53,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       code=pin;
                     },
                     onCompleted: (pin) {
-                      print("Completed: " + pin);
+                      //print("Completed: " + pin);
                     }),
                 const SizedBox(height: 10,),
                 //Resend OTP
@@ -100,7 +100,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verify, smsCode: code);
                     final userCredential = await SignUp.auth.signInWithCredential(credential);
                     userCredential.additionalUserInfo?.isNewUser == true ? Get.off(()=>const SetProfileName()):
-                    Get.offAll(()=>HomeScreen());
+                    Get.offAll(()=>const HomeScreen());
                   }
                   catch(e){
                     Get.back();

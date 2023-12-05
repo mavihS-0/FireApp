@@ -3,7 +3,6 @@ import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 // import 'package:animated_splash_screen/animated_splash_screen.dart';
 // import 'package:page_transition/page_transition.dart';
@@ -77,7 +76,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
         dialogBackgroundColor: Constants.secColor,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           bodyMedium: TextStyle(
             fontSize: 16,
           )

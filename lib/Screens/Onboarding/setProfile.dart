@@ -72,7 +72,7 @@ class _SetProfileNameState extends State<SetProfileName> {
                       onTap: (){
                         _pickImage(ImageSource.gallery);
                       },
-                      child: Container(
+                      child: SizedBox(
                         height: 60,
                         width: 60,
                         child: Stack(
@@ -111,7 +111,7 @@ class _SetProfileNameState extends State<SetProfileName> {
                 const SizedBox(height: 50,),
                 Expanded(child: Container()),
                 CustomTextButton(title: 'CONTINUE', onPress: (){
-                  Get.to(()=>SignupLoading(),arguments: {
+                  Get.to(()=>const SignupLoading(),arguments: {
                     'name': _nameController.text,
                     'imageFile' : _imageFile,
                   });
