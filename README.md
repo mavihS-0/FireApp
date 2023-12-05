@@ -1,6 +1,6 @@
 # FireApp - Flutter Chatting Application
 
-FireApp is a comprehensive chatting application developed during an internship at Ajani Infotech. It's designed to offer a seamless communication experience with a range of essential features that define a modern chat application.
+FireApp is a comprehensive chatting application (prototype) developed during an internship at Ajani Infotech. It's designed to offer a seamless communication experience with a range of essential features that define a modern chat application.
 
 ## Features
 
@@ -24,6 +24,7 @@ FireApp prides itself on a sleek and intuitive user interface, ensuring a pleasa
 <!-- Include screenshots of your application -->
 Placeholder for Screenshots Here
 
+
 ## Getting Started
 
 To get started with FireApp, follow these steps:
@@ -32,23 +33,12 @@ To get started with FireApp, follow these steps:
 2. Set up Firebase Realtime Database and configure the necessary credentials.
 3. Run the application in your preferred Flutter development environment.
 
-## Usage
-
-Here's how you can use FireApp:
-
-1. Register or log in using mobile OTP verification.
-2. Explore the intuitive interface and create or join groups.
-3. Experience the convenience of Group Stories and Multi React features.
-4. Engage in seamless and real-time conversations with other users.
-
 ## Contributions
 
 Contributions to FireApp are welcome! If you'd like to contribute, please fork the repository, make changes, and submit a pull request. Any enhancements or bug fixes are highly appreciated.
 
-## Credits
+## Authors
 
-FireApp is developed by [Your Name] during an internship at Ajani Infotech.
+FireApp is developed by [Shivam](https://github.com/mavihS-0) during an internship at Ajani Infotech.
 
-## License
 
-This project is licensed under the [License Name] License - see the [LICENSE.md](link-to-license-file) file for details.
