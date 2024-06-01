@@ -88,7 +88,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> with AutomaticKeepAli
           MembersScrollView(),
           Expanded(
             child: Container(
-              decoration: const BoxDecoration(image: DecorationImage(image: AssetImage("assets/home_page/no_chat.png"))),
+              // decoration: const BoxDecoration(image: DecorationImage(image: AssetImage("assets/home_page/no_chat.png"))),
               margin: const EdgeInsets.symmetric(vertical: 5),
 
               //chat bubble list view

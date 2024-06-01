@@ -16,3 +16,4 @@ class DummyViewProfileData{
     'https://thumbs.dreamstime.com/b/hand-holding-glass-globe-ball-tree-growing-green-nature-blur-background-eco-concept-161081206.jpg'
   ];
 }
+

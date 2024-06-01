@@ -13,7 +13,6 @@ import 'package:fire_app/Utils/fileUtil/uploadingFileBuilder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 // import 'package:hive/hive.dart';
@@ -53,8 +52,7 @@ class _PersonalChatScreenState extends State<PersonalChatScreen>{
   bool _isAttachButtonPressed = false;
   bool _isRecording = false;
   bool _isRecorded = false;
-  final FlutterSoundRecord recorder = FlutterSoundRecord();
-  AudioRecordUtil audioUtil = AudioRecordUtil();
+
   ChatImageUtil chatImageUtil = ChatImageUtil();
 
   //get user data from firebase
@@ -177,7 +175,6 @@ class _PersonalChatScreenState extends State<PersonalChatScreen>{
     super.dispose();
     //recorder.dispose();
     //chatImageUtil.dispose();
-    audioUtil.dispose();
   }
 
   //bottom chat input widget
@@ -280,17 +277,17 @@ class _PersonalChatScreenState extends State<PersonalChatScreen>{
             child: _isNotTyping ? GestureDetector(
               child: Icon(Icons.mic,color: Colors.blue,),
               onLongPressStart: (_)async{
-                setState(() {
-                  _isRecorded = false;
-                });
-                audioUtil.startRecording(recorder);
+                // setState(() {
+                //   _isRecorded = false;
+                // });
+                // audioUtil.startRecording(recorder);
               },
               onLongPressEnd: (_)async{
-                await audioUtil.stopRecording(recorder);
-                await audioUtil.setAudio();
-                setState(() {
-                  _isRecorded = true;
-                });
+                // await audioUtil.stopRecording(recorder);
+                // await audioUtil.setAudio();
+                // setState(() {
+                //   _isRecorded = true;
+                // });
               },
             ) :
             IconButton(
@@ -602,8 +599,9 @@ class _PersonalChatScreenState extends State<PersonalChatScreen>{
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(10)
                     ),
-                    child: _isRecorded ? RecordingPreview(audioUtil: audioUtil,pid: Get.arguments['pid'], isRecorded: _isRecorded,)
-                        : SizedBox()
+                    child: SizedBox(),
+                    // child: _isRecorded ? RecordingPreview(audioUtil: audioUtil,pid: Get.arguments['pid'], isRecorded: _isRecorded,)
+                    //     :
                 ),
                 AttachButton(
                   _isAttachButtonPressed ? 90 : 0,

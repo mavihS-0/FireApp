@@ -1,3 +1,4 @@
+import 'package:fire_app/Screens/MainScreens/homeScreen.dart';
 import 'package:fire_app/Utils/authState.dart';
 import 'package:fire_app/Utils/constants.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: const AuthState(),
+      home: const HomeScreen(),
 
       // splash screen (currently not used)
       // home: AnimatedSplashScreen(
